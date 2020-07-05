@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "529582488956",
+    "firebase_url": "https://tethered-45742.firebaseio.com",
+    "project_id": "tethered-45742",
+    "storage_bucket": "tethered-45742.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:529582488956:android:747e77089d3b37581d78f9",
+        "android_client_info": {
+          "package_name": "com.gekko.tethered"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "529582488956-sqih347kglrvcr4s1el7gqi1pq8u77h3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-QN7Iy2VzZAyJinEhuX8lNBPE6NL494Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "529582488956-sqih347kglrvcr4s1el7gqi1pq8u77h3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,5 @@
 # Source gen
-*.iconfig.dart
+*.config.dart
 
 # Miscellaneous
 *.class

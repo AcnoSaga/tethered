@@ -34,7 +34,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (isUserLoggedInOrError as bool) {
           if (!authenticationService.isUserVerified()) {
             print('Unverified');
-            // await authenticationService.sendEmailForVerificationToCurrentUser();
+            await authenticationService.sendEmailForVerificationToCurrentUser();
             Get.snackbar(
               'User not verified',
               'We have sent you a verification link on your email for verification\nYou will not  be able to access certain features without verification',
@@ -48,6 +48,23 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           Get.snackbar('Login failed', 'The user could not be logged in');
           yield LoginFailure();
         }
+      }
+    } else if (event is SendEmailToResetPassword) {
+      final didSendEmail =
+          await authenticationService.sendPasswordResetEmail(event.email) ??
+              false;
+      if (didSendEmail) {
+        Get.snackbar(
+          'Email Sent',
+          'Reset password email has been sent to ${event.email}',
+          colorText: Colors.white,
+        );
+      } else {
+        Get.snackbar(
+          'Failed to send email',
+          'Reset password email could not be sent to ${event.email}\nPlease try again later',
+          colorText: Colors.white,
+        );
       }
     }
   }

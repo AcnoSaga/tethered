@@ -9,3 +9,9 @@ class Login extends LoginEvent {
 
   Login({this.email, this.password});
 }
+
+class SendEmailToResetPassword extends LoginEvent {
+  final String email;
+
+  SendEmailToResetPassword({@required this.email});
+}

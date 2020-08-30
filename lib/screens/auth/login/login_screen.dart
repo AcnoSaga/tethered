@@ -102,7 +102,7 @@ class LoginScreen extends StatelessWidget {
                   Gap(height: 3),
                   PassiveTextButton(
                     text: 'Forgot Password?',
-                    onPressed: () {},
+                    onPressed: () => Get.toNamed('/forgot-password'),
                   ),
                 ],
               ),

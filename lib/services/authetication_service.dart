@@ -49,7 +49,7 @@ class AuthenticationService {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
       return true;
-    } on PlatformException {
+    } catch (e) {
       return false;
     }
   }

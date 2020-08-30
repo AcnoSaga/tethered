@@ -6,9 +6,9 @@ import 'package:tethered/injection/injection.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/routes.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp();
+  await Firebase.initializeApp();
   configureInit();
   runApp(TetheredApp());
 }

@@ -30,11 +30,18 @@ class TetheredApp extends StatelessWidget {
     );
     return LayoutBuilder(builder: (context, constraints) {
       SizeConfig.init(constraints, Orientation.portrait);
-      return GetMaterialApp(
-        title: 'Tethered',
-        getPages: Routes.getPages(),
-        initialRoute: Routes.getInitialRoute(),
-      );
+      return FutureBuilder(
+          future: Routes.getInitialRoute(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData || snapshot.data == null) {
+              return Container();
+            }
+            return GetMaterialApp(
+              title: 'Tethered',
+              getPages: Routes.getPages(),
+              initialRoute: snapshot.data,
+            );
+          });
     });
   }
 }

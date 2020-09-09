@@ -6,8 +6,9 @@ import 'package:tethered/injection/injection.dart';
 import 'package:tethered/screens/auth/forgot_password/forgot_password.dart';
 import 'package:tethered/screens/auth/login/login_screen.dart';
 import 'package:tethered/screens/auth/signup/signup_screen.dart';
-import 'package:tethered/screens/home/home_page.dart';
+import 'package:tethered/screens/home/main_page.dart';
 import 'package:tethered/screens/welcome_screen.dart';
+import 'package:tethered/services/authetication_service.dart';
 
 class Routes {
   static List<GetPage> getPages() {
@@ -43,12 +44,15 @@ class Routes {
       ),
       GetPage(
         name: '/home',
-        page: () => HomePage(),
+        page: () => MainPage(),
       ),
     ];
   }
 
-  static String getInitialRoute() {
+  static Future<String> getInitialRoute() async {
+    if (locator<AuthenticationService>().isUserLoggedIn()) {
+      return '/home';
+    }
     return '/';
   }
 }

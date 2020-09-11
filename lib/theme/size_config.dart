@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 double sx;
 double sy;
 double sText;
+double fullWidth;
+double fullHeight;
 
 class SizeConfig {
   static double _screenWidth;
@@ -34,6 +36,9 @@ class SizeConfig {
 
     _blockSizeHorizontal = _screenWidth / 100;
     _blockSizeVertical = _screenHeight / 100;
+
+    fullHeight = _screenHeight;
+    fullWidth = _screenWidth;
 
     textMultiplier = _blockSizeVertical;
     imageSizeMultiplier = _blockSizeHorizontal;

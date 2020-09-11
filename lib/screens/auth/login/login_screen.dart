@@ -55,17 +55,17 @@ class LoginScreen extends StatelessWidget {
     return Form(
       key: _formKey,
       child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: sx * 5,
-            vertical: sy * 10,
-          ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: <Widget>[
-              Column(
-                mainAxisSize: MainAxisSize.min,
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: sx * 5,
+              vertical: sy * 10,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                // mainAxisSize: MainAxisSize.min,
                 children: [
+                  Gap(height: 15),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -104,16 +104,17 @@ class LoginScreen extends StatelessWidget {
                     text: 'Forgot Password?',
                     onPressed: () => Get.toNamed('/forgot-password'),
                   ),
+                  Gap(height: 15),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: PassiveTextButton(
+                      text: 'Sign Up',
+                      onPressed: () => Get.toNamed('/signup'),
+                    ),
+                  ),
                 ],
               ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: PassiveTextButton(
-                  text: 'Sign Up',
-                  onPressed: () => Get.toNamed('/signup'),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),

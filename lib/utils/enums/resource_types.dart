@@ -1,0 +1,4 @@
+enum ResourceTypes {
+  genre,
+  hashtag,
+}

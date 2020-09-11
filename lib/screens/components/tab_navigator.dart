@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:tethered/screens/components/enums/tab_item.dart';
-import 'package:tethered/screens/home/home_page/home_page.dart';
-
-class TabNavigatorRoutes {
-  static const String root = '/';
-  static const String detail = '/detail';
-}
+import 'package:tethered/utils/enums/tab_item.dart';
 
 class TabNavigator extends StatelessWidget {
   TabNavigator({this.tabItem});
@@ -21,14 +15,17 @@ class TabNavigator extends StatelessWidget {
           key: Get.nestedKey(tabItemsToIndex[tabItem]),
           initialRoute: '/',
           onGenerateRoute: (routeSettings) {
-            Map<String, GetPageRoute> routes = {};
+            Map<String, GetPageRoute Function(dynamic)> routes = {};
             tabItems
                 .forEach((item) => routes.addAll(tabItemToRouteBuilders[item]));
             routes.putIfAbsent('/', () => tabItemToInitialRoute[tabItem]);
-            print(routes);
-            print(routeSettings.name);
+            final getPageRoute =
+                routes[routeSettings.name](routeSettings.arguments);
             return GetPageRoute(
-              page: routes[routeSettings.name].page,
+              page: getPageRoute.page,
+              transition: getPageRoute.transition,
+              curve: getPageRoute.curve,
+              transitionDuration: getPageRoute.transitionDuration,
               settings: routeSettings,
             );
           }),

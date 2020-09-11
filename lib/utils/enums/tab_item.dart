@@ -1,5 +1,8 @@
+import 'package:tethered/utils/inner_routes/account_routes.dart';
 import 'package:tethered/utils/inner_routes/home_routes.dart';
+import 'package:tethered/utils/inner_routes/notification_routes.dart';
 import 'package:tethered/utils/inner_routes/search_routes.dart';
+import 'package:tethered/utils/inner_routes/write_routes.dart';
 
 enum TabItem {
   home,
@@ -36,15 +39,15 @@ const Map<int, TabItem> indexToTabItem = {
 final tabItemToRouteBuilders = {
   TabItem.home: homeRouteBuilder,
   TabItem.search: searchRouteBuilder,
-  TabItem.write: homeRouteBuilder,
-  TabItem.notifications: homeRouteBuilder,
-  TabItem.account: homeRouteBuilder,
+  TabItem.write: writeRouteBuilder,
+  TabItem.notifications: notificationsRouteBuilder,
+  TabItem.account: accountRouteBuilder,
 };
 
 final tabItemToInitialRoute = {
   TabItem.home: homeInitialRoute,
   TabItem.search: searchInitialRoute,
-  TabItem.write: homeInitialRoute,
-  TabItem.notifications: homeInitialRoute,
-  TabItem.account: homeInitialRoute,
+  TabItem.write: writeInitialRoute,
+  TabItem.notifications: notificationsInitialRoute,
+  TabItem.account: accountInitialRoute,
 };

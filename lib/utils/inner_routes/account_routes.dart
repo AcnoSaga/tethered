@@ -1,14 +1,14 @@
 import 'package:get/route_manager.dart';
 import 'package:tethered/screens/home/home_page/demo_page.dart';
 
-class SearchRoutes {
+class AccountRoutes {
   static const String detail = '/details';
 }
 
-final searchRouteBuilder = {
-  SearchRoutes.detail: (args) => GetPageRoute(page: () => DemoPage()),
+final accountRouteBuilder = {
+  AccountRoutes.detail: (args) => GetPageRoute(page: () => DemoPage()),
 };
 
-final searchInitialRoute = (args) => GetPageRoute(
+final accountInitialRoute = (args) => GetPageRoute(
       page: () => DemoPage(),
     );

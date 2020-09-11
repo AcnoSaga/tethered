@@ -11,12 +11,40 @@ class TetheredTextStyles {
     letterSpacing: 5,
     fontWeight: FontWeight.w300,
   );
+  static TextStyle bookDetailsHeading = GoogleFonts.montserrat(
+    color: TetheredColors.authHeading,
+    fontSize: sText * 5,
+    // letterSpacing: 2,
+    fontWeight: FontWeight.w300,
+  );
   static TextStyle authSubHeading = GoogleFonts.poppins(
     color: TetheredColors.authHeading,
     fontSize: sText * 5,
     letterSpacing: 2,
     fontWeight: FontWeight.w300,
   );
+
+  static TextStyle displayText = GoogleFonts.poppins(
+    color: TetheredColors.authHeading,
+    fontSize: sText * 3,
+    letterSpacing: 2,
+    fontWeight: FontWeight.w300,
+  );
+
+  static TextStyle descriptionText = GoogleFonts.roboto(
+    color: TetheredColors.authHeading,
+    fontSize: sText * 3,
+    letterSpacing: 1,
+    // fontWeight: FontWeight.w300,
+  );
+
+  static TextStyle displayTextSelected = GoogleFonts.poppins(
+    color: TetheredColors.authHeading,
+    fontSize: sText * 3,
+    letterSpacing: 2,
+    fontWeight: FontWeight.w300,
+  );
+
   static TextStyle textField = GoogleFonts.poppins(
     color: TetheredColors.textFieldText,
     fontWeight: FontWeight.w300,
@@ -36,5 +64,11 @@ class TetheredTextStyles {
     fontWeight: FontWeight.w200,
     letterSpacing: 1,
     fontSize: sText * 3.5,
+  );
+
+  static TextStyle homeAppBarHeading = GoogleFonts.montserrat(
+    color: TetheredColors.primaryBlue,
+    letterSpacing: 2,
+    fontSize: sText * 6,
   );
 }

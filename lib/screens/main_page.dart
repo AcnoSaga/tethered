@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tethered/screens/components/enums/tab_item.dart';
-import 'package:tethered/utils/tab_navigator.dart';
-import 'components/main_page_bottom_nav_bar.dart';
+import 'package:tethered/utils/enums/tab_item.dart';
+import 'package:tethered/screens/components/tab_navigator.dart';
+import 'home/components/main_page_bottom_nav_bar.dart';
 
 class MainPage extends StatefulWidget {
   @override

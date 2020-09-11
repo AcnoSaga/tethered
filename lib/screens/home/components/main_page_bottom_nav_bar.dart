@@ -16,6 +16,7 @@ class MainPageBottomNavBar extends StatelessWidget {
       currentIndex: selected,
       backgroundColor: TetheredColors.primaryDark,
       onTap: onChangeTab,
+      elevation: 100,
       type: BottomNavigationBarType.fixed,
       showSelectedLabels: false,
       showUnselectedLabels: false,

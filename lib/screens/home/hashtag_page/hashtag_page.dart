@@ -1,10 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tethered/screens/components/book_card.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
+import 'package:tethered/utils/enums/tab_item.dart';
+import 'package:tethered/utils/inner_routes/home_routes.dart';
 
 import 'package:tethered/utils/text_styles.dart';
 
@@ -19,6 +22,7 @@ class HashtagPage extends StatefulWidget {
 
 class _HashtagPageState extends State<HashtagPage> {
   int bookCount = 20;
+  List<String> urls = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,10 +34,6 @@ class _HashtagPageState extends State<HashtagPage> {
             // pinned: true,
             floating: true,
             backgroundColor: TetheredColors.primaryDark,
-            title: Text(
-              'Tethered',
-              style: TetheredTextStyles.homeAppBarHeading,
-            ),
           ),
           SliverPadding(
             padding: EdgeInsets.symmetric(horizontal: sy * 5, vertical: sx * 7),
@@ -60,7 +60,19 @@ class _HashtagPageState extends State<HashtagPage> {
                   rnd = new Random();
                   int value = min + rnd.nextInt(max - min);
                   final String url = 'https://picsum.photos/id/$value/400/600';
-                  return BookCard(url: url);
+                  urls.add(url);
+                  return GestureDetector(
+                    onTap: () => Get.toNamed(
+                      HomeRoutes.bookDetails,
+                      arguments: {
+                        "urls": urls,
+                        "index": urls.indexOf(url),
+                        "title": widget.hashtag,
+                      },
+                      id: tabItemsToIndex[TabItem.home],
+                    ),
+                    child: BookCard(url: url),
+                  );
                 },
                 childCount: bookCount,
               ),

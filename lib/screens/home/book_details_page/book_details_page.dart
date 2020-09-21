@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/screens/components/image_error_widget.dart';
@@ -12,6 +13,7 @@ import 'package:tethered/screens/home/home_page/components/book_row.dart';
 
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
+import 'package:tethered/utils/enums/resource_types.dart';
 import 'package:tethered/utils/text_styles.dart';
 
 import 'components/book_details_tag.dart';
@@ -19,9 +21,8 @@ import 'components/book_details_tag.dart';
 class BookDetailPage extends StatefulWidget {
   final List<String> urls;
   final int startingIndex;
-  final String title;
 
-  const BookDetailPage({Key key, this.urls, this.startingIndex, this.title})
+  const BookDetailPage({Key key, this.urls, this.startingIndex})
       : super(key: key);
 
   @override
@@ -85,7 +86,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                           margin: EdgeInsets.all(sx * 2),
                           child: Material(
                             color: Colors.transparent,
-                            elevation: 10,
+                            elevation: 5,
                             shape: RoundedRectangleBorder(
                               borderRadius: itemBorderRadius,
                             ),
@@ -173,15 +174,15 @@ class _BookDetailPageState extends State<BookDetailPage> {
                         children: [
                           Gap(width: 2),
                           BookDetailsTag(label: '#horror'),
-                          Gap(width: 1),
+                          Gap(width: 2),
                           BookDetailsTag(label: '#horror'),
-                          Gap(width: 1),
+                          Gap(width: 2),
                           BookDetailsTag(label: '#action'),
-                          Gap(width: 1),
+                          Gap(width: 2),
                           BookDetailsTag(label: '#thriller'),
-                          Gap(width: 1),
+                          Gap(width: 2),
                           BookDetailsTag(label: '#romcom'),
-                          Gap(width: 1),
+                          Gap(width: 2),
                           BookDetailsTag(label: '#suspense'),
                         ],
                       ),
@@ -191,12 +192,13 @@ class _BookDetailPageState extends State<BookDetailPage> {
                       padding: EdgeInsets.symmetric(horizontal: sy * 5),
                       child: ProceedButton(
                         text: 'Read',
-                        onPressed: () {},
+                        onPressed: () => Get.toNamed('/read'),
                       ),
                     ),
                     Gap(height: 4),
                     BookRow(
                       title: 'More like this',
+                      resourceType: ResourceTypes.genre,
                       titlePadding: EdgeInsets.symmetric(
                         horizontal: sy * 5,
                         vertical: sx * 2,

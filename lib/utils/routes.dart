@@ -7,6 +7,7 @@ import 'package:tethered/screens/auth/forgot_password/forgot_password.dart';
 import 'package:tethered/screens/auth/login/login_screen.dart';
 import 'package:tethered/screens/auth/signup/signup_screen.dart';
 import 'package:tethered/screens/main_page.dart';
+import 'package:tethered/screens/read/reading_page.dart';
 import 'package:tethered/screens/welcome_screen.dart';
 import 'package:tethered/services/authetication_service.dart';
 
@@ -45,6 +46,10 @@ class Routes {
       GetPage(
         name: '/home',
         page: () => MainPage(),
+      ),
+      GetPage(
+        name: '/read',
+        page: () => ReadingPage(),
       ),
     ];
   }

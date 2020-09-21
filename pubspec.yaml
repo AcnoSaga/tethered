@@ -34,6 +34,8 @@ dependencies:
   badges: ^1.1.1
   cached_network_image: ^2.3.2+1
   shimmer: ^1.1.1
+  pull_to_refresh: ^1.6.1
+  flutter_spinkit: "^4.1.2"
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -41,6 +43,13 @@ dependencies:
   google_fonts: ^1.1.0
   flutter_bloc: ^6.0.1
   provider: ^4.3.2+2
+  zefyr:
+    git:
+      url: https://github.com/memspace/zefyr.git
+      path: packages/zefyr
+  notus: ^0.1.5
+  floating_bottom_navigation_bar: ^1.4.1
+  flutter_snake_navigationbar: ^0.4.0+1
 
 dev_dependencies:
   flutter_test:

@@ -34,25 +34,43 @@ class BookRow extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Padding(
-              padding: titlePadding ?? EdgeInsets.zero,
-              child: Text(title, style: TetheredTextStyles.authSubHeading),
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: titlePadding ?? EdgeInsets.zero,
+                child: Text(
+                    resourceType == ResourceTypes.genre
+                        ? title
+                        : "Trending in $title",
+                    style: TetheredTextStyles.authSubHeading),
+              ),
             ),
             isResourceExpandable
-                ? GestureDetector(
-                    onTap: () => Get.toNamed(
-                      HomeRoutes.hashtagPage,
-                      arguments: {
-                        "resourceType": resourceType,
-                        "resource": title,
-                      },
-                      id: tabItemsToIndex[
-                          Provider.of<TabItem>(context, listen: false)],
-                    ),
-                    child: Padding(
-                      padding: titlePadding ?? EdgeInsets.zero,
-                      child: Text('See all >',
-                          style: TetheredTextStyles.passiveTextButton),
+                ? Expanded(
+                    flex: 2,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: GestureDetector(
+                        onTap: () => Get.toNamed(
+                          resourceType == ResourceTypes.genre
+                              ? HomeRoutes.genrePage
+                              : HomeRoutes.hashtagPage,
+                          arguments: resourceType == ResourceTypes.genre
+                              ? {
+                                  "genre": title,
+                                }
+                              : {
+                                  "hashtag": title,
+                                },
+                          id: tabItemsToIndex[
+                              Provider.of<TabItem>(context, listen: false)],
+                        ),
+                        child: Padding(
+                          padding: titlePadding ?? EdgeInsets.zero,
+                          child: Text('See all >',
+                              style: TetheredTextStyles.passiveTextButton),
+                        ),
+                      ),
                     ),
                   )
                 : Container(),

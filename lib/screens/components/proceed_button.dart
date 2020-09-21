@@ -12,7 +12,7 @@ class ProceedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
-      elevation: 20,
+      elevation: 5,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

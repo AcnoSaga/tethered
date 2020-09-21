@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 
 import 'package:tethered/utils/colors.dart';
 
@@ -10,16 +11,16 @@ class MainPageBottomNavBar extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      fixedColor: TetheredColors.bottomNavBarIconActive,
-      unselectedItemColor: TetheredColors.bottomNavBarIconInactive,
+    return SnakeNavigationBar(
+      selectedItemColor: TetheredColors.authHeading,
+      snakeColor: TetheredColors.primaryBlue,
       currentIndex: selected,
       backgroundColor: TetheredColors.primaryDark,
-      onTap: onChangeTab,
+      onPositionChanged: onChangeTab,
       elevation: 100,
-      type: BottomNavigationBarType.fixed,
       showSelectedLabels: false,
       showUnselectedLabels: false,
+      snakeShape: SnakeShape.indicator,
       items: [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),

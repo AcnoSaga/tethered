@@ -7,8 +7,14 @@ import 'package:tethered/utils/text_styles.dart';
 class BookDetailsInfoText extends StatelessWidget {
   final IconData icon;
   final String text;
+  final Color color;
 
-  const BookDetailsInfoText({Key key, this.icon, this.text}) : super(key: key);
+  const BookDetailsInfoText({
+    Key key,
+    this.icon,
+    this.text,
+    this.color,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,13 +28,17 @@ class BookDetailsInfoText extends StatelessWidget {
           GestureDetector(
             child: Icon(
               icon,
-              color: TetheredColors.bookDetailText,
+              color: color ?? TetheredColors.bookDetailText,
             ),
           ),
           Gap(width: 1),
           Text(
             text,
-            style: TetheredTextStyles.displayText,
+            style: color == null
+                ? TetheredTextStyles.displayText
+                : TetheredTextStyles.displayText.copyWith(
+                    color: color,
+                  ),
           ),
         ],
       ),

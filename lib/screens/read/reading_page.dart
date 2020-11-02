@@ -8,6 +8,7 @@ import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/screens/home/book_details_page/components/book_details_info_text.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
+import 'package:tethered/utils/data/zefyr_content.dart';
 import 'package:tethered/utils/text_styles.dart';
 import 'package:zefyr/zefyr.dart';
 
@@ -18,12 +19,12 @@ class ReadingPage extends StatefulWidget {
 
 class _ReadingPageState extends State<ReadingPage> {
   PageController _pageController;
-  List<ScrollController> _listScrollControllers;
+  RxMap<int, ScrollController> _mapScrollControllers;
   ScrollController _activeScrollController;
   Drag _drag;
   ValueNotifier<bool> _isVisible = ValueNotifier(true);
 
-  Function _changeBarVisibility;
+  Null Function() Function(ScrollController) _changeBarVisibility;
 
   int numberOfPages = 15;
   int currentIndex = 0;
@@ -31,55 +32,65 @@ class _ReadingPageState extends State<ReadingPage> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: 0);
+    _pageController = PageController(
+      initialPage: 0,
+      viewportFraction: 1,
+      keepPage: true,
+    );
     if (numberOfPages <= 3) {
-      _listScrollControllers = List.filled(
-        numberOfPages,
-        ScrollController(),
-        growable: true,
-      );
+      _mapScrollControllers = RxMap(Map<int, ScrollController>.fromIterables(
+        List.generate(numberOfPages, (index) => index),
+        List<ScrollController>.filled(
+          numberOfPages,
+          ScrollController(),
+          growable: true,
+        ),
+      ));
     } else {
-      _listScrollControllers = List.filled(
-        3,
-        ScrollController(),
-        growable: true,
-      );
+      _mapScrollControllers = RxMap(Map<int, ScrollController>.fromIterables(
+        [0, 1, 2],
+        List<ScrollController>.filled(
+          3,
+          ScrollController(),
+          growable: true,
+        ),
+      ));
     }
 
-    _listScrollControllers.forEach((controller) {
+    _mapScrollControllers.forEach((index, controller) {
       if (_changeBarVisibility == null) {
-        _changeBarVisibility = () {
-          // ignore: invalid_use_of_protected_member
-          controller.positions.forEach((position) {
-            if (position.userScrollDirection == ScrollDirection.reverse) {
-              _isVisible.value = false;
-            }
-            // ignore: invalid_use_of_protected_member
-            if (position.userScrollDirection == ScrollDirection.forward) {
-              _isVisible.value = true;
-            }
-          });
-        };
+        _changeBarVisibility = (ScrollController scrollController) => () {
+              // ignore: invalid_use_of_protected_member
+              scrollController.positions.forEach((position) {
+                if (position.userScrollDirection == ScrollDirection.reverse) {
+                  _isVisible.value = false;
+                }
+                // ignore: invalid_use_of_protected_member
+                if (position.userScrollDirection == ScrollDirection.forward) {
+                  _isVisible.value = true;
+                }
+              });
+            };
       }
-      controller.addListener(_changeBarVisibility);
+      controller.addListener(_changeBarVisibility(controller));
     });
   }
 
   @override
   void dispose() {
     _pageController.dispose();
-    _listScrollControllers.forEach((controller) {
-      controller.removeListener(_changeBarVisibility);
+    _mapScrollControllers.forEach((index, controller) {
+      controller.removeListener(_changeBarVisibility(controller));
       controller.dispose();
     });
     super.dispose();
   }
 
   void _handleDragStart(DragStartDetails details) {
-    if (_listScrollControllers[currentIndex].hasClients &&
-        _listScrollControllers[currentIndex].position.context.storageContext !=
+    if (_mapScrollControllers[currentIndex].hasClients &&
+        _mapScrollControllers[currentIndex].position.context.storageContext !=
             null) {
-      final RenderBox renderBox = _listScrollControllers[currentIndex]
+      final RenderBox renderBox = _mapScrollControllers[currentIndex]
           .position
           .context
           .storageContext
@@ -87,7 +98,7 @@ class _ReadingPageState extends State<ReadingPage> {
       if (renderBox.paintBounds
           .shift(renderBox.localToGlobal(Offset.zero))
           .contains(details.globalPosition)) {
-        _activeScrollController = _listScrollControllers[currentIndex];
+        _activeScrollController = _mapScrollControllers[currentIndex];
         _drag = _activeScrollController.position.drag(details, _disposeDrag);
         return;
       }
@@ -99,7 +110,7 @@ class _ReadingPageState extends State<ReadingPage> {
   void _handleDragUpdate(DragUpdateDetails details) {
     var scrollDirection = _activeScrollController.position.userScrollDirection;
 
-    if (_activeScrollController == _listScrollControllers[currentIndex] &&
+    if (_activeScrollController == _mapScrollControllers[currentIndex] &&
         ((scrollDirection == ScrollDirection.reverse) &&
                 _activeScrollController.offset.roundToDouble() >=
                     _activeScrollController.position.maxScrollExtent
@@ -156,19 +167,15 @@ class _ReadingPageState extends State<ReadingPage> {
                         backgroundColor: Colors.transparent,
                         onTap: (int val) {
                           //returns tab id which is user tapped
-                          _pageController.nextPage(
-                              duration: Duration(seconds: 1),
-                              curve: Curves.easeOutSine);
+                          Get.toNamed('/index');
                         },
                         currentIndex: 0,
                         items: [
-                          FloatingNavbarItem(icon: Icons.home, title: 'Home'),
+                          FloatingNavbarItem(icon: Icons.home, title: ''),
+                          FloatingNavbarItem(icon: Icons.menu, title: ''),
                           FloatingNavbarItem(
-                              icon: Icons.explore, title: 'Explore'),
-                          FloatingNavbarItem(
-                              icon: Icons.chat_bubble_outline, title: 'Chats'),
-                          FloatingNavbarItem(
-                              icon: Icons.settings, title: 'Settings'),
+                              icon: Icons.chat_bubble_outline, title: ''),
+                          FloatingNavbarItem(icon: Icons.share, title: ''),
                         ],
                       ),
                     )
@@ -215,24 +222,33 @@ class _ReadingPageState extends State<ReadingPage> {
               itemCount: numberOfPages,
               onPageChanged: (index) {
                 setState(() {
-                  // if (currentIndex != index) {
-                  //   _listScrollControllers[index] = ScrollController()
-                  //     ..addListener(_changeBarVisibility);
+                  // if (currentIndex > index) {
+                  //   final newController = ScrollController();
+                  //   // newController.addListener(_changeBarVisibility);
+                  //   _listScrollControllers[index] = newController;
                   // }
 
-                  if (_listScrollControllers.length < numberOfPages &&
-                      currentIndex < index) {
-                    _listScrollControllers.add(
-                      ScrollController()..addListener(_changeBarVisibility),
-                    );
-                  }
+                  // if (_listScrollControllers.length < numberOfPages &&
+                  //     currentIndex < index) {
+                  //   final newController = ScrollController();
+                  //   newController
+                  //       .addListener(_changeBarVisibility(newController));
+                  //   _listScrollControllers.add(newController);
+                  // }
                   currentIndex = index;
                   // _activeScrollController = _listScrollControllers[index];
                 });
               },
               itemBuilder: (context, index) => CustomScrollView(
                     physics: NeverScrollableScrollPhysics(),
-                    controller: _listScrollControllers[index],
+                    controller: () {
+                      final newController = ScrollController();
+                      newController
+                          .addListener(_changeBarVisibility(newController));
+
+                      _mapScrollControllers[index] = newController;
+                      return newController;
+                    }(),
                     slivers: [
                       SliverAppBar(
                         actions: [],
@@ -276,7 +292,7 @@ class _ReadingPageState extends State<ReadingPage> {
                               ),
                               Gap(height: 5),
                               ZefyrView(
-                                document: NotusDocument.fromJson(content),
+                                document: NotusDocument.fromJson(zefyrContent),
                               ),
                               Gap(height: 5),
                             ],
@@ -299,553 +315,3 @@ class _ReadingPageState extends State<ReadingPage> {
         ),
       );
 }
-
-const content = [
-  {"insert": "Research App"},
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-];

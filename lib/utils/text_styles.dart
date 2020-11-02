@@ -71,4 +71,19 @@ class TetheredTextStyles {
     letterSpacing: 2,
     fontSize: sText * 6,
   );
+
+  static TextStyle indexItemHeading = GoogleFonts.montserrat(
+    color: TetheredColors.indexItemTextColor,
+    fontSize: sText * 5,
+    letterSpacing: 1.5,
+    fontWeight: FontWeight.w400,
+  );
+
+  static TextStyle indexTabTextStyle = indexItemHeading.copyWith(
+    fontSize: sText * 4,
+  );
+
+  static TextStyle indexItemDescription = TextStyle(
+    color: TetheredColors.indexItemTextColor,
+  );
 }

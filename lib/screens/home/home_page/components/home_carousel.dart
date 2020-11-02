@@ -46,7 +46,7 @@ class HomeCarousel extends StatelessWidget {
                         ),
                       )),
                   errorWidget: (context, url, error) => ImageErrorWidget(),
-                  imageUrl: 'https://picsum.photos/id/${value}/400/600',
+                  imageUrl: 'https://picsum.photos/id/$value/400/600',
                   fit: BoxFit.fitWidth,
                 ),
               ),

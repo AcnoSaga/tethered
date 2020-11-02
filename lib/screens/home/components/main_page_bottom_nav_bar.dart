@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
+import 'package:tethered/theme/tethered_icons.dart';
 
 import 'package:tethered/utils/colors.dart';
 
@@ -23,7 +24,7 @@ class MainPageBottomNavBar extends StatelessWidget {
       snakeShape: SnakeShape.indicator,
       items: [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
+          icon: Icon(TetheredIcons.home),
           backgroundColor: TetheredColors.primaryDark,
           title: Container(),
         ),
@@ -33,17 +34,17 @@ class MainPageBottomNavBar extends StatelessWidget {
           title: Container(),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.edit),
+          icon: Icon(TetheredIcons.edit),
           backgroundColor: TetheredColors.primaryDark,
           title: Container(),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.notifications),
+          icon: Icon(TetheredIcons.notifications),
           backgroundColor: TetheredColors.primaryDark,
           title: Container(),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle),
+          icon: Icon(TetheredIcons.library),
           backgroundColor: TetheredColors.primaryDark,
           title: Container(),
         ),

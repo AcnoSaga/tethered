@@ -22,7 +22,10 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         elevation: 10,
         backgroundColor: TetheredColors.primaryDark,
-        title: Text('Tethered', style: TetheredTextStyles.homeAppBarHeading),
+        title: Text(
+          'Tethered',
+          style: TetheredTextStyles.homeAppBarHeading,
+        ),
       ),
       body: SingleChildScrollView(
         child: Center(

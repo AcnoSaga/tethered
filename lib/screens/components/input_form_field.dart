@@ -7,18 +7,24 @@ class InputFormField extends StatelessWidget {
   final TextEditingController controller;
   final String Function(String) validator;
   final bool isObscure;
+  final int minLines;
+  final int maxLines;
 
-  const InputFormField(
-      {Key key,
-      this.hintText,
-      this.controller,
-      this.validator,
-      this.isObscure = false})
-      : super(key: key);
+  const InputFormField({
+    Key key,
+    this.hintText,
+    this.controller,
+    this.validator,
+    this.isObscure = false,
+    this.minLines,
+    this.maxLines,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      minLines: minLines,
+      maxLines: maxLines ?? 1,
       style: TetheredTextStyles.textField,
       cursorColor: TetheredTextStyles.textField.color,
       controller: controller,

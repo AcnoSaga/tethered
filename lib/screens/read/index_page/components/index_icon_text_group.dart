@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/utils/colors.dart';
+import 'package:tethered/utils/number_shortener.dart';
 import 'package:tethered/utils/text_styles.dart';
 
 class IndexIconTextGroup extends StatelessWidget {
@@ -19,9 +20,9 @@ class IndexIconTextGroup extends StatelessWidget {
         ),
         Gap(width: 0.5),
         Text(
-          number.toString(),
+          numberShortener(number),
           style: TetheredTextStyles.indexItemDescription,
-        ), // TODO: Shorten number with suffix (K, M, B)
+        ), 
       ],
     );
   }

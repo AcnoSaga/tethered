@@ -72,6 +72,11 @@ class TetheredTextStyles {
     fontSize: sText * 6,
   );
 
+  static TextStyle secondaryAppBarHeading = GoogleFonts.montserrat(
+    letterSpacing: 2,
+    fontSize: sText * 6,
+  );
+
   static TextStyle indexItemHeading = GoogleFonts.montserrat(
     color: TetheredColors.indexItemTextColor,
     fontSize: sText * 5,
@@ -85,5 +90,10 @@ class TetheredTextStyles {
 
   static TextStyle indexItemDescription = TextStyle(
     color: TetheredColors.indexItemTextColor,
+  );
+
+  static TextStyle subheadingText = TextStyle(
+    color: TetheredColors.textFieldText,
+    fontWeight: FontWeight.w200,
   );
 }

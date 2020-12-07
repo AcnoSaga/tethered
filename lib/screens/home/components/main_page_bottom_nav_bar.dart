@@ -36,17 +36,14 @@ class MainPageBottomNavBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(TetheredIcons.edit),
           backgroundColor: TetheredColors.primaryDark,
-          title: Container(),
         ),
         BottomNavigationBarItem(
           icon: Icon(TetheredIcons.notifications),
           backgroundColor: TetheredColors.primaryDark,
-          title: Container(),
         ),
         BottomNavigationBarItem(
           icon: Icon(TetheredIcons.library),
           backgroundColor: TetheredColors.primaryDark,
-          title: Container(),
         ),
       ],
     );

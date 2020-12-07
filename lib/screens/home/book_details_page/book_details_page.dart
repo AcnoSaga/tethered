@@ -16,7 +16,7 @@ import 'package:tethered/utils/colors.dart';
 import 'package:tethered/utils/enums/resource_types.dart';
 import 'package:tethered/utils/text_styles.dart';
 
-import 'components/book_details_tag.dart';
+import '../../components/widgets/book_details_tag.dart';
 
 class BookDetailPage extends StatefulWidget {
   final List<String> urls;

@@ -10,6 +10,7 @@ import 'package:tethered/screens/main_page.dart';
 import 'package:tethered/screens/read/index_page/index_page.dart';
 import 'package:tethered/screens/read/reading_page.dart';
 import 'package:tethered/screens/welcome_screen.dart';
+import 'package:tethered/screens/write/new_story_page/new_story_page.dart';
 import 'package:tethered/services/authetication_service.dart';
 
 class Routes {
@@ -55,6 +56,11 @@ class Routes {
       GetPage(
         name: '/index',
         page: () => IndexPage(),
+        transition: Transition.downToUp,
+      ),
+      GetPage(
+        name: '/new-story',
+        page: () => NewStoryPage(),
         transition: Transition.downToUp,
       ),
     ];

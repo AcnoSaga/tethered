@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tethered/screens/read/index_page/components/index_item.dart';
+import 'package:tethered/screens/read/index_page/components/create_new_tether_container.dart';
+import 'package:tethered/screens/write/write_page/components/draft_item.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
 import 'package:tethered/utils/text_styles.dart';
 
-import 'components/create_new_tether_container.dart';
-
-class IndexPage extends StatelessWidget {
+class WritePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -14,8 +13,8 @@ class IndexPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'Tethered',
-            style: TetheredTextStyles.homeAppBarHeading,
+            'Write',
+            style: TetheredTextStyles.secondaryAppBarHeading,
           ),
           centerTitle: true,
           backgroundColor: TetheredColors.textFieldBackground,
@@ -24,13 +23,13 @@ class IndexPage extends StatelessWidget {
             tabs: [
               Tab(
                 child: Text(
-                  'ENTRIES',
+                  'DRAFTS',
                   style: TetheredTextStyles.indexTabTextStyle,
                 ),
               ),
               Tab(
                 child: Text(
-                  'OFFICIAL',
+                  'PUBLISHED',
                   style: TetheredTextStyles.indexTabTextStyle,
                 ),
               ),
@@ -41,6 +40,8 @@ class IndexPage extends StatelessWidget {
         body: TabBarView(
           children: [
             ListView.builder(
+              shrinkWrap: true,
+              itemCount: 10,
               itemBuilder: (context, index) {
                 if (index == 0) {
                   return Padding(
@@ -49,7 +50,7 @@ class IndexPage extends StatelessWidget {
                       vertical: sx / 1.5,
                     ),
                     child: CreateNewIndexContainer(
-                      text: 'Create New Tether',
+                      text: 'Create New Story',
                     ),
                   );
                 }
@@ -58,17 +59,23 @@ class IndexPage extends StatelessWidget {
                     horizontal: sx,
                     vertical: sx / 1.5,
                   ),
-                  child: IndexItem(),
+                  child: DraftItem(
+                    published: false,
+                  ),
                 );
               },
             ),
             ListView.builder(
+              shrinkWrap: true,
+              itemCount: 20,
               itemBuilder: (context, index) => Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: sx,
                   vertical: sx / 1.5,
                 ),
-                child: IndexItem(),
+                child: DraftItem(
+                  published: true,
+                ),
               ),
             ),
           ],

@@ -116,7 +116,7 @@ class _ReadingPageState extends State<ReadingPage> {
                     _activeScrollController.position.maxScrollExtent
                         .roundToDouble() ||
             (scrollDirection == ScrollDirection.forward) &&
-                _activeScrollController.offset < 0)) {
+                _activeScrollController.offset <= 0)) {
       _activeScrollController = _pageController;
       _drag?.cancel();
       _drag = _pageController.position.drag(
@@ -126,6 +126,23 @@ class _ReadingPageState extends State<ReadingPage> {
         ),
         _disposeDrag,
       );
+
+      if (_activeScrollController == _mapScrollControllers[currentIndex]
+          // && (details.primaryDelta < 0)
+          &&
+          (_activeScrollController.position.pixels.roundToDouble() >=
+                  _activeScrollController.position.maxScrollExtent
+                      .roundToDouble() ||
+              _activeScrollController.position.pixels < 0)) {
+        _activeScrollController = _pageController;
+        _drag?.cancel();
+        _drag = _pageController.position.drag(
+            DragStartDetails(
+                globalPosition: details.globalPosition,
+                localPosition: details.localPosition),
+            _disposeDrag);
+      }
+      _drag?.update(details);
     }
     _drag?.update(details);
   }

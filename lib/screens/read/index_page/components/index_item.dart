@@ -35,15 +35,15 @@ class IndexItem extends StatelessWidget {
             Wrap(
               runAlignment: WrapAlignment.end,
               alignment: WrapAlignment.end,
-              spacing: sy * 2,
+              spacing: sy * 3,
               children: [
                 IndexIconTextGroup(
                   icon: Icons.arrow_upward_sharp,
-                  number: 1000,
+                  number: 90700,
                 ),
                 IndexIconTextGroup(
                   icon: Icons.message,
-                  number: 1000,
+                  number: 2050000,
                 ),
                 IndexIconTextGroup(
                   icon: Icons.visibility,

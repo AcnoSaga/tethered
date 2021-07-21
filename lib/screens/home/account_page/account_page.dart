@@ -77,7 +77,7 @@ class _AccountPageState extends State<AccountPage> {
                     maxRadius: sy * 15,
                     minRadius: sy * 10,
                     backgroundImage: NetworkImage(
-                      'https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-4.png',
+                      'https://images.unsplash.com/photo-1552058544-f2b08422138a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=644&q=80',
                     ),
                   ),
                   Gap(height: 2),

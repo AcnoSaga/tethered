@@ -173,7 +173,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 _formKey.currentState.validate();
               } else {
                 await pageController.animateToPage(
-                  1,
+                  2,
                   duration: Duration(milliseconds: 1500),
                   curve: Curves.easeInOutBack,
                 );

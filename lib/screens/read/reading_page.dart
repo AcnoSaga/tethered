@@ -2,15 +2,18 @@ import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.da
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_quill/models/documents/document.dart';
+// import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_quill/widgets/controller.dart';
+import 'package:flutter_quill/widgets/editor.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/screens/home/book_details_page/components/book_details_info_text.dart';
+import 'package:tethered/screens/read/content.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/data/zefyr_content.dart';
 import 'package:tethered/utils/text_styles.dart';
-import 'package:zefyr/zefyr.dart';
 
 class ReadingPage extends StatefulWidget {
   @override
@@ -23,6 +26,10 @@ class _ReadingPageState extends State<ReadingPage> {
   ScrollController _activeScrollController;
   Drag _drag;
   ValueNotifier<bool> _isVisible = ValueNotifier(true);
+  QuillController textController = QuillController(
+    document: Document.fromJson(content),
+    selection: const TextSelection.collapsed(offset: 0),
+  );
 
   Null Function() Function(ScrollController) _changeBarVisibility;
 
@@ -184,7 +191,10 @@ class _ReadingPageState extends State<ReadingPage> {
                         backgroundColor: Colors.transparent,
                         onTap: (int val) {
                           //returns tab id which is user tapped
-                          Get.toNamed('/index');
+                          if (val % 2 == 0)
+                            Get.toNamed('/index');
+                          else
+                            Get.toNamed('/comments');
                         },
                         currentIndex: 0,
                         items: [
@@ -205,119 +215,114 @@ class _ReadingPageState extends State<ReadingPage> {
 
       // bottomNavigationBar: Container(),
       // backgroundColor: TetheredColors.primaryDark,
-      body: ZefyrTheme(
-        data: ZefyrThemeData(
-          attributeTheme: AttributeTheme(
-            bold: TextStyle(
-              color: Colors.deepOrange,
-            ),
-            heading1: LineTheme(
-              textStyle: TextStyle(color: Colors.blue),
-              padding: EdgeInsets.zero,
-            ),
-          ),
-        ),
-        child: RawGestureDetector(
-          gestures: <Type, GestureRecognizerFactory>{
-            VerticalDragGestureRecognizer: GestureRecognizerFactoryWithHandlers<
-                    VerticalDragGestureRecognizer>(
-                () => VerticalDragGestureRecognizer(),
-                (VerticalDragGestureRecognizer instance) {
-              instance
-                ..onStart = _handleDragStart
-                ..onUpdate = _handleDragUpdate
-                ..onEnd = _handleDragEnd
-                ..onCancel = _handleDragCancel;
-            })
+      body: RawGestureDetector(
+        gestures: <Type, GestureRecognizerFactory>{
+          VerticalDragGestureRecognizer: GestureRecognizerFactoryWithHandlers<
+                  VerticalDragGestureRecognizer>(
+              () => VerticalDragGestureRecognizer(),
+              (VerticalDragGestureRecognizer instance) {
+            instance
+              ..onStart = _handleDragStart
+              ..onUpdate = _handleDragUpdate
+              ..onEnd = _handleDragEnd
+              ..onCancel = _handleDragCancel;
+          })
+        },
+        behavior: HitTestBehavior.opaque,
+        child: PageView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          dragStartBehavior: DragStartBehavior.down,
+          controller: _pageController,
+          scrollDirection: Axis.vertical,
+          itemCount: numberOfPages,
+          onPageChanged: (index) {
+            setState(() {
+              // if (currentIndex > index) {
+              //   final newController = ScrollController();
+              //   // newController.addListener(_changeBarVisibility);
+              //   _listScrollControllers[index] = newController;
+              // }
+
+              // if (_listScrollControllers.length < numberOfPages &&
+              //     currentIndex < index) {
+              //   final newController = ScrollController();
+              //   newController
+              //       .addListener(_changeBarVisibility(newController));
+              //   _listScrollControllers.add(newController);
+              // }
+              currentIndex = index;
+              // _activeScrollController = _listScrollControllers[index];
+            });
           },
-          behavior: HitTestBehavior.opaque,
-          child: PageView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              dragStartBehavior: DragStartBehavior.down,
-              controller: _pageController,
-              scrollDirection: Axis.vertical,
-              itemCount: numberOfPages,
-              onPageChanged: (index) {
-                setState(() {
-                  // if (currentIndex > index) {
-                  //   final newController = ScrollController();
-                  //   // newController.addListener(_changeBarVisibility);
-                  //   _listScrollControllers[index] = newController;
-                  // }
+          itemBuilder: (context, index) => CustomScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            controller: () {
+              // print(textController.document.toDelta().toJson());
+              final newController = ScrollController();
+              newController.addListener(_changeBarVisibility(newController));
 
-                  // if (_listScrollControllers.length < numberOfPages &&
-                  //     currentIndex < index) {
-                  //   final newController = ScrollController();
-                  //   newController
-                  //       .addListener(_changeBarVisibility(newController));
-                  //   _listScrollControllers.add(newController);
-                  // }
-                  currentIndex = index;
-                  // _activeScrollController = _listScrollControllers[index];
-                });
-              },
-              itemBuilder: (context, index) => CustomScrollView(
-                    physics: NeverScrollableScrollPhysics(),
-                    controller: () {
-                      final newController = ScrollController();
-                      newController
-                          .addListener(_changeBarVisibility(newController));
-
-                      _mapScrollControllers[index] = newController;
-                      return newController;
-                    }(),
-                    slivers: [
-                      SliverAppBar(
-                        actions: [],
-                        backgroundColor: TetheredColors.primaryDark,
-                        floating: true,
-                      ),
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: sy * 4),
-                          child: Column(
-                            children: [
-                              Gap(height: 5),
-                              Text(
-                                'The Story of How London Got Its Name',
-                                textAlign: TextAlign.center,
-                                style:
-                                    TetheredTextStyles.authSubHeading.copyWith(
-                                  color: TetheredColors.readingPageTitle,
-                                ),
-                              ),
-                              Gap(height: 5),
-                              Wrap(
-                                alignment: WrapAlignment.center,
-                                children: [
-                                  BookDetailsInfoText(
-                                    icon: Icons.visibility,
-                                    text: '21M views',
-                                    color: TetheredColors.readingPageInfo,
-                                  ),
-                                  BookDetailsInfoText(
-                                    icon: Icons.arrow_upward,
-                                    text: '12K upvotes',
-                                    color: TetheredColors.readingPageInfo,
-                                  ),
-                                  BookDetailsInfoText(
-                                    icon: Icons.list,
-                                    text: '21 Tethers',
-                                    color: TetheredColors.readingPageInfo,
-                                  ),
-                                ],
-                              ),
-                              Gap(height: 5),
-                              ZefyrView(
-                                document: NotusDocument.fromJson(zefyrContent),
-                              ),
-                              Gap(height: 5),
-                            ],
-                          ),
+              _mapScrollControllers[index] = newController;
+              return newController;
+            }(),
+            slivers: [
+              SliverAppBar(
+                actions: [],
+                backgroundColor: TetheredColors.primaryDark,
+                floating: true,
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: sy * 4),
+                  child: Column(
+                    children: [
+                      Gap(height: 5),
+                      Text(
+                        'The Story of How London Got Its Name',
+                        textAlign: TextAlign.center,
+                        style: TetheredTextStyles.authSubHeading.copyWith(
+                          color: TetheredColors.readingPageTitle,
                         ),
                       ),
+                      Gap(height: 5),
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        children: [
+                          BookDetailsInfoText(
+                            icon: Icons.visibility,
+                            text: '21M views',
+                            color: TetheredColors.readingPageInfo,
+                          ),
+                          BookDetailsInfoText(
+                            icon: Icons.arrow_upward,
+                            text: '12K upvotes',
+                            color: TetheredColors.readingPageInfo,
+                          ),
+                          BookDetailsInfoText(
+                            icon: Icons.list,
+                            text: '21 Tethers',
+                            color: TetheredColors.readingPageInfo,
+                          ),
+                        ],
+                      ),
+                      Gap(height: 5),
+                      QuillEditor(
+                        controller: textController,
+                        scrollController: ScrollController(),
+                        scrollable: true,
+                        focusNode: FocusNode(),
+                        autoFocus: true,
+                        readOnly: true,
+                        expands: false,
+                        padding: EdgeInsets.zero,
+                        showCursor: false,
+                      ),
+                      Gap(height: 5),
                     ],
-                  )),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

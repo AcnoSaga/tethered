@@ -9,7 +9,7 @@ class DetailPage extends StatelessWidget {
     return Scaffold(
       body: Container(
           child: Center(
-        child: FlatButton(
+        child: TextButton(
           child: Text('Back'),
           onPressed: () {
             Get.toNamed(

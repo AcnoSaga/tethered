@@ -11,8 +11,12 @@ class ProceedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
-      elevation: 5,
+    return ElevatedButton(
+      style: ButtonStyle(
+        elevation: MaterialStateProperty.all<double>(5.0),
+        backgroundColor:
+            MaterialStateProperty.all<Color>(TetheredColors.primaryBlue),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -26,7 +30,6 @@ class ProceedButton extends StatelessWidget {
         ],
       ),
       onPressed: onPressed,
-      color: TetheredColors.primaryBlue,
     );
   }
 }

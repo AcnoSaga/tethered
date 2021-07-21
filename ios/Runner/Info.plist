@@ -2,8 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Permission required to allow picking images in the story editor.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Permission required to allow picking images in the story editor.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Permission required to allow picking images in the story editor.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Permission required to allow picking images in the story editor.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

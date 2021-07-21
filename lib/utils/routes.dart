@@ -6,10 +6,13 @@ import 'package:tethered/injection/injection.dart';
 import 'package:tethered/screens/auth/forgot_password/forgot_password.dart';
 import 'package:tethered/screens/auth/login/login_screen.dart';
 import 'package:tethered/screens/auth/signup/signup_screen.dart';
+import 'package:tethered/screens/home/account_page/account_page.dart';
 import 'package:tethered/screens/main_page.dart';
+import 'package:tethered/screens/read/comments_page/comments_page.dart';
 import 'package:tethered/screens/read/index_page/index_page.dart';
 import 'package:tethered/screens/read/reading_page.dart';
 import 'package:tethered/screens/welcome_screen.dart';
+import 'package:tethered/screens/write/edit_page/edit_page.dart';
 import 'package:tethered/screens/write/new_story_page/new_story_page.dart';
 import 'package:tethered/services/authetication_service.dart';
 
@@ -57,6 +60,18 @@ class Routes {
         name: '/index',
         page: () => IndexPage(),
         transition: Transition.downToUp,
+      ),
+      GetPage(
+        name: '/comments',
+        page: () => CommentsPage(),
+      ),
+      GetPage(
+        name: '/edit',
+        page: () => EditPage(),
+      ),
+      GetPage(
+        name: '/account',
+        page: () => AccountPage(),
       ),
       GetPage(
         name: '/new-story',

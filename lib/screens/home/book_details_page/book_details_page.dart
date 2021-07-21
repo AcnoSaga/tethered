@@ -9,11 +9,9 @@ import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/screens/components/image_error_widget.dart';
 import 'package:tethered/screens/components/proceed_button.dart';
 import 'package:tethered/screens/home/book_details_page/components/book_details_info_text.dart';
-import 'package:tethered/screens/home/home_page/components/book_row.dart';
 
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/enums/resource_types.dart';
 import 'package:tethered/utils/text_styles.dart';
 
 import '../../components/widgets/book_details_tag.dart';
@@ -195,16 +193,17 @@ class _BookDetailPageState extends State<BookDetailPage> {
                         onPressed: () => Get.toNamed('/read'),
                       ),
                     ),
-                    Gap(height: 4),
-                    BookRow(
-                      title: 'More like this',
-                      resourceType: ResourceTypes.genre,
-                      titlePadding: EdgeInsets.symmetric(
-                        horizontal: sy * 5,
-                        vertical: sx * 2,
-                      ),
-                    ),
-                    Gap(height: 4),
+                    Gap(height: 8),
+                    // Gap(height: 4),
+                    // BookRow(
+                    //   title: 'More like this',
+                    //   resourceType: ResourceTypes.genre,
+                    //   titlePadding: EdgeInsets.symmetric(
+                    //     horizontal: sy * 5,
+                    //     vertical: sx * 2,
+                    //   ),
+                    // ),
+                    // Gap(height: 4),
                   ],
                 ),
               )

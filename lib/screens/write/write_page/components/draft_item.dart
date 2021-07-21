@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/screens/components/image_error_widget.dart';
@@ -18,6 +19,7 @@ class DraftItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: published ? null : () => Get.toNamed('/edit'),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: sy * 2,
@@ -44,16 +46,18 @@ class DraftItem extends StatelessWidget {
                   child: CachedNetworkImage(
                     // width: 300,
                     placeholder: (context, url) => Shimmer.fromColors(
-                        baseColor: Colors.grey[500],
-                        highlightColor: Colors.grey[400],
-                        child: Center(
-                          child: Container(
-                              color: Colors.white,
-                              child: LimitedBox(
-                                maxHeight: sx * 20,
-                                child: SizedBox.expand(),
-                              )),
-                        )),
+                      baseColor: Colors.grey[500],
+                      highlightColor: Colors.grey[400],
+                      child: Center(
+                        child: Container(
+                          color: Colors.white,
+                          child: LimitedBox(
+                            maxHeight: sx * 20,
+                            child: SizedBox.expand(),
+                          ),
+                        ),
+                      ),
+                    ),
                     errorWidget: (context, url, error) => ImageErrorWidget(),
                     fit: BoxFit.fill,
                     imageUrl: 'https://picsum.photos/seed/picsum/200/300',
@@ -73,9 +77,29 @@ class DraftItem extends StatelessWidget {
                           style: TetheredTextStyles.indexItemHeading),
                       Align(
                         alignment: Alignment.centerRight,
-                        child: Icon(
-                          Icons.more_horiz,
-                          color: TetheredColors.indexItemTextColor,
+                        child: GestureDetector(
+                          onTap: () => showModalBottomSheet(
+                              context: context,
+                              builder: (context) => BottomSheet(
+                                    builder: (BuildContext context) => ListView(
+                                      shrinkWrap: true,
+                                      children: [
+                                        ListTile(
+                                          title: Text('Delete'),
+                                          leading: Icon(Icons.delete),
+                                        ),
+                                        ListTile(
+                                          title: Text('Edit'),
+                                          leading: Icon(Icons.edit),
+                                        ),
+                                      ],
+                                    ),
+                                    onClosing: () {},
+                                  )),
+                          child: Icon(
+                            Icons.more_horiz,
+                            color: TetheredColors.indexItemTextColor,
+                          ),
                         ),
                       ),
                     ],

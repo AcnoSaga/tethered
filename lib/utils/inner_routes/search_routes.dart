@@ -1,14 +1,17 @@
 import 'package:get/route_manager.dart';
-import 'package:tethered/screens/home/home_page/demo_page.dart';
+import 'package:tethered/screens/search/explore_page.dart';
+import 'package:tethered/screens/search/search_page/search_page.dart';
 
 class SearchRoutes {
-  static const String detail = '/details';
+  static const String searchPage = '/search';
 }
 
 final searchRouteBuilder = {
-  SearchRoutes.detail: (args) => GetPageRoute(page: () => DemoPage()),
+  SearchRoutes.searchPage: (args) => GetPageRoute(
+        page: () => SearchPage(),
+      ),
 };
 
 final searchInitialRoute = (args) => GetPageRoute(
-      page: () => DemoPage(),
+      page: () => ExplorePage(),
     );

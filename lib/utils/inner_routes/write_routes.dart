@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:tethered/screens/home/home_page/demo_page.dart';
+import 'package:tethered/screens/write/write_page/write_page.dart';
 
 class WriteRoutes {
   static const String detail = '/detail';
@@ -11,5 +11,5 @@ final writeRouteBuilder = {
 };
 
 final writeInitialRoute = (args) => GetPageRoute(
-      page: () => DemoPage(),
+      page: () => WritePage(),
     );

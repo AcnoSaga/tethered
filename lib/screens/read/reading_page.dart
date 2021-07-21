@@ -2,14 +2,18 @@ import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.da
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_quill/models/documents/document.dart';
+// import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_quill/widgets/controller.dart';
+import 'package:flutter_quill/widgets/editor.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/screens/home/book_details_page/components/book_details_info_text.dart';
+import 'package:tethered/screens/read/content.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
 import 'package:tethered/utils/text_styles.dart';
-import 'package:zefyr/zefyr.dart';
 
 class ReadingPage extends StatefulWidget {
   @override
@@ -18,12 +22,16 @@ class ReadingPage extends StatefulWidget {
 
 class _ReadingPageState extends State<ReadingPage> {
   PageController _pageController;
-  List<ScrollController> _listScrollControllers;
+  RxMap<int, ScrollController> _mapScrollControllers;
   ScrollController _activeScrollController;
   Drag _drag;
   ValueNotifier<bool> _isVisible = ValueNotifier(true);
+  QuillController textController = QuillController(
+    document: Document.fromJson(content),
+    selection: const TextSelection.collapsed(offset: 0),
+  );
 
-  Function _changeBarVisibility;
+  Null Function() Function(ScrollController) _changeBarVisibility;
 
   int numberOfPages = 15;
   int currentIndex = 0;
@@ -31,55 +39,65 @@ class _ReadingPageState extends State<ReadingPage> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: 0);
+    _pageController = PageController(
+      initialPage: 0,
+      viewportFraction: 1,
+      keepPage: true,
+    );
     if (numberOfPages <= 3) {
-      _listScrollControllers = List.filled(
-        numberOfPages,
-        ScrollController(),
-        growable: true,
-      );
+      _mapScrollControllers = RxMap(Map<int, ScrollController>.fromIterables(
+        List.generate(numberOfPages, (index) => index),
+        List<ScrollController>.filled(
+          numberOfPages,
+          ScrollController(),
+          growable: true,
+        ),
+      ));
     } else {
-      _listScrollControllers = List.filled(
-        3,
-        ScrollController(),
-        growable: true,
-      );
+      _mapScrollControllers = RxMap(Map<int, ScrollController>.fromIterables(
+        [0, 1, 2],
+        List<ScrollController>.filled(
+          3,
+          ScrollController(),
+          growable: true,
+        ),
+      ));
     }
 
-    _listScrollControllers.forEach((controller) {
+    _mapScrollControllers.forEach((index, controller) {
       if (_changeBarVisibility == null) {
-        _changeBarVisibility = () {
-          // ignore: invalid_use_of_protected_member
-          controller.positions.forEach((position) {
-            if (position.userScrollDirection == ScrollDirection.reverse) {
-              _isVisible.value = false;
-            }
-            // ignore: invalid_use_of_protected_member
-            if (position.userScrollDirection == ScrollDirection.forward) {
-              _isVisible.value = true;
-            }
-          });
-        };
+        _changeBarVisibility = (ScrollController scrollController) => () {
+              // ignore: invalid_use_of_protected_member
+              scrollController.positions.forEach((position) {
+                if (position.userScrollDirection == ScrollDirection.reverse) {
+                  _isVisible.value = false;
+                }
+                // ignore: invalid_use_of_protected_member
+                if (position.userScrollDirection == ScrollDirection.forward) {
+                  _isVisible.value = true;
+                }
+              });
+            };
       }
-      controller.addListener(_changeBarVisibility);
+      controller.addListener(_changeBarVisibility(controller));
     });
   }
 
   @override
   void dispose() {
     _pageController.dispose();
-    _listScrollControllers.forEach((controller) {
-      controller.removeListener(_changeBarVisibility);
+    _mapScrollControllers.forEach((index, controller) {
+      controller.removeListener(_changeBarVisibility(controller));
       controller.dispose();
     });
     super.dispose();
   }
 
   void _handleDragStart(DragStartDetails details) {
-    if (_listScrollControllers[currentIndex].hasClients &&
-        _listScrollControllers[currentIndex].position.context.storageContext !=
+    if (_mapScrollControllers[currentIndex].hasClients &&
+        _mapScrollControllers[currentIndex].position.context.storageContext !=
             null) {
-      final RenderBox renderBox = _listScrollControllers[currentIndex]
+      final RenderBox renderBox = _mapScrollControllers[currentIndex]
           .position
           .context
           .storageContext
@@ -87,7 +105,7 @@ class _ReadingPageState extends State<ReadingPage> {
       if (renderBox.paintBounds
           .shift(renderBox.localToGlobal(Offset.zero))
           .contains(details.globalPosition)) {
-        _activeScrollController = _listScrollControllers[currentIndex];
+        _activeScrollController = _mapScrollControllers[currentIndex];
         _drag = _activeScrollController.position.drag(details, _disposeDrag);
         return;
       }
@@ -99,13 +117,13 @@ class _ReadingPageState extends State<ReadingPage> {
   void _handleDragUpdate(DragUpdateDetails details) {
     var scrollDirection = _activeScrollController.position.userScrollDirection;
 
-    if (_activeScrollController == _listScrollControllers[currentIndex] &&
+    if (_activeScrollController == _mapScrollControllers[currentIndex] &&
         ((scrollDirection == ScrollDirection.reverse) &&
                 _activeScrollController.offset.roundToDouble() >=
                     _activeScrollController.position.maxScrollExtent
                         .roundToDouble() ||
             (scrollDirection == ScrollDirection.forward) &&
-                _activeScrollController.offset < 0)) {
+                _activeScrollController.offset <= 0)) {
       _activeScrollController = _pageController;
       _drag?.cancel();
       _drag = _pageController.position.drag(
@@ -115,6 +133,23 @@ class _ReadingPageState extends State<ReadingPage> {
         ),
         _disposeDrag,
       );
+
+      if (_activeScrollController == _mapScrollControllers[currentIndex]
+          // && (details.primaryDelta < 0)
+          &&
+          (_activeScrollController.position.pixels.roundToDouble() >=
+                  _activeScrollController.position.maxScrollExtent
+                      .roundToDouble() ||
+              _activeScrollController.position.pixels < 0)) {
+        _activeScrollController = _pageController;
+        _drag?.cancel();
+        _drag = _pageController.position.drag(
+            DragStartDetails(
+                globalPosition: details.globalPosition,
+                localPosition: details.localPosition),
+            _disposeDrag);
+      }
+      _drag?.update(details);
     }
     _drag?.update(details);
   }
@@ -156,19 +191,18 @@ class _ReadingPageState extends State<ReadingPage> {
                         backgroundColor: Colors.transparent,
                         onTap: (int val) {
                           //returns tab id which is user tapped
-                          _pageController.nextPage(
-                              duration: Duration(seconds: 1),
-                              curve: Curves.easeOutSine);
+                          if (val % 2 == 0)
+                            Get.toNamed('/index');
+                          else
+                            Get.toNamed('/comments');
                         },
                         currentIndex: 0,
                         items: [
-                          FloatingNavbarItem(icon: Icons.home, title: 'Home'),
+                          FloatingNavbarItem(icon: Icons.home, title: ''),
+                          FloatingNavbarItem(icon: Icons.menu, title: ''),
                           FloatingNavbarItem(
-                              icon: Icons.explore, title: 'Explore'),
-                          FloatingNavbarItem(
-                              icon: Icons.chat_bubble_outline, title: 'Chats'),
-                          FloatingNavbarItem(
-                              icon: Icons.settings, title: 'Settings'),
+                              icon: Icons.chat_bubble_outline, title: ''),
+                          FloatingNavbarItem(icon: Icons.share, title: ''),
                         ],
                       ),
                     )
@@ -181,110 +215,114 @@ class _ReadingPageState extends State<ReadingPage> {
 
       // bottomNavigationBar: Container(),
       // backgroundColor: TetheredColors.primaryDark,
-      body: ZefyrTheme(
-        data: ZefyrThemeData(
-          attributeTheme: AttributeTheme(
-            bold: TextStyle(
-              color: Colors.deepOrange,
-            ),
-            heading1: LineTheme(
-              textStyle: TextStyle(color: Colors.blue),
-              padding: EdgeInsets.zero,
-            ),
-          ),
-        ),
-        child: RawGestureDetector(
-          gestures: <Type, GestureRecognizerFactory>{
-            VerticalDragGestureRecognizer: GestureRecognizerFactoryWithHandlers<
-                    VerticalDragGestureRecognizer>(
-                () => VerticalDragGestureRecognizer(),
-                (VerticalDragGestureRecognizer instance) {
-              instance
-                ..onStart = _handleDragStart
-                ..onUpdate = _handleDragUpdate
-                ..onEnd = _handleDragEnd
-                ..onCancel = _handleDragCancel;
-            })
-          },
-          behavior: HitTestBehavior.opaque,
-          child: PageView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              dragStartBehavior: DragStartBehavior.down,
-              controller: _pageController,
-              scrollDirection: Axis.vertical,
-              itemCount: numberOfPages,
-              onPageChanged: (index) {
-                setState(() {
-                  // if (currentIndex != index) {
-                  //   _listScrollControllers[index] = ScrollController()
-                  //     ..addListener(_changeBarVisibility);
-                  // }
+      body: RawGestureDetector(
+        gestures: <Type, GestureRecognizerFactory>{
+          VerticalDragGestureRecognizer: GestureRecognizerFactoryWithHandlers<
+                  VerticalDragGestureRecognizer>(
+              () => VerticalDragGestureRecognizer(),
+              (VerticalDragGestureRecognizer instance) {
+            instance
+              ..onStart = _handleDragStart
+              ..onUpdate = _handleDragUpdate
+              ..onEnd = _handleDragEnd
+              ..onCancel = _handleDragCancel;
+          })
+        },
+        behavior: HitTestBehavior.opaque,
+        child: PageView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          dragStartBehavior: DragStartBehavior.down,
+          controller: _pageController,
+          scrollDirection: Axis.vertical,
+          itemCount: numberOfPages,
+          onPageChanged: (index) {
+            setState(() {
+              // if (currentIndex > index) {
+              //   final newController = ScrollController();
+              //   // newController.addListener(_changeBarVisibility);
+              //   _listScrollControllers[index] = newController;
+              // }
 
-                  if (_listScrollControllers.length < numberOfPages &&
-                      currentIndex < index) {
-                    _listScrollControllers.add(
-                      ScrollController()..addListener(_changeBarVisibility),
-                    );
-                  }
-                  currentIndex = index;
-                  // _activeScrollController = _listScrollControllers[index];
-                });
-              },
-              itemBuilder: (context, index) => CustomScrollView(
-                    physics: NeverScrollableScrollPhysics(),
-                    controller: _listScrollControllers[index],
-                    slivers: [
-                      SliverAppBar(
-                        actions: [],
-                        backgroundColor: TetheredColors.primaryDark,
-                        floating: true,
-                      ),
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: sy * 4),
-                          child: Column(
-                            children: [
-                              Gap(height: 5),
-                              Text(
-                                'The Story of How London Got Its Name',
-                                textAlign: TextAlign.center,
-                                style:
-                                    TetheredTextStyles.authSubHeading.copyWith(
-                                  color: TetheredColors.readingPageTitle,
-                                ),
-                              ),
-                              Gap(height: 5),
-                              Wrap(
-                                alignment: WrapAlignment.center,
-                                children: [
-                                  BookDetailsInfoText(
-                                    icon: Icons.visibility,
-                                    text: '21M views',
-                                    color: TetheredColors.readingPageInfo,
-                                  ),
-                                  BookDetailsInfoText(
-                                    icon: Icons.arrow_upward,
-                                    text: '12K upvotes',
-                                    color: TetheredColors.readingPageInfo,
-                                  ),
-                                  BookDetailsInfoText(
-                                    icon: Icons.list,
-                                    text: '21 Tethers',
-                                    color: TetheredColors.readingPageInfo,
-                                  ),
-                                ],
-                              ),
-                              Gap(height: 5),
-                              ZefyrView(
-                                document: NotusDocument.fromJson(content),
-                              ),
-                              Gap(height: 5),
-                            ],
-                          ),
+              // if (_listScrollControllers.length < numberOfPages &&
+              //     currentIndex < index) {
+              //   final newController = ScrollController();
+              //   newController
+              //       .addListener(_changeBarVisibility(newController));
+              //   _listScrollControllers.add(newController);
+              // }
+              currentIndex = index;
+              // _activeScrollController = _listScrollControllers[index];
+            });
+          },
+          itemBuilder: (context, index) => CustomScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            controller: () {
+              // print(textController.document.toDelta().toJson());
+              final newController = ScrollController();
+              newController.addListener(_changeBarVisibility(newController));
+
+              _mapScrollControllers[index] = newController;
+              return newController;
+            }(),
+            slivers: [
+              SliverAppBar(
+                actions: [],
+                backgroundColor: TetheredColors.primaryDark,
+                floating: true,
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: sy * 4),
+                  child: Column(
+                    children: [
+                      Gap(height: 5),
+                      Text(
+                        'The Story of How London Got Its Name',
+                        textAlign: TextAlign.center,
+                        style: TetheredTextStyles.authSubHeading.copyWith(
+                          color: TetheredColors.readingPageTitle,
                         ),
                       ),
+                      Gap(height: 5),
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        children: [
+                          BookDetailsInfoText(
+                            icon: Icons.visibility,
+                            text: '21M views',
+                            color: TetheredColors.readingPageInfo,
+                          ),
+                          BookDetailsInfoText(
+                            icon: Icons.arrow_upward,
+                            text: '12K upvotes',
+                            color: TetheredColors.readingPageInfo,
+                          ),
+                          BookDetailsInfoText(
+                            icon: Icons.list,
+                            text: '21 Tethers',
+                            color: TetheredColors.readingPageInfo,
+                          ),
+                        ],
+                      ),
+                      Gap(height: 5),
+                      QuillEditor(
+                        controller: textController,
+                        scrollController: ScrollController(),
+                        scrollable: true,
+                        focusNode: FocusNode(),
+                        autoFocus: true,
+                        readOnly: true,
+                        expands: false,
+                        padding: EdgeInsets.zero,
+                        showCursor: false,
+                      ),
+                      Gap(height: 5),
                     ],
-                  )),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -299,553 +337,3 @@ class _ReadingPageState extends State<ReadingPage> {
         ),
       );
 }
-
-const content = [
-  {"insert": "Research App"},
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {
-    "insert": "\n",
-    "attributes": {"heading": 1}
-  },
-  {"insert": "MS ToDo"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Task"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "MinimaList"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Taskify"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Keep"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Google Calendar"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-  {"insert": "Asana"},
-  {
-    "insert": "\n",
-    "attributes": {"block": "ul"}
-  },
-];

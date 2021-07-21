@@ -11,7 +11,10 @@ class TetheredColors {
   static const Color textFieldText = Color(0xFFCACACA);
   static const Color bottomNavBarIconInactive = Colors.white;
   static const Color bottomNavBarIconActive = primaryBlue;
-  static const Color bookDetailText = Colors.white;
+  static const Color bookDetailText = textColor;
+  static const Color indexTabBarIndicatorColor = Colors.white;
+  static const Color indexItemTextColor = Color(0xFFEEEEEE);
   static const Color readingPageTitle = Colors.black;
   static const Color readingPageInfo = Colors.black;
+  static const Color textColor = Colors.white;
 }

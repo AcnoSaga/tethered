@@ -1,4 +1,5 @@
 import 'package:get/route_manager.dart';
+import 'package:tethered/screens/home/account_page/account_page.dart';
 import 'package:tethered/screens/home/book_details_page/book_details_page.dart';
 import 'package:tethered/screens/home/genre_page/genre_page.dart';
 import 'package:tethered/screens/home/hashtag_page/hashtag_page.dart';
@@ -8,6 +9,7 @@ class HomeRoutes {
   static const String bookDetails = '/book-details';
   static const String hashtagPage = '/hashtag-page';
   static const String genrePage = '/genre-page';
+  static const String accountPage = '/account-page';
 }
 
 final homeRouteBuilder = {
@@ -26,6 +28,10 @@ final homeRouteBuilder = {
         page: () => GenrePage(
           genre: args["genre"],
         ),
+      ),
+  HomeRoutes.accountPage: (args) => GetPageRoute(
+    // Also present in global routes
+        page: () => AccountPage(),
       ),
 };
 

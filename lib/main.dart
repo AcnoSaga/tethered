@@ -7,13 +7,15 @@ import 'package:get/route_manager.dart';
 import 'package:tethered/injection/injection.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/routes.dart';
+import 'riverpod/home_data.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   configureInit();
   HttpOverrides.global = new MyHttpOverrides();
-  runApp(TetheredApp());
+  runApp(ProviderScope(child: Riverpod_Home())); //changed the Homepage
 }
 
 class TetheredApp extends StatelessWidget {

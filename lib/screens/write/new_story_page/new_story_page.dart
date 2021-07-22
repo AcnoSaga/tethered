@@ -10,6 +10,7 @@ import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
 import 'package:tethered/utils/text_styles.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 class NewStoryPage extends StatefulWidget {
   @override
@@ -104,14 +105,17 @@ class _NewStoryPageState extends State<NewStoryPage> {
                     final imageSource = await _getImageSource();
                     if (imageSource == null) return;
 
-                    final PickedFile image = await _picker.getImage(
+                    XFile image = await _picker.pickImage(
                       source: imageSource,
-                      maxWidth: 1800,
-                      maxHeight: 1800,
                     );
+
                     if (image != null) {
+                      File croppedFile = await ImageCropper.cropImage(
+                        sourcePath: image.path,
+                        aspectRatio: CropAspectRatio(ratioX: 2, ratioY: 3),
+                      );
                       setState(() {
-                        imageFile = File(image.path);
+                        imageFile = File(croppedFile.path);
                       });
                     }
                   },

@@ -75,33 +75,35 @@ class DraftItem extends StatelessWidget {
                     children: [
                       Text('Jules and Vega',
                           style: TetheredTextStyles.indexItemHeading),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: GestureDetector(
-                          onTap: () => showModalBottomSheet(
+                      if (!published)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: GestureDetector(
+                            onTap: () => showModalBottomSheet(
                               context: context,
                               builder: (context) => BottomSheet(
-                                    builder: (BuildContext context) => ListView(
-                                      shrinkWrap: true,
-                                      children: [
-                                        ListTile(
-                                          title: Text('Delete'),
-                                          leading: Icon(Icons.delete),
-                                        ),
-                                        ListTile(
-                                          title: Text('Edit'),
-                                          leading: Icon(Icons.edit),
-                                        ),
-                                      ],
+                                builder: (BuildContext context) => ListView(
+                                  shrinkWrap: true,
+                                  children: [
+                                    ListTile(
+                                      title: Text('Delete'),
+                                      leading: Icon(Icons.delete),
                                     ),
-                                    onClosing: () {},
-                                  )),
-                          child: Icon(
-                            Icons.more_horiz,
-                            color: TetheredColors.indexItemTextColor,
+                                    ListTile(
+                                      title: Text('Edit'),
+                                      leading: Icon(Icons.edit),
+                                    ),
+                                  ],
+                                ),
+                                onClosing: () {},
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.more_horiz,
+                              color: TetheredColors.indexItemTextColor,
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                   Gap(height: 1.5),

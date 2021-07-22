@@ -114,9 +114,11 @@ class _NewStoryPageState extends State<NewStoryPage> {
                         sourcePath: image.path,
                         aspectRatio: CropAspectRatio(ratioX: 2, ratioY: 3),
                       );
-                      setState(() {
-                        imageFile = File(croppedFile.path);
-                      });
+                      if (croppedFile != null) {
+                        setState(() {
+                          imageFile = File(croppedFile.path);
+                        });
+                      }
                     }
                   },
                 ),

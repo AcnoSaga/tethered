@@ -88,6 +88,10 @@ class DraftItem extends StatelessWidget {
                                     ListTile(
                                       title: Text('Delete'),
                                       leading: Icon(Icons.delete),
+                                      onTap: () async {
+                                        await _deleteDialog();
+                                        Get.back();
+                                      },
                                     ),
                                     ListTile(
                                       title: Text('Edit'),
@@ -142,6 +146,38 @@ class DraftItem extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Future _deleteDialog() {
+    return Get.dialog(
+      AlertDialog(
+        title: Text('Are you sure you want to delete this draft?'),
+        actions: [
+          TextButton.icon(
+            onPressed: Get.back,
+            icon: Icon(
+              Icons.check_circle,
+              color: TetheredColors.acceptNegativeColor,
+            ),
+            label: Text(
+              'Yes',
+              style: TetheredTextStyles.acceptNegativeText,
+            ),
+          ),
+          TextButton.icon(
+            onPressed: Get.back,
+            icon: Icon(
+              Icons.cancel,
+              color: TetheredColors.rejectNegativeColor,
+            ),
+            label: Text(
+              'No',
+              style: TetheredTextStyles.rejectNegativeText,
+            ),
+          ),
+        ],
       ),
     );
   }

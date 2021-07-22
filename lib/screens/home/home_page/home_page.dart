@@ -16,6 +16,7 @@ const List<String> names = [
   "Horror",
   "Romance",
   "Comedy",
+  "Religion",
 ];
 
 class HomePage extends StatelessWidget {

@@ -17,4 +17,8 @@ class TetheredColors {
   static const Color readingPageTitle = Colors.black;
   static const Color readingPageInfo = Colors.black;
   static const Color textColor = Colors.white;
+  static const Color acceptColor = Colors.blue;
+  static const Color rejectColor = Colors.red;
+  static const Color acceptNegativeColor = rejectColor;
+  static const Color rejectNegativeColor = acceptColor;
 }

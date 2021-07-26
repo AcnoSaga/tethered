@@ -96,4 +96,12 @@ class TetheredTextStyles {
     color: TetheredColors.textFieldText,
     fontWeight: FontWeight.w200,
   );
+
+  static TextStyle acceptNegativeText = TextStyle(
+    color: TetheredColors.acceptNegativeColor,
+  );
+
+  static TextStyle rejectNegativeText = TextStyle(
+    color: TetheredColors.rejectNegativeColor,
+  );
 }

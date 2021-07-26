@@ -14,8 +14,11 @@ import 'package:tethered/utils/text_styles.dart';
 
 class DraftItem extends StatelessWidget {
   final bool published;
+  final DocumentType documentType;
 
-  const DraftItem({Key key, this.published}) : super(key: key);
+  const DraftItem(
+      {Key key, this.published, this.documentType = DocumentType.tether})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -32,14 +35,13 @@ class DraftItem extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              // child: Container(),
               child: Badge(
                 badgeContent: Icon(
                   Icons.add,
                   color: TetheredColors.indexItemTextColor,
                 ),
                 badgeColor: TetheredColors.primaryDark,
-                showBadge: Random().nextBool(),
+                showBadge: documentType == DocumentType.tether,
                 position: BadgePosition.bottomEnd(),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
@@ -75,33 +77,17 @@ class DraftItem extends StatelessWidget {
                     children: [
                       Text('Jules and Vega',
                           style: TetheredTextStyles.indexItemHeading),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: GestureDetector(
-                          onTap: () => showModalBottomSheet(
-                              context: context,
-                              builder: (context) => BottomSheet(
-                                    builder: (BuildContext context) => ListView(
-                                      shrinkWrap: true,
-                                      children: [
-                                        ListTile(
-                                          title: Text('Delete'),
-                                          leading: Icon(Icons.delete),
-                                        ),
-                                        ListTile(
-                                          title: Text('Edit'),
-                                          leading: Icon(Icons.edit),
-                                        ),
-                                      ],
-                                    ),
-                                    onClosing: () {},
-                                  )),
-                          child: Icon(
-                            Icons.more_horiz,
-                            color: TetheredColors.indexItemTextColor,
+                      if (!published)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: GestureDetector(
+                            onTap: () => _showDeleteDialog(context),
+                            child: Icon(
+                              Icons.more_horiz,
+                              color: TetheredColors.indexItemTextColor,
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                   Gap(height: 1.5),
@@ -143,4 +129,70 @@ class DraftItem extends StatelessWidget {
       ),
     );
   }
+
+  Future _deleteDialog() async {
+    await Get.dialog(
+      AlertDialog(
+        title: Text(
+            'Are you sure you want to delete this ${documentType == DocumentType.tether ? 'draft' : 'story'}?'),
+        actions: [
+          TextButton.icon(
+            onPressed: Get.back,
+            icon: Icon(
+              Icons.check_circle,
+              color: TetheredColors.acceptNegativeColor,
+            ),
+            label: Text(
+              'Yes',
+              style: TetheredTextStyles.acceptNegativeText,
+            ),
+          ),
+          TextButton.icon(
+            onPressed: Get.back,
+            icon: Icon(
+              Icons.cancel,
+              color: TetheredColors.rejectNegativeColor,
+            ),
+            label: Text(
+              'No',
+              style: TetheredTextStyles.rejectNegativeText,
+            ),
+          ),
+        ],
+      ),
+    );
+    Get.back();
+  }
+
+  void _showDeleteDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => BottomSheet(
+        builder: (BuildContext context) => ListView(
+          shrinkWrap: true,
+          children: [
+            ListTile(
+              title: Text('Delete'),
+              leading: Icon(Icons.delete),
+              onTap: () async {
+                await _deleteDialog();
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Edit'),
+              leading: Icon(Icons.edit),
+              onTap: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+        onClosing: () {},
+      ),
+    );
+  }
+}
+
+enum DocumentType {
+  tether,
+  story,
 }

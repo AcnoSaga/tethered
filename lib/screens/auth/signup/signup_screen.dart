@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -175,7 +177,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 await pageController.animateToPage(
                   2,
                   duration: Duration(milliseconds: 1500),
-                  curve: Curves.easeInOutBack,
+                  curve:
+                      Platform.isAndroid ? Curves.easeInOutSine : Curves.easeInOutBack,
                 );
               }
             },
@@ -241,7 +244,8 @@ class _SignupScreenState extends State<SignupScreen> {
               await pageController.animateToPage(
                 0,
                 duration: Duration(milliseconds: 1500),
-                curve: Curves.easeInOutBack,
+                curve:
+                    Platform.isAndroid ? Curves.easeInOutSine : Curves.easeInOutBack,
               );
             },
           ),

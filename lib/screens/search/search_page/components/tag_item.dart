@@ -20,17 +20,17 @@ class TagItem extends StatelessWidget {
         id: tabItemsToIndex[Provider.of<TabItem>(context, listen: false)],
       ),
       leading: CircleAvatar(
-        backgroundImage: AssetImage("/images/TagIcon.png"),
+        backgroundImage: AssetImage("assets/images/TagIcon.png"),
       ),
       title: Text(
-        'jrhuman',
+        'thriller',
         style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: sText * 4,
             color: TetheredColors.textColor),
       ),
       subtitle: Text(
-        "Saad Khan",
+        "50M",
         style: TextStyle(
           fontSize: sText * 3,
           color: TetheredColors.textColor,

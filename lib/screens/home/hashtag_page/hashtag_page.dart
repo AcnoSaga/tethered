@@ -1,7 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tethered/models/hashtag.dart';
 import 'package:tethered/screens/components/book_card.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/theme/size_config.dart';
@@ -12,7 +11,7 @@ import 'package:tethered/utils/inner_routes/home_routes.dart';
 import 'package:tethered/utils/text_styles.dart';
 
 class HashtagPage extends StatefulWidget {
-  final String hashtag;
+  final Hashtag hashtag;
 
   const HashtagPage({Key key, this.hashtag}) : super(key: key);
 
@@ -21,8 +20,6 @@ class HashtagPage extends StatefulWidget {
 }
 
 class _HashtagPageState extends State<HashtagPage> {
-  int bookCount = 20;
-  List<String> urls = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,9 +38,11 @@ class _HashtagPageState extends State<HashtagPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(widget.hashtag,
-                      style: TetheredTextStyles.authHeading,
-                      textAlign: TextAlign.center),
+                  Text(
+                    widget.hashtag.name,
+                    style: TetheredTextStyles.authHeading,
+                    textAlign: TextAlign.center,
+                  ),
                   Gap(height: 2),
                 ],
               ),
@@ -54,27 +53,20 @@ class _HashtagPageState extends State<HashtagPage> {
             sliver: SliverGrid(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  Random rnd;
-                  int min = 1050;
-                  int max = 1080;
-                  rnd = new Random();
-                  int value = min + rnd.nextInt(max - min);
-                  final String url = 'https://picsum.photos/id/$value/400/600';
-                  urls.add(url);
                   return GestureDetector(
                     onTap: () => Get.toNamed(
                       HomeRoutes.bookDetails,
                       arguments: {
-                        "urls": urls,
-                        "index": urls.indexOf(url),
+                        "bookCovers": widget.hashtag.works,
+                        "index": index,
                         "title": widget.hashtag,
                       },
                       id: tabItemsToIndex[TabItem.home],
                     ),
-                    child: BookCard(url: url),
+                    child: BookCard(bookCover: widget.hashtag.works[index]),
                   );
                 },
-                childCount: bookCount,
+                childCount: widget.hashtag.works.length,
               ),
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: sy * 60,

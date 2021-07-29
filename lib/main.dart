@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/route_manager.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tethered/injection/injection.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/routes.dart';
@@ -13,7 +14,7 @@ void main() async {
   await Firebase.initializeApp();
   configureInit();
   HttpOverrides.global = new MyHttpOverrides();
-  runApp(TetheredApp());
+  runApp(ProviderScope(child: TetheredApp()));
 }
 
 class TetheredApp extends StatelessWidget {

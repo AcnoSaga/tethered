@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:tethered/models/book_cover.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/screens/components/image_error_widget.dart';
 import 'package:tethered/screens/components/proceed_button.dart';
@@ -17,10 +18,10 @@ import 'package:tethered/utils/text_styles.dart';
 import '../../components/widgets/book_details_tag.dart';
 
 class BookDetailPage extends StatefulWidget {
-  final List<String> urls;
+  final List<BookCover> bookCovers;
   final int startingIndex;
 
-  const BookDetailPage({Key key, this.urls, this.startingIndex})
+  const BookDetailPage({Key key, this.bookCovers, this.startingIndex})
       : super(key: key);
 
   @override
@@ -79,8 +80,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
                     });
                   },
                 ),
-                items: widget.urls
-                    .map((url) => Container(
+                items: widget.bookCovers
+                    .map((bookCover) => Container(
                           margin: EdgeInsets.all(sx * 2),
                           child: Material(
                             color: Colors.transparent,
@@ -104,7 +105,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                                 errorWidget: (context, url, error) =>
                                     ImageErrorWidget(),
                                 fit: BoxFit.fill,
-                                imageUrl: url,
+                                imageUrl: bookCover.imageUrl,
                               ),
                             ),
                           ),
@@ -112,105 +113,103 @@ class _BookDetailPageState extends State<BookDetailPage> {
                     .toList(),
               ),
               Gap(height: 5),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: sy * 5),
-                child: Opacity(
-                  opacity: 1 - (scrollValue * 2),
-                  child: Column(
-                    children: [
-                      Text(
-                        // 'Title $currentIndex',
-                        // 'Fatal Conclusions (Book 3, the Fatal Trilogy Series)',
-                        'Albratoss',
-                        style: TetheredTextStyles.bookDetailsHeading,
-                        textAlign: TextAlign.center,
-                      ),
-                      Gap(height: 2),
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        alignment: WrapAlignment.center,
-                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          BookDetailsInfoText(
-                            icon: Icons.visibility,
-                            text: '21M views',
-                          ),
-                          BookDetailsInfoText(
-                            icon: Icons.arrow_upward,
-                            text: '12K upvotes',
-                          ),
-                          BookDetailsInfoText(
-                            icon: Icons.list,
-                            text: '21 Tethers',
-                          ),
-                        ],
-                      ),
-                      Gap(height: 1),
-                      Text(
-                        loremIpsum,
-                        style: TetheredTextStyles.descriptionText,
-                        textAlign: TextAlign.justify,
-                        strutStyle: StrutStyle(height: 1.1),
-                        // strutStyle: StrutStyle.disabled,
-                      ),
-                      Gap(height: 3),
-                    ],
-                  ),
-                ),
-              ),
-              Opacity(
-                opacity: 1 - (scrollValue * 2),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        // shrinkWrap: true,
-                        // scrollDirection: Axis.horizontal,
-                        children: [
-                          Gap(width: 2),
-                          BookDetailsTag(label: '#horror'),
-                          Gap(width: 2),
-                          BookDetailsTag(label: '#horror'),
-                          Gap(width: 2),
-                          BookDetailsTag(label: '#action'),
-                          Gap(width: 2),
-                          BookDetailsTag(label: '#thriller'),
-                          Gap(width: 2),
-                          BookDetailsTag(label: '#romcom'),
-                          Gap(width: 2),
-                          BookDetailsTag(label: '#suspense'),
-                        ],
-                      ),
-                    ),
-                    Gap(height: 5),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: sy * 5),
-                      child: ProceedButton(
-                        text: 'Read',
-                        onPressed: () => Get.toNamed('/read'),
-                      ),
-                    ),
-                    Gap(height: 8),
-                    // Gap(height: 4),
-                    // BookRow(
-                    //   title: 'More like this',
-                    //   resourceType: ResourceTypes.genre,
-                    //   titlePadding: EdgeInsets.symmetric(
-                    //     horizontal: sy * 5,
-                    //     vertical: sx * 2,
-                    //   ),
-                    // ),
-                    // Gap(height: 4),
-                  ],
-                ),
-              )
+              _bookInfo(),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Column _bookInfo() {
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: sy * 5),
+          child: Opacity(
+            opacity: 1 - (scrollValue * 2),
+            child: Column(
+              children: [
+                Text(
+                  // 'Title $currentIndex',
+                  // 'Fatal Conclusions (Book 3, the Fatal Trilogy Series)',
+                  'Albratoss',
+                  style: TetheredTextStyles.bookDetailsHeading,
+                  textAlign: TextAlign.center,
+                ),
+                Gap(height: 2),
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  alignment: WrapAlignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    BookDetailsInfoText(
+                      icon: Icons.visibility,
+                      text: '21M views',
+                    ),
+                    BookDetailsInfoText(
+                      icon: Icons.arrow_upward,
+                      text: '12K upvotes',
+                    ),
+                    BookDetailsInfoText(
+                      icon: Icons.list,
+                      text: '21 Tethers',
+                    ),
+                  ],
+                ),
+                Gap(height: 1),
+                Text(
+                  loremIpsum,
+                  style: TetheredTextStyles.descriptionText,
+                  textAlign: TextAlign.justify,
+                  strutStyle: StrutStyle(height: 1.1),
+                  // strutStyle: StrutStyle.disabled,
+                ),
+                Gap(height: 3),
+              ],
+            ),
+          ),
+        ),
+        Opacity(
+          opacity: 1 - (scrollValue * 2),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  // shrinkWrap: true,
+                  // scrollDirection: Axis.horizontal,
+                  children: [
+                    Gap(width: 2),
+                    BookDetailsTag(label: '#horror'),
+                    Gap(width: 2),
+                    BookDetailsTag(label: '#horror'),
+                    Gap(width: 2),
+                    BookDetailsTag(label: '#action'),
+                    Gap(width: 2),
+                    BookDetailsTag(label: '#thriller'),
+                    Gap(width: 2),
+                    BookDetailsTag(label: '#romcom'),
+                    Gap(width: 2),
+                    BookDetailsTag(label: '#suspense'),
+                  ],
+                ),
+              ),
+              Gap(height: 5),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: sy * 5),
+                child: ProceedButton(
+                  text: 'Read',
+                  onPressed: () => Get.toNamed('/read'),
+                ),
+              ),
+              Gap(height: 8),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

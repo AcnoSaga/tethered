@@ -1,15 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:tethered/models/book_cover.dart';
 
 import 'image_error_widget.dart';
 
 class BookCard extends StatelessWidget {
   final itemBorderRadius = BorderRadius.circular(10);
-  final String url;
+  final BookCover bookCover;
 
-  BookCard({Key key, this.url}) : super(key: key);
-  
+  BookCard({Key key, this.bookCover}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -31,7 +32,7 @@ class BookCard extends StatelessWidget {
                 ),
               )),
           errorWidget: (context, url, error) => ImageErrorWidget(),
-          imageUrl: url,
+          imageUrl: bookCover.imageUrl,
           fit: BoxFit.fill,
         ),
       ),

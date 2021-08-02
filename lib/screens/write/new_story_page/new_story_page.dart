@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/screens/components/input_form_field.dart';
 import 'package:tethered/screens/components/proceed_button.dart';
@@ -6,8 +9,19 @@ import 'package:tethered/screens/write/new_story_page/components/genre_dropdown_
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
 import 'package:tethered/utils/text_styles.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 
-class NewStoryPage extends StatelessWidget {
+class NewStoryPage extends StatefulWidget {
+  @override
+  _NewStoryPageState createState() => _NewStoryPageState();
+}
+
+class _NewStoryPageState extends State<NewStoryPage> {
+  final ImagePicker _picker = ImagePicker();
+  bool isMature = false;
+  File imageFile;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,8 +79,10 @@ class NewStoryPage extends StatelessWidget {
                       style: TetheredTextStyles.bookDetailsHeading,
                     ),
                     Switch.adaptive(
-                      value: true,
-                      onChanged: (value) {},
+                      value: isMature,
+                      onChanged: (value) => setState(
+                        () => isMature = value,
+                      ),
                     ),
                   ],
                 ),
@@ -81,9 +97,30 @@ class NewStoryPage extends StatelessWidget {
                   style: TetheredTextStyles.subheadingText,
                 ),
                 Gap(height: 2),
+                imageFile == null ? Container() : Image.file(imageFile),
+                imageFile == null ? Container() : Gap(height: 3),
                 ProceedButton(
                   text: 'Select Image',
-                  onPressed: () {},
+                  onPressed: () async {
+                    final imageSource = await _getImageSource();
+                    if (imageSource == null) return;
+
+                    XFile image = await _picker.pickImage(
+                      source: imageSource,
+                    );
+
+                    if (image != null) {
+                      File croppedFile = await ImageCropper.cropImage(
+                        sourcePath: image.path,
+                        aspectRatio: CropAspectRatio(ratioX: 2, ratioY: 3),
+                      );
+                      if (croppedFile != null) {
+                        setState(() {
+                          imageFile = File(croppedFile.path);
+                        });
+                      }
+                    }
+                  },
                 ),
                 Gap(height: 4),
                 ProceedButton(
@@ -96,5 +133,37 @@ class NewStoryPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<ImageSource> _getImageSource() async {
+    ImageSource source;
+    await showModalBottomSheet(
+      context: context,
+      builder: (context) => BottomSheet(
+        builder: (BuildContext context) => ListView(
+          shrinkWrap: true,
+          children: [
+            ListTile(
+              title: Text('Camera'),
+              leading: Icon(Icons.camera),
+              onTap: () {
+                Get.back();
+                source = ImageSource.camera;
+              },
+            ),
+            ListTile(
+              title: Text('Gallery'),
+              leading: Icon(Icons.image),
+              onTap: () {
+                Get.back();
+                source = ImageSource.gallery;
+              },
+            ),
+          ],
+        ),
+        onClosing: () {},
+      ),
+    );
+    return source;
   }
 }

@@ -17,8 +17,7 @@ class UserItem extends StatelessWidget {
         id: tabItemsToIndex[Provider.of<TabItem>(context, listen: false)],
       ),
       leading: CircleAvatar(
-        backgroundImage: NetworkImage(
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS22RO1vyrwFBgngHIYwwa_Dqo_GRM3UN6nNB5hmBGYrueb0wan272oZDrvA254rgSS5ZY&usqp=CAU"),
+        backgroundImage: NetworkImage('https://picsum.photos/id/200/400/600'),
       ),
       title: Text(
         'jrhuman',

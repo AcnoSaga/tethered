@@ -4,12 +4,14 @@ import 'package:tethered/screens/home/book_details_page/book_details_page.dart';
 import 'package:tethered/screens/home/genre_page/genre_page.dart';
 import 'package:tethered/screens/home/hashtag_page/hashtag_page.dart';
 import 'package:tethered/screens/home/home_page/home_page.dart';
+import 'package:tethered/screens/home/settings_page/settings_page.dart';
 
 class HomeRoutes {
   static const String bookDetails = '/book-details';
   static const String hashtagPage = '/hashtag-page';
   static const String genrePage = '/genre-page';
   static const String accountPage = '/account-page';
+  static const String settingsPage = '/settings-page';
 }
 
 final homeRouteBuilder = {
@@ -30,8 +32,12 @@ final homeRouteBuilder = {
         ),
       ),
   HomeRoutes.accountPage: (args) => GetPageRoute(
-    // Also present in global routes
+        // Also present in global routes
         page: () => AccountPage(),
+      ),
+  HomeRoutes.settingsPage: (args) => GetPageRoute(
+        // Also present in global routes
+        page: () => SettingsPage(),
       ),
 };
 

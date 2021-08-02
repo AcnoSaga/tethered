@@ -1,12 +1,16 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:provider/provider.dart';
 import 'package:tethered/screens/components/book_card.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/screens/components/proceed_button.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
+import 'package:tethered/utils/enums/tab_item.dart';
+import 'package:tethered/utils/inner_routes/home_routes.dart';
 import 'package:tethered/utils/text_styles.dart';
 
 import 'components/account_numeric_data_column.dart';
@@ -60,6 +64,20 @@ class _AccountPageState extends State<AccountPage> {
           '@john_smith',
           style: TetheredTextStyles.homeAppBarHeading,
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () async {
+              await Get.toNamed(
+                HomeRoutes.settingsPage,
+                id: tabItemsToIndex[
+                    Provider.of<TabItem>(context, listen: false)],
+              );
+              // Get cannot manage this, Drawer is controlled by default Navigator
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
         backgroundColor: TetheredColors.primaryDark,
       ),
       body: CustomScrollView(
@@ -77,7 +95,7 @@ class _AccountPageState extends State<AccountPage> {
                     maxRadius: sy * 15,
                     minRadius: sy * 10,
                     backgroundImage: NetworkImage(
-                      'https://images.unsplash.com/photo-1552058544-f2b08422138a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=644&q=80',
+                      'https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-4.png',
                     ),
                   ),
                   Gap(height: 2),

@@ -81,8 +81,3 @@ class _HashtagPageState extends State<HashtagPage> {
     );
   }
 }
-
-const String dummyText =
-    '''Life yielding bring so third night of seasons face herb abundantly void doesn't said evening signs. Darkness above be greater It that seed, isn't fruit void also bearing light third image thing give. Divided can't.
-
-Forth above to first morning all greater also, open. Signs female without gathering let blessed heaven light there second greater created make. Morning, whose brought i seasons, sixth own replenish firmament.''';

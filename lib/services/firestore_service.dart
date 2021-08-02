@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
+import 'package:tethered/models/book_cover.dart';
+import 'package:tethered/models/book_details.dart';
 import 'package:tethered/models/genre.dart';
 import 'package:tethered/models/hashtag.dart';
 
@@ -32,5 +34,10 @@ class FirestoreService {
       hashtags.add(Hashtag.fromDocument(doc));
     });
     return hashtags;
+  }
+
+  Future<BookDetails> getBookDetails(BookCover bookCover) async {
+    final docSnapshot = await bookCover.workRef.get();
+    return BookDetails.fromDocument(docSnapshot);
   }
 }

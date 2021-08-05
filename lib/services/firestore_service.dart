@@ -40,4 +40,11 @@ class FirestoreService {
     final docSnapshot = await bookCover.workRef.get();
     return BookDetails.fromDocument(docSnapshot);
   }
+
+  Future<Hashtag> getHashtagById(String id) async {
+    DocumentSnapshot<Map<String, dynamic>> doc =
+        await firestore.collection('hashtags').doc(id).get();
+    return Hashtag.fromDocument(doc);
+  }
+
 }

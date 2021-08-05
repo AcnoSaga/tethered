@@ -7,6 +7,7 @@ class BookCover {
   BookCover({this.imageUrl, this.workRef});
 
   static BookCover fromMap(Map doc) {
+    print(doc);
     return BookCover(
       imageUrl: doc["imageUrl"],
       workRef: doc["workRef"],

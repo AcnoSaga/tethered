@@ -20,7 +20,7 @@ class BookDetailsTag extends StatelessWidget {
       onTap: () => Get.toNamed(
         HomeRoutes.hashtagPage,
         arguments: {
-          "hashtag": label,
+          "hashtagId": label,
         },
         id: tabItemsToIndex[Provider.of<TabItem>(context, listen: false)],
       ),

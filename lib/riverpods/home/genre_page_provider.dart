@@ -42,8 +42,7 @@ class GenrePageLoaded extends GenrePageState {
   GenrePageLoaded({@required this.hashtags});
 }
 
-final genrePageStateProvider =
-    StateNotifierProvider.family<GenrePageStateNotifier, GenrePageState, Genre>(
-        (ref, genre) {
+final genrePageStateProvider = StateNotifierProvider.family
+    .autoDispose<GenrePageStateNotifier, GenrePageState, Genre>((ref, genre) {
   return GenrePageStateNotifier(genre);
 });

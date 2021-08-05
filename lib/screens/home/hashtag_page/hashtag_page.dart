@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tethered/models/hashtag.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tethered/riverpods/home/hashtag_page_provider.dart';
 import 'package:tethered/screens/components/book_card.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/theme/size_config.dart';
@@ -10,18 +11,13 @@ import 'package:tethered/utils/inner_routes/home_routes.dart';
 
 import 'package:tethered/utils/text_styles.dart';
 
-class HashtagPage extends StatefulWidget {
-  final Hashtag hashtag;
+class HashtagPage extends ConsumerWidget {
+  final String hashtagId;
 
-  const HashtagPage({Key key, this.hashtag}) : super(key: key);
+  const HashtagPage({Key key, this.hashtagId}) : super(key: key);
 
-  @override
-  _HashtagPageState createState() => _HashtagPageState();
-}
-
-class _HashtagPageState extends State<HashtagPage> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ScopedReader watch) {
+    final hashtagPageState = watch(hashtagPageStateProvider(hashtagId));
     return Scaffold(
       backgroundColor: TetheredColors.primaryDark,
       body: CustomScrollView(
@@ -39,7 +35,7 @@ class _HashtagPageState extends State<HashtagPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    widget.hashtag.name,
+                    hashtagId,
                     style: TetheredTextStyles.authHeading,
                     textAlign: TextAlign.center,
                   ),
@@ -49,33 +45,51 @@ class _HashtagPageState extends State<HashtagPage> {
             ),
           ),
           SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: sy * 10),
-            sliver: SliverGrid(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return GestureDetector(
-                    onTap: () => Get.toNamed(
-                      HomeRoutes.bookDetails,
-                      arguments: {
-                        "bookCovers": widget.hashtag.works,
-                        "index": index,
-                        "title": widget.hashtag,
-                      },
-                      id: tabItemsToIndex[TabItem.home],
-                    ),
-                    child: BookCard(bookCover: widget.hashtag.works[index]),
+              padding: EdgeInsets.symmetric(horizontal: sy * 10),
+              sliver: () {
+                if (hashtagPageState is HashtagPageInitial) {
+                  return SliverToBoxAdapter(child: Container());
+                } else if (hashtagPageState is HashtagPageLoading) {
+                  return SliverToBoxAdapter(
+                    child: Center(child: CircularProgressIndicator()),
                   );
-                },
-                childCount: widget.hashtag.works.length,
-              ),
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: sy * 60,
-                mainAxisSpacing: sx * 5,
-                crossAxisSpacing: sy * 10,
-                childAspectRatio: 0.7,
-              ),
-            ),
-          ),
+                } else if (hashtagPageState is HashtagPageError) {
+                  return SliverToBoxAdapter(
+                    child: Center(
+                      child: Text("Please try again."),
+                    ),
+                  );
+                } else if (hashtagPageState is HashtagPageLoaded) {
+                  return SliverGrid(
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                        return GestureDetector(
+                          onTap: () => Get.toNamed(
+                            HomeRoutes.bookDetails,
+                            arguments: {
+                              "bookCovers": hashtagPageState.hashtag.works,
+                              "index": index,
+                              "title": hashtagPageState.hashtag,
+                            },
+                            id: tabItemsToIndex[TabItem.home],
+                          ),
+                          child: BookCard(
+                              bookCover: hashtagPageState.hashtag.works[index]),
+                        );
+                      },
+                      childCount: hashtagPageState.hashtag.works.length,
+                    ),
+                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: sy * 60,
+                      mainAxisSpacing: sx * 5,
+                      crossAxisSpacing: sy * 10,
+                      childAspectRatio: 0.7,
+                    ),
+                  );
+                } else {
+                  throw UnimplementedError();
+                }
+              }()),
         ],
       ),
     );

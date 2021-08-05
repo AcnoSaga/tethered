@@ -21,7 +21,7 @@ final homeRouteBuilder = {
       ),
   HomeRoutes.hashtagPage: (args) => GetPageRoute(
         page: () => HashtagPage(
-          hashtag: args["hashtag"],
+          hashtagId: args["hashtagId"],
         ),
       ),
   HomeRoutes.genrePage: (args) => GetPageRoute(

@@ -63,7 +63,7 @@ class BookRow extends StatelessWidget {
                                   "genre": resource,
                                 }
                               : {
-                                  "hashtag": resource,
+                                  "hashtagId": (resource as Hashtag).name,
                                 },
                           id: tabItemsToIndex[
                               Provider.of<TabItem>(context, listen: false)],

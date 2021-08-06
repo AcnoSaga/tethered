@@ -1,14 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:tethered/utils/colors.dart';
+import 'package:tethered/utils/enums/resource_types.dart';
 import 'package:tethered/utils/text_styles.dart';
 
-class GenreDropdownInput extends StatelessWidget {
+class ResourceDropdownInput extends StatelessWidget {
+  final ResourceTypes resourceType;
+  final List<String> categoryList;
+  final void Function(String) onSelect;
+
+  const ResourceDropdownInput(
+      {Key key, this.resourceType, this.categoryList, this.onSelect})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField(
       dropdownColor: TetheredColors.textFieldBackground,
       hint: Text(
-        'Choose a genre',
+        () {
+          if (resourceType == ResourceTypes.genre) {
+            return 'Choose a genre';
+          } else if (resourceType == ResourceTypes.hashtag) {
+            return 'Choose a hashtag';
+          }
+          throw UnimplementedError();
+        }(),
         style: TetheredTextStyles.textField,
       ),
       decoration: InputDecoration(
@@ -20,22 +36,18 @@ class GenreDropdownInput extends StatelessWidget {
         ),
         hintStyle: TetheredTextStyles.textField,
       ),
-      items: [
-        DropdownMenuItem(
-          child: Text(
-            'Horror',
-            style: TetheredTextStyles.textField,
-          ),
-          value: 'Horror',
-        ),
-        DropdownMenuItem(
-          child: Text(
-            'Action',
-            style: TetheredTextStyles.textField,
-          ),
-          value: 'Action',
-        ),
-      ],
+      items: categoryList
+          .map((str) => DropdownMenuItem(
+                onTap: () {
+                  if (onSelect != null) onSelect(str);
+                },
+                child: Text(
+                  str,
+                  style: TetheredTextStyles.textField,
+                ),
+                value: str,
+              ))
+          .toList(),
       onChanged: (item) {},
     );
   }

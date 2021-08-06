@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
+import 'package:tethered/utils/enums/tab_item.dart';
+import 'package:tethered/utils/inner_routes/write_routes.dart';
 import 'package:tethered/utils/text_styles.dart';
 
 class CreateNewIndexContainer extends StatelessWidget {
@@ -13,7 +16,10 @@ class CreateNewIndexContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Get.toNamed('/new-story'),
+      onTap: () => Get.toNamed(
+        WriteRoutes.newStory,
+        id: tabItemsToIndex[Provider.of<TabItem>(context, listen: false)],
+      ),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: sy * 4,

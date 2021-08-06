@@ -6,6 +6,7 @@ import 'package:tethered/screens/components/book_card.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
+import 'package:provider/provider.dart' as FlutterBase;
 import 'package:tethered/utils/enums/tab_item.dart';
 import 'package:tethered/utils/inner_routes/home_routes.dart';
 
@@ -64,15 +65,21 @@ class HashtagPage extends ConsumerWidget {
                     delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
                         return GestureDetector(
-                          onTap: () => Get.toNamed(
-                            HomeRoutes.bookDetails,
-                            arguments: {
-                              "bookCovers": hashtagPageState.hashtag.works,
-                              "index": index,
-                              "title": hashtagPageState.hashtag,
-                            },
-                            id: tabItemsToIndex[TabItem.home],
-                          ),
+                          onTap: () {
+                            return Get.toNamed(
+                              HomeRoutes.bookDetails,
+                              arguments: {
+                                "bookCovers": hashtagPageState.hashtag.works,
+                                "index": index,
+                                "title": hashtagPageState.hashtag,
+                              },
+                              id: tabItemsToIndex[
+                                  FlutterBase.Provider.of<TabItem>(
+                                context,
+                                listen: false,
+                              )],
+                            );
+                          },
                           child: BookCard(
                               bookCover: hashtagPageState.hashtag.works[index]),
                         );

@@ -13,7 +13,6 @@ class MainPageBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SnakeNavigationBar.color(
-      
       selectedItemColor: TetheredColors.authHeading,
       snakeViewColor: TetheredColors.primaryBlue,
       currentIndex: selected,
@@ -29,19 +28,11 @@ class MainPageBottomNavBar extends StatelessWidget {
           backgroundColor: TetheredColors.primaryDark,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.search),
-          backgroundColor: TetheredColors.primaryDark,
-        ),
-        BottomNavigationBarItem(
           icon: Icon(TetheredIcons.edit),
           backgroundColor: TetheredColors.primaryDark,
         ),
         BottomNavigationBarItem(
-          icon: Icon(TetheredIcons.notifications),
-          backgroundColor: TetheredColors.primaryDark,
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(TetheredIcons.library),
+          icon: Icon(Icons.search),
           backgroundColor: TetheredColors.primaryDark,
         ),
       ],

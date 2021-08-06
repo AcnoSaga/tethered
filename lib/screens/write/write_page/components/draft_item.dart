@@ -1,10 +1,9 @@
-import 'dart:math';
-
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:tethered/models/draft.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/screens/components/image_error_widget.dart';
 import 'package:tethered/screens/components/widgets/book_details_tag.dart';
@@ -15,9 +14,10 @@ import 'package:tethered/utils/text_styles.dart';
 class DraftItem extends StatelessWidget {
   final bool published;
   final DocumentType documentType;
+  final Draft draft;
 
   const DraftItem(
-      {Key key, this.published, this.documentType = DocumentType.tether})
+      {Key key, this.published, this.documentType = DocumentType.tether, this.draft})
       : super(key: key);
   @override
   Widget build(BuildContext context) {

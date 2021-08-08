@@ -1,8 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:tethered/screens/components/book_card.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tethered/models/account.dart';
+import 'package:tethered/riverpods/home/account/account_page_provider.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/screens/components/proceed_button.dart';
 import 'package:tethered/theme/size_config.dart';
@@ -10,145 +9,101 @@ import 'package:tethered/utils/colors.dart';
 import 'package:tethered/utils/text_styles.dart';
 
 import 'components/account_numeric_data_column.dart';
+import 'components/account_page_book_grid.dart';
 
-// TODO: Fix errors in this page
+class AccountPage extends ConsumerWidget {
+  final String uid;
 
-class AccountPage extends StatefulWidget {
-  @override
-  _AccountPageState createState() => _AccountPageState();
-}
-
-class _AccountPageState extends State<AccountPage> {
-  final PagingController<int, String> _pagingController =
-      PagingController(firstPageKey: 0);
+  const AccountPage({Key key, this.uid}) : super(key: key);
 
   @override
-  void initState() {
-    super.initState();
-    List<String> urls = [];
-    List.filled(20, null).forEach((element) {
-      Random rnd;
-      int min = 1050;
-      int max = 1080;
-      rnd = new Random();
-      int value = min + rnd.nextInt(max - min);
-      final String url = 'https://picsum.photos/id/$value/400/600';
-      urls.add(url);
-    });
-    _pagingController.appendPage(urls, urls.length);
-    _pagingController.addPageRequestListener((pageKey) {
-      List<String> urls = [];
-      List.filled(20, null).forEach((element) {
-        Random rnd;
-        int min = 1050;
-        int max = 1080;
-        rnd = new Random();
-        int value = min + rnd.nextInt(max - min);
-        final String url = 'https://picsum.photos/id/$value/400/600';
-        urls.add(url);
-      });
-      _pagingController.appendPage(urls, pageKey + urls.length);
-    });
+  Widget build(BuildContext context, ScopedReader watch) {
+    final state = watch(accountPageStateProvider(uid));
+    return Scaffold(
+        backgroundColor: TetheredColors.primaryDark,
+        appBar: AppBar(
+          title: Text(
+            state is AccountPageLoaded ? state.account.name : 'Account',
+            style: TetheredTextStyles.homeAppBarHeading,
+          ),
+          backgroundColor: TetheredColors.primaryDark,
+        ),
+        body: () {
+          if (state is AccountPageInitial) {
+            return Container();
+          } else if (state is AccountPageLoading) {
+            return Center(child: CircularProgressIndicator());
+          } else if (state is AccountPageLoaded) {
+            return _accountsDetails(state.account);
+          } else {
+            return Center(child: Text('Please try again'));
+          }
+        }());
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: TetheredColors.primaryDark,
-      appBar: AppBar(
-        title: Text(
-          '@john_smith',
-          style: TetheredTextStyles.homeAppBarHeading,
-        ),
-        backgroundColor: TetheredColors.primaryDark,
-      ),
-      body: CustomScrollView(
-        slivers: [
-          SliverPadding(
-            padding: EdgeInsets.symmetric(
-              horizontal: sy * 5,
-              vertical: sx * 5,
-            ),
-            sliver: SliverToBoxAdapter(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircleAvatar(
-                    maxRadius: sy * 15,
-                    minRadius: sy * 10,
-                    backgroundImage: NetworkImage(
-                      'https://images.unsplash.com/photo-1552058544-f2b08422138a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=644&q=80',
+  Widget _accountsDetails(Account account) {
+    return CustomScrollView(
+      slivers: [
+        SliverPadding(
+          padding: EdgeInsets.symmetric(
+            horizontal: sy * 5,
+            vertical: sx * 5,
+          ),
+          sliver: SliverToBoxAdapter(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircleAvatar(
+                  maxRadius: sy * 15,
+                  minRadius: sy * 10,
+                  backgroundImage: NetworkImage(account.imageUrl),
+                ),
+                Gap(height: 2),
+                Text(
+                  account.name,
+                  style: TetheredTextStyles.authSubHeading,
+                ),
+                Gap(height: 1),
+                Text(
+                  account.description,
+                  style: TetheredTextStyles.descriptionText,
+                ),
+                Gap(height: 2),
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  spacing: sy * 10,
+                  children: [
+                    AccountNumericDataColumn(
+                      title: 'Followers',
+                      data: account.followers,
                     ),
-                  ),
-                  Gap(height: 2),
-                  Text(
-                    'John Smith',
-                    style: TetheredTextStyles.authSubHeading,
-                  ),
-                  Gap(height: 1),
-                  Text(
-                    'Traveler by day, Author at night. Love life and food.',
-                    style: TetheredTextStyles.descriptionText,
-                  ),
-                  Gap(height: 2),
-                  Wrap(
-                    alignment: WrapAlignment.spaceBetween,
-                    spacing: sy * 10,
-                    children: [
-                      AccountNumericDataColumn(
-                        title: 'Followers',
-                        data: 12000,
-                      ),
-                      AccountNumericDataColumn(
-                        title: 'Works',
-                        data: 21,
-                      ),
-                      AccountNumericDataColumn(
-                        title: 'Following',
-                        data: 120,
-                      ),
-                    ],
-                    direction: Axis.horizontal,
-                  ),
-                  Gap(height: 2),
-                  ProceedButton(
-                    text: 'Follow',
-                    onPressed: () {},
-                  ),
-                ],
-              ),
+                    AccountNumericDataColumn(
+                      title: 'Works',
+                      data: account.works,
+                    ),
+                    AccountNumericDataColumn(
+                      title: 'Following',
+                      data: account.following,
+                    ),
+                  ],
+                  direction: Axis.horizontal,
+                ),
+                Gap(height: 2),
+                ProceedButton(
+                  text: 'Follow',
+                  onPressed: () {},
+                ),
+              ],
             ),
           ),
-          SliverPadding(
-            padding: EdgeInsets.symmetric(
-              horizontal: sy * 5,
-            ),
-            sliver: PagedSliverGrid(
-              pagingController: _pagingController,
-              builderDelegate: PagedChildBuilderDelegate<String>(
-                  // TODO: Show correct data here
-
-                  // itemBuilder: (context, url, index) => BookCard(
-                  //   key: UniqueKey(),
-                  //   url: url,
-                  // ),
-                  ),
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: sy * 60,
-                mainAxisSpacing: sx * 5,
-                crossAxisSpacing: sy * 10,
-                childAspectRatio: 0.7,
-              ),
-            ),
-          )
-        ],
-      ),
+        ),
+        SliverPadding(
+          padding: EdgeInsets.symmetric(
+            horizontal: sy * 5,
+          ),
+          sliver: AccountPageBookGrid(uid: uid),
+        )
+      ],
     );
-  }
-
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
   }
 }

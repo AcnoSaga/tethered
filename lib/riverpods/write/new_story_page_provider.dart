@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tethered/injection/injection.dart';
-import 'package:tethered/models/catergory_lists.dart';
+import 'package:tethered/models/category_lists.dart';
 import 'package:tethered/services/firestore_service.dart';
 
 class NewStoryPageStateNotifier extends StateNotifier<NewStoryPageState> {

@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:provider/provider.dart' as FlutterBase;
+import 'package:tethered/injection/injection.dart';
 import 'package:tethered/models/genre.dart';
 import 'package:tethered/riverpods/home/home_page_provider.dart';
 import 'package:tethered/screens/home/home_page/components/book_row.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/screens/home/home_page/components/home_carousel.dart';
+import 'package:tethered/services/authetication_service.dart';
+import 'package:tethered/services/firestore_service.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
 import 'package:tethered/utils/enums/resource_types.dart';
@@ -27,12 +30,16 @@ class HomePage extends ConsumerWidget {
                 DrawerHeader(
                   child: GestureDetector(
                     onTap: () async {
-                      await Get.toNamed(
-                        HomeRoutes.accountPage,
-                        id: tabItemsToIndex[FlutterBase.Provider.of<TabItem>(
+                      await Get.toNamed(HomeRoutes.accountPage,
+                          id: tabItemsToIndex[FlutterBase.Provider.of<TabItem>(
                             context,
-                            listen: false)],
-                      );
+                            listen: false,
+                          )],
+                          arguments: {
+                            "uid": locator<AuthenticationService>()
+                                .currentUser
+                                .uid,
+                          });
                       // Get cannot manage this, Drawer is controlled by default Navigator
                       Navigator.of(context).pop();
                     },

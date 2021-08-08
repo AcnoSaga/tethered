@@ -30,8 +30,10 @@ final homeRouteBuilder = {
         ),
       ),
   HomeRoutes.accountPage: (args) => GetPageRoute(
-    // Also present in global routes
-        page: () => AccountPage(),
+        // Also present in global routes
+        page: () => AccountPage(
+          uid: args['uid'],
+        ),
       ),
 };
 

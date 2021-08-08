@@ -22,7 +22,7 @@ class DraftItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: published ? null : () => Get.toNamed('/edit'),
+      onTap: published ? null : () => Get.toNamed('/edit', arguments: draft.doc),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: sy * 2,

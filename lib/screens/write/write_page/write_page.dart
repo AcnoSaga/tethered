@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:tethered/screens/read/index_page/components/create_new_tether_container.dart';
-import 'package:tethered/screens/write/write_page/components/draft_item.dart';
 import 'package:tethered/screens/write/write_page/components/draft_list.dart';
-import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
 import 'package:tethered/utils/enums/tab_item.dart';
 import 'package:tethered/utils/inner_routes/write_routes.dart';

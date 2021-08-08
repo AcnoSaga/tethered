@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:provider/provider.dart' as FlutterBase;
-import 'package:tethered/models/catergory_lists.dart';
+import 'package:tethered/models/category_lists.dart';
 import 'package:tethered/riverpods/write/new_story_page_provider.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/screens/components/input_form_field.dart';

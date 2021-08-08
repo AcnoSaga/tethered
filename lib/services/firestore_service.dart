@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:injectable/injectable.dart';
+import 'package:tethered/models/account.dart';
 import 'package:tethered/models/book_cover.dart';
 import 'package:tethered/models/book_details.dart';
-import 'package:tethered/models/catergory_lists.dart';
+import 'package:tethered/models/category_lists.dart';
 import 'package:tethered/models/draft.dart';
 import 'package:tethered/models/genre.dart';
 import 'package:tethered/models/hashtag.dart';
@@ -91,5 +93,33 @@ class FirestoreService {
             .startAfterDocument(item.doc)
             .get();
     return query.docs.map((doc) => PublishedDraft.fromDocument(doc)).toList();
+  }
+
+  Future<Delta> getEditPageData(DocumentReference docRef) async {
+    final doc = await docRef.get(GetOptions(source: Source.server));
+    return Delta.fromJson(doc["content"]);
+  }
+
+  Future<List<DocumentSnapshot>> getBookCovers(
+      String uid, DocumentSnapshot bookCover) async {
+    final query = bookCover == null
+        ? await firestore
+            .collection('accounts/$uid/published')
+            .orderBy('published', descending: true)
+            .limit(10)
+            .get()
+        : await firestore
+            .collection('accounts/$uid/published')
+            .orderBy('published', descending: true)
+            .limit(10)
+            .startAfterDocument(bookCover)
+            .get();
+
+    return query.docs;
+  }
+
+  Future<Account> getAccount(String uid) async {
+    final doc = await firestore.collection('accounts').doc(uid).get();
+    return Account.fromDocument(doc);
   }
 }

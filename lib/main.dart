@@ -40,10 +40,19 @@ class TetheredApp extends StatelessWidget {
             if (!snapshot.hasData || snapshot.data == null) {
               return Container();
             }
-            return GetMaterialApp(
-              title: 'Tethered',
-              getPages: Routes.getPages(),
-              initialRoute: snapshot.data,
+            return GestureDetector(
+              onTap: () {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
+                SystemChannels.textInput.invokeMethod('TextInput.hide');
+              },
+              child: GetMaterialApp(
+                title: 'Tethered',
+                getPages: Routes.getPages(),
+                initialRoute: snapshot.data,
+              ),
             );
           });
     });

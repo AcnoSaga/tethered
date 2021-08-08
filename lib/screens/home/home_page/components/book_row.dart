@@ -99,7 +99,7 @@ class BookRow extends StatelessWidget {
                 child: Container(
                   color: Colors.transparent,
                   width: sy * 30,
-                  child: _renderBookCard(index),
+                  child: _renderBookCard(index, context),
                 ),
               );
             },
@@ -109,7 +109,7 @@ class BookRow extends StatelessWidget {
     );
   }
 
-  Widget _renderBookCard(int index) {
+  Widget _renderBookCard(int index, BuildContext context) {
     if (resource is Genre) {
       final bookCovers = (resource as Genre).home;
       return GestureDetector(
@@ -132,17 +132,14 @@ class BookRow extends StatelessWidget {
     } else if (resource is Hashtag) {
       final bookCovers = (resource as Hashtag).works;
       return GestureDetector(
-        onTap: () {
-          Get.toNamed(
-            HomeRoutes.bookDetails,
-            arguments: {
-              "bookCovers": bookCovers,
-              "index": index,
-              "title": title,
-            },
-            id: tabItemsToIndex[TabItem.home],
-          );
-        },
+        onTap: () => Get.toNamed(
+          HomeRoutes.bookDetails,
+          arguments: {
+            "bookCovers": bookCovers,
+            "index": index,
+          },
+          id: tabItemsToIndex[Provider.of<TabItem>(context, listen: false)],
+        ),
         child: Container(
           margin: EdgeInsets.symmetric(vertical: sx),
           child: BookCard(bookCover: bookCovers[index]),

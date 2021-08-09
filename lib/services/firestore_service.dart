@@ -11,8 +11,10 @@ import 'package:tethered/models/book_details.dart';
 import 'package:tethered/models/category_lists.dart';
 import 'package:tethered/models/comment.dart';
 import 'package:tethered/models/draft.dart';
+import 'package:tethered/models/entry_item.dart';
 import 'package:tethered/models/genre.dart';
 import 'package:tethered/models/hashtag.dart';
+import 'package:tethered/models/index_item.dart';
 import 'package:tethered/models/published_draft.dart';
 
 @lazySingleton
@@ -145,5 +147,33 @@ class FirestoreService {
             .startAfterDocument(lastComment.doc)
             .get();
     return query.docs.map((doc) => Comment.fromDocument(doc)).toList();
+  }
+
+  Future<List<IndexItem>> getIndexItems(
+      IndexItem lastIndexItem, BookDetails bookDetails) async {
+    final query = lastIndexItem == null
+        ? await bookDetails.doc.reference.collection('index').limit(10).get()
+        : await bookDetails.doc.reference
+            .collection('index')
+            .limit(10)
+            .startAfterDocument(lastIndexItem.doc)
+            .get();
+    return query.docs.map((doc) => IndexItem.fromDocument(doc)).toList();
+  }
+
+  Future<List<EntryItem>> getEntryItems(
+      EntryItem lastEntryItem, BookDetails bookDetails) async {
+    final query = lastEntryItem == null
+        ? await bookDetails.doc.reference
+            .collection('proposalIndex')
+            .orderBy(FieldPath.documentId)
+            .limit(10)
+            .get()
+        : await bookDetails.doc.reference
+            .collection('proposalIndex')
+            .limit(10)
+            .startAfterDocument(lastEntryItem.doc)
+            .get();
+    return query.docs.map((doc) => EntryItem.fromDocument(doc)).toList();
   }
 }

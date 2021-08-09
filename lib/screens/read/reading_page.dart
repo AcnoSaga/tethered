@@ -161,124 +161,134 @@ class _ReadingPageState extends State<ReadingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: ValueListenableBuilder<bool>(
-          valueListenable: _isVisible,
-          builder: (context, isVisible, _) {
-            return AnimatedContainer(
-              color: TetheredColors.primaryDark,
-              duration: Duration(milliseconds: 200),
-              height: isVisible ? sx * 10 : 0.0,
-              child: AnimatedContainer(
+    return GestureDetector(
+      onTap: () {
+        _isVisible.value = !_isVisible.value;
+        print('Tap');
+      },
+      child: Scaffold(
+        bottomNavigationBar: ValueListenableBuilder<bool>(
+            valueListenable: _isVisible,
+            builder: (context, isVisible, _) {
+              return AnimatedContainer(
+                color: TetheredColors.primaryDark,
                 duration: Duration(milliseconds: 200),
                 height: isVisible ? sx * 10 : 0.0,
-                width: sy * 90,
-                child: Wrap(
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: FloatingNavbar(
-                        unselectedItemColor: Colors.white,
-                        selectedItemColor: Colors.white,
-                        selectedBackgroundColor: Colors.transparent,
-                        backgroundColor: Colors.transparent,
-                        onTap: (int val) {
-                          //returns tab id which is user tapped
-                          if (val % 2 == 0)
-                            Get.toNamed(
-                              '/index',
-                            );
-                          else
-                            Get.toNamed(
-                              '/comments',
-                              arguments: {
-                                "collection": widget.bookDetails.doc.reference
-                                    .collection('tethers')
-                                    .doc(currentIndex.toString())
-                                    .collection('comments'),
-                              },
-                            );
-                        },
-                        currentIndex: 0,
-                        items: [
-                          FloatingNavbarItem(icon: Icons.home, title: ''),
-                          FloatingNavbarItem(icon: Icons.menu, title: ''),
-                          FloatingNavbarItem(
-                              icon: Icons.chat_bubble_outline, title: ''),
-                          FloatingNavbarItem(icon: Icons.share, title: ''),
-                        ],
-                      ),
-                    )
-                  ],
+                child: AnimatedContainer(
+                  duration: Duration(milliseconds: 200),
+                  height: isVisible ? sx * 10 : 0.0,
+                  width: sy * 90,
+                  child: Wrap(
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: FloatingNavbar(
+                          unselectedItemColor: Colors.white,
+                          selectedItemColor: Colors.white,
+                          selectedBackgroundColor: Colors.transparent,
+                          backgroundColor: Colors.transparent,
+                          onTap: (int val) {
+                            //returns tab id which is user tapped
+                            if (val % 2 == 0)
+                              Get.toNamed(
+                                '/index',
+                                arguments: {
+                                  "bookDetails": widget.bookDetails,
+                                  "pageController": _pageController,
+                                },
+                              );
+                            else
+                              Get.toNamed(
+                                '/comments',
+                                arguments: {
+                                  "collection": widget.bookDetails.doc.reference
+                                      .collection('tethers')
+                                      .doc(currentIndex.toString())
+                                      .collection('comments'),
+                                },
+                              );
+                          },
+                          currentIndex: 0,
+                          items: [
+                            FloatingNavbarItem(icon: Icons.home, title: ''),
+                            FloatingNavbarItem(icon: Icons.menu, title: ''),
+                            FloatingNavbarItem(
+                                icon: Icons.chat_bubble_outline, title: ''),
+                            FloatingNavbarItem(icon: Icons.share, title: ''),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            );
-          }),
-      // extendBody: true,
+              );
+            }),
+        // extendBody: true,
 
-      // bottomNavigationBar: Container(),
-      // backgroundColor: TetheredColors.primaryDark,
-      body: RawGestureDetector(
-        gestures: <Type, GestureRecognizerFactory>{
-          VerticalDragGestureRecognizer: GestureRecognizerFactoryWithHandlers<
-                  VerticalDragGestureRecognizer>(
-              () => VerticalDragGestureRecognizer(),
-              (VerticalDragGestureRecognizer instance) {
-            instance
-              ..onStart = _handleDragStart
-              ..onUpdate = _handleDragUpdate
-              ..onEnd = _handleDragEnd
-              ..onCancel = _handleDragCancel;
-          })
-        },
-        behavior: HitTestBehavior.opaque,
-        child: PageView.builder(
-          physics: NeverScrollableScrollPhysics(),
-          dragStartBehavior: DragStartBehavior.down,
-          controller: _pageController,
-          scrollDirection: Axis.vertical,
-          itemCount: numberOfPages,
-          onPageChanged: (index) {
-            setState(() {
-              // if (currentIndex > index) {
-              //   final newController = ScrollController();
-              //   // newController.addListener(_changeBarVisibility);
-              //   _listScrollControllers[index] = newController;
-              // }
-
-              // if (_listScrollControllers.length < numberOfPages &&
-              //     currentIndex < index) {
-              //   final newController = ScrollController();
-              //   newController
-              //       .addListener(_changeBarVisibility(newController));
-              //   _listScrollControllers.add(newController);
-              // }
-              currentIndex = index;
-              // _activeScrollController = _listScrollControllers[index];
-            });
+        // bottomNavigationBar: Container(),
+        // backgroundColor: TetheredColors.primaryDark,
+        body: RawGestureDetector(
+          gestures: <Type, GestureRecognizerFactory>{
+            VerticalDragGestureRecognizer: GestureRecognizerFactoryWithHandlers<
+                    VerticalDragGestureRecognizer>(
+                () => VerticalDragGestureRecognizer(),
+                (VerticalDragGestureRecognizer instance) {
+              instance
+                ..onStart = _handleDragStart
+                ..onUpdate = _handleDragUpdate
+                ..onEnd = _handleDragEnd
+                ..onCancel = _handleDragCancel;
+            })
           },
-          itemBuilder: (context, index) => CustomScrollView(
+          // behavior: HitTestBehavior.opaque,
+          child: PageView.builder(
             physics: NeverScrollableScrollPhysics(),
-            controller: () {
-              // print(textController.document.toDelta().toJson());
-              final newController = ScrollController();
-              newController.addListener(_changeBarVisibility(newController));
+            dragStartBehavior: DragStartBehavior.down,
+            controller: _pageController,
+            scrollDirection: Axis.vertical,
+            itemCount: numberOfPages,
+            onPageChanged: (index) {
+              setState(() {
+                // if (currentIndex > index) {
+                //   final newController = ScrollController();
+                //   // newController.addListener(_changeBarVisibility);
+                //   _listScrollControllers[index] = newController;
+                // }
 
-              _mapScrollControllers[index] = newController;
-              return newController;
-            }(),
-            slivers: [
-              SliverAppBar(
-                actions: [],
-                backgroundColor: TetheredColors.primaryDark,
-                floating: true,
-              ),
-              TetherPage(
-                doc: widget.bookDetails.doc.reference
-                    .collection('tethers')
-                    .doc(index.toString()),
-              ),
-            ],
+                // if (_listScrollControllers.length < numberOfPages &&
+                //     currentIndex < index) {
+                //   final newController = ScrollController();
+                //   newController
+                //       .addListener(_changeBarVisibility(newController));
+                //   _listScrollControllers.add(newController);
+                // }
+                currentIndex = index;
+                // _activeScrollController = _listScrollControllers[index];
+              });
+            },
+            itemBuilder: (context, index) => CustomScrollView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: () {
+                // print(textController.document.toDelta().toJson());
+                final newController = ScrollController();
+                newController.addListener(_changeBarVisibility(newController));
+
+                _mapScrollControllers[index] = newController;
+                return newController;
+              }(),
+              slivers: [
+                SliverAppBar(
+                  actions: [],
+                  backgroundColor: TetheredColors.primaryDark,
+                  floating: true,
+                ),
+                TetherPage(
+                  doc: widget.bookDetails.doc.reference
+                      .collection('tethers')
+                      .doc(index.toString()),
+                ),
+              ],
+            ),
           ),
         ),
       ),

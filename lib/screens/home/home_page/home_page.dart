@@ -9,7 +9,6 @@ import 'package:tethered/screens/home/home_page/components/book_row.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/screens/home/home_page/components/home_carousel.dart';
 import 'package:tethered/services/authetication_service.dart';
-import 'package:tethered/services/firestore_service.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
 import 'package:tethered/utils/enums/resource_types.dart';

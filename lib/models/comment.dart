@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tethered/models/tethered_user.dart';
-import 'package:tethered/riverpods/global/user_provider.dart';
+
 
 class Comment {
   final String content;

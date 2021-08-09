@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart' as bloc;
 import 'package:get/get.dart';
 import 'package:tethered/cubits/auth_blocs/login_bloc/login_bloc.dart';
 import 'package:tethered/injection/injection.dart';
-import 'package:tethered/models/book_details.dart';
 import 'package:tethered/screens/auth/forgot_password/forgot_password.dart';
 import 'package:tethered/screens/auth/login/login_screen.dart';
 import 'package:tethered/screens/auth/signup/signup_screen.dart';
@@ -62,7 +61,7 @@ class Routes {
       GetPage(
         name: '/index',
         page: () => IndexPage(),
-        transition: Transition.downToUp,
+        // transition: Transition.downToUp,
       ),
       GetPage(
         name: '/comments',

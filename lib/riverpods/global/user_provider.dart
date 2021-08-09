@@ -11,7 +11,6 @@ class UserStateNotifier extends StateNotifier<TetheredUser> {
 
   void reset() {
     state = null;
-    print('--------------------------------sas----------------------------');
   }
 }
 

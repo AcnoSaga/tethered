@@ -32,7 +32,6 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         yield SignupFailure();
       } else {
         if (isUserSignedUpOrError as bool) {
-          //TODO: Go to home page
           yield SignupSuccess();
         } else {
           Get.snackbar('Login failed', 'The user could not be logged in');

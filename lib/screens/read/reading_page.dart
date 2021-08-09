@@ -2,7 +2,6 @@ import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.da
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:tethered/models/book_details.dart';
 import 'package:tethered/theme/size_config.dart';
@@ -286,12 +285,12 @@ class _ReadingPageState extends State<ReadingPage> {
     );
   }
 
-  Widget _loadingUi() => Center(
-        child: GestureDetector(
-          onTap: Get.back,
-          child: SpinKitWave(
-            color: TetheredColors.primaryBlue,
-          ),
-        ),
-      );
+  // Widget _loadingUi() => Center(
+  //       child: GestureDetector(
+  //         onTap: Get.back,
+  //         child: SpinKitWave(
+  //           color: TetheredColors.primaryBlue,
+  //         ),
+  //       ),
+  //     );
 }

@@ -9,21 +9,36 @@ import 'package:tethered/utils/inner_routes/home_routes.dart';
 class BookDetailsTag extends StatelessWidget {
   final String label;
   final Color color;
+  final bool isNested;
 
   const BookDetailsTag(
-      {Key key, this.label, this.color = TetheredColors.textFieldBackground})
+      {Key key,
+      this.label,
+      this.color = TetheredColors.textFieldBackground,
+      this.isNested})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Get.toNamed(
-        HomeRoutes.hashtagPage,
-        arguments: {
-          "hashtagId": label,
-        },
-        id: tabItemsToIndex[Provider.of<TabItem>(context, listen: false)],
-      ),
+      onTap: () {
+        if (isNested) {
+          Get.toNamed(
+            HomeRoutes.hashtagPage,
+            arguments: {
+              "hashtagId": label,
+            },
+            id: tabItemsToIndex[Provider.of<TabItem>(context, listen: false)],
+          );
+        } else {
+          Get.toNamed(
+            '/hashtag',
+            arguments: {
+              "hashtagId": label,
+            },
+          );
+        }
+      },
       child: Badge(
         badgeColor: color,
         shape: BadgeShape.square,

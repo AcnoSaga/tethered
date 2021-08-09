@@ -5,12 +5,16 @@ class BookDetails {
   final String description;
   final String imageUrl;
   final List<String> hashtags;
+  final int numberOfTethers;
+  final DocumentSnapshot doc;
 
   BookDetails({
     this.title,
     this.description,
     this.imageUrl,
     this.hashtags,
+    this.doc,
+    this.numberOfTethers,
   });
 
   static BookDetails fromDocument(DocumentSnapshot doc) {
@@ -19,6 +23,8 @@ class BookDetails {
       description: doc["description"],
       imageUrl: doc["imageUrl"],
       hashtags: [...doc["hashtags"]],
+      numberOfTethers: doc["numberOfTethers"],
+      doc: doc,
     );
   }
 }

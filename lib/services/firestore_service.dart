@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:injectable/injectable.dart';
+import 'package:tethered/models/Tether.dart';
 import 'package:tethered/models/account.dart';
 import 'package:tethered/models/book_cover.dart';
 import 'package:tethered/models/book_details.dart';
 import 'package:tethered/models/category_lists.dart';
+import 'package:tethered/models/comment.dart';
 import 'package:tethered/models/draft.dart';
 import 'package:tethered/models/genre.dart';
 import 'package:tethered/models/hashtag.dart';
@@ -97,7 +101,7 @@ class FirestoreService {
 
   Future<Delta> getEditPageData(DocumentReference docRef) async {
     final doc = await docRef.get(GetOptions(source: Source.server));
-    return Delta.fromJson(doc["content"]);
+    return Delta.fromJson(jsonDecode(doc["content"]));
   }
 
   Future<List<DocumentSnapshot>> getBookCovers(
@@ -121,5 +125,25 @@ class FirestoreService {
   Future<Account> getAccount(String uid) async {
     final doc = await firestore.collection('accounts').doc(uid).get();
     return Account.fromDocument(doc);
+  }
+
+  Future<Tether> getTether(DocumentReference workRef) async {
+    final doc = await workRef.get();
+    return Tether.fromDocument(doc);
+  }
+
+  Future<List<Comment>> getComments(
+      Comment lastComment, CollectionReference collectionRef) async {
+    final query = lastComment == null
+        ? await collectionRef
+            .orderBy('published', descending: true)
+            .limit(10)
+            .get()
+        : await collectionRef
+            .orderBy('published', descending: true)
+            .limit(10)
+            .startAfterDocument(lastComment.doc)
+            .get();
+    return query.docs.map((doc) => Comment.fromDocument(doc)).toList();
   }
 }

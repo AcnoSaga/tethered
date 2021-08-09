@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
@@ -132,7 +134,7 @@ class _EditPageState extends State<EditPage> {
   void _saveContent() async {
     final docRef = widget.docSnapshot.reference;
     print(_controller.document.toDelta().toJson());
-    await docRef.update({"content": _controller.document.toDelta().toJson()});
+    await docRef.update({"content": jsonEncode(_controller.document.toDelta().toJson())});
     print(121212);
   }
 }

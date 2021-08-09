@@ -119,7 +119,6 @@ class BookRow extends StatelessWidget {
             arguments: {
               "bookCovers": bookCovers,
               "index": index,
-              "title": title,
             },
             id: tabItemsToIndex[TabItem.home],
           );

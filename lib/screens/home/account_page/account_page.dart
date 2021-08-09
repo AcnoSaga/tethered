@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tethered/models/account.dart';
 import 'package:tethered/riverpods/home/account/account_page_provider.dart';
@@ -18,7 +19,8 @@ class AccountPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
-    final state = watch(accountPageStateProvider(uid));
+    final String id = uid ?? Get.arguments["uid"];
+    final state = watch(accountPageStateProvider(id));
     return Scaffold(
         backgroundColor: TetheredColors.primaryDark,
         appBar: AppBar(
@@ -34,14 +36,14 @@ class AccountPage extends ConsumerWidget {
           } else if (state is AccountPageLoading) {
             return Center(child: CircularProgressIndicator());
           } else if (state is AccountPageLoaded) {
-            return _accountsDetails(state.account);
+            return _accountsDetails(state.account, id);
           } else {
             return Center(child: Text('Please try again'));
           }
         }());
   }
 
-  Widget _accountsDetails(Account account) {
+  Widget _accountsDetails(Account account, String id) {
     return CustomScrollView(
       slivers: [
         SliverPadding(
@@ -101,7 +103,10 @@ class AccountPage extends ConsumerWidget {
           padding: EdgeInsets.symmetric(
             horizontal: sy * 5,
           ),
-          sliver: AccountPageBookGrid(uid: uid),
+          sliver: AccountPageBookGrid(
+            uid: id,
+            isNested: uid != null,
+          ),
         )
       ],
     );

@@ -15,8 +15,8 @@ class HomeRoutes {
 final homeRouteBuilder = {
   HomeRoutes.bookDetails: (args) => GetPageRoute(
         page: () => BookDetailPage(
-          bookCovers: args["bookCovers"],
-          startingIndex: args["index"],
+          bookCoverList: args["bookCovers"],
+          index: args["index"],
         ),
       ),
   HomeRoutes.hashtagPage: (args) => GetPageRoute(

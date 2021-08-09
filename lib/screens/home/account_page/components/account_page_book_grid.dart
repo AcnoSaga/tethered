@@ -14,10 +14,12 @@ import 'package:tethered/utils/inner_routes/home_routes.dart';
 
 class AccountPageBookGrid extends StatefulWidget {
   final String uid;
+  final bool isNested;
 
   AccountPageBookGrid({
     Key key,
     this.uid,
+    this.isNested,
   }) : super(key: key);
 
   @override
@@ -45,14 +47,27 @@ class _AccountPageBookGridState extends State<AccountPageBookGrid> {
         itemBuilder: (context, bookCover, index) {
           print(bookCover.workRef);
           return GestureDetector(
-            onTap: () => Get.toNamed(
-              HomeRoutes.bookDetails,
-              arguments: {
-                "bookCovers": [bookCover],
-                "index": index,
-              },
-              id: tabItemsToIndex[Provider.of<TabItem>(context, listen: false)],
-            ),
+            onTap: () {
+              if (widget.isNested) {
+                Get.toNamed(
+                  HomeRoutes.bookDetails,
+                  arguments: {
+                    "bookCovers": [bookCover],
+                    "index": index,
+                  },
+                  id: tabItemsToIndex[
+                      Provider.of<TabItem>(context, listen: false)],
+                );
+              } else {
+                Get.toNamed(
+                  '/book-details',
+                  arguments: {
+                    "bookCovers": [bookCover],
+                    "index": index,
+                  },
+                );
+              }
+            },
             child: BookCard(
               key: UniqueKey(),
               bookCover: bookCover,

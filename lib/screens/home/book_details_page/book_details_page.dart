@@ -23,14 +23,25 @@ import 'package:tethered/utils/text_styles.dart';
 import '../../components/widgets/book_details_tag.dart';
 
 class BookDetailPage extends HookWidget {
-  final List<BookCover> bookCovers;
-  final int startingIndex;
+  final List<BookCover> bookCoverList;
+  final int index;
 
-  const BookDetailPage({Key key, this.bookCovers, this.startingIndex})
-      : super(key: key);
+  const BookDetailPage({
+    this.bookCoverList,
+    this.index,
+    Key key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final int startingIndex = index ?? Get.arguments["index"] as int;
+    final List<BookCover> bookCovers =
+        bookCoverList ?? Get.arguments["bookCovers"] as List<BookCover>;
+    print('--------------------------------');
+    print(bookCovers);
+    print(startingIndex);
+    print('--------------------------------');
+
     final itemBorderRadius = BorderRadius.circular(10);
     final indexProvider = bookCarouselIndexProvider(startingIndex);
     final currentIndex = useProvider(indexProvider);
@@ -63,7 +74,12 @@ class BookDetailPage extends HookWidget {
         child: GestureDetector(
           child: Column(
             children: [
-              _bookCarousel(itemBorderRadius, currentIndex),
+              _bookCarousel(
+                itemBorderRadius,
+                currentIndex,
+                startingIndex,
+                bookCovers,
+              ),
               Gap(height: 5),
               () {
                 if (bookDetailsState is BookDetailsInitial) {
@@ -90,6 +106,8 @@ class BookDetailPage extends HookWidget {
   Widget _bookCarousel(
     BorderRadius itemBorderRadius,
     StateController<int> currentIndex,
+    int startingIndex,
+    List<BookCover> bookCovers,
   ) {
     return CarouselSlider(
       options: CarouselOptions(
@@ -189,6 +207,7 @@ class BookDetailPage extends HookWidget {
                             Gap(width: 1),
                             BookDetailsTag(
                               label: label,
+                              isNested: index != null,
                             ),
                             Gap(width: 1)
                           ],
@@ -201,7 +220,10 @@ class BookDetailPage extends HookWidget {
               padding: EdgeInsets.symmetric(horizontal: sy * 5),
               child: ProceedButton(
                 text: 'Read',
-                onPressed: () => Get.toNamed('/read'),
+                onPressed: () => Get.toNamed(
+                  '/read',
+                  arguments: {"bookDetails": details},
+                ),
               ),
             ),
             Gap(height: 8),

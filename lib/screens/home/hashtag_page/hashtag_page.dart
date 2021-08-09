@@ -18,7 +18,8 @@ class HashtagPage extends ConsumerWidget {
   const HashtagPage({Key key, this.hashtagId}) : super(key: key);
 
   Widget build(BuildContext context, ScopedReader watch) {
-    final hashtagPageState = watch(hashtagPageStateProvider(hashtagId));
+    final String id = hashtagId ?? Get.arguments["hashtagId"] as String;
+    final hashtagPageState = watch(hashtagPageStateProvider(id));
     return Scaffold(
       backgroundColor: TetheredColors.primaryDark,
       body: CustomScrollView(
@@ -36,7 +37,7 @@ class HashtagPage extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    hashtagId,
+                    id,
                     style: TetheredTextStyles.authHeading,
                     textAlign: TextAlign.center,
                   ),
@@ -66,19 +67,28 @@ class HashtagPage extends ConsumerWidget {
                       (BuildContext context, int index) {
                         return GestureDetector(
                           onTap: () {
-                            return Get.toNamed(
-                              HomeRoutes.bookDetails,
-                              arguments: {
-                                "bookCovers": hashtagPageState.hashtag.works,
-                                "index": index,
-                                "title": hashtagPageState.hashtag,
-                              },
-                              id: tabItemsToIndex[
-                                  FlutterBase.Provider.of<TabItem>(
-                                context,
-                                listen: false,
-                              )],
-                            );
+                            if (hashtagId != null) {
+                              Get.toNamed(
+                                HomeRoutes.bookDetails,
+                                arguments: {
+                                  "bookCovers": hashtagPageState.hashtag.works,
+                                  "index": index,
+                                },
+                                id: tabItemsToIndex[
+                                    FlutterBase.Provider.of<TabItem>(
+                                  context,
+                                  listen: false,
+                                )],
+                              );
+                            } else {
+                              Get.toNamed(
+                                '/book-details',
+                                arguments: {
+                                  "bookCovers": hashtagPageState.hashtag.works,
+                                  "index": index,
+                                },
+                              );
+                            }
                           },
                           child: BookCard(
                               bookCover: hashtagPageState.hashtag.works[index]),

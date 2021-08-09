@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tethered/screens/components/gap.dart';
@@ -5,7 +6,10 @@ import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
 import 'package:tethered/utils/text_styles.dart';
 
+import 'components/comments_list.dart';
+
 class CommentsPage extends StatefulWidget {
+  final CollectionReference collectionReference = Get.arguments["collection"];
   CommentsPage({Key key}) : super(key: key);
 
   @override
@@ -48,27 +52,8 @@ class _CommentsPageState extends State<CommentsPage> {
             ),
             Gap(height: 2),
             Expanded(
-              child: ListView.builder(
-                itemCount: 20,
-                itemBuilder: (context, index) => ListTile(
-                  title: GestureDetector(
-                    onTap: () => Get.toNamed('/account', arguments: {
-                      "uid": null,
-                    }),
-                    child: Text('Aamish Ahmad Beg'),
-                  ),
-                  subtitle: Text(
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed leo massa, tempus in quam ut, mollis consectetur risus. Donec blandit sodales pulvinar. Sed non neque ipsum. Suspendisse condimentum nec sapien nec imperdiet. Aenean eu dictum nisl. Proin nec elementum odio, in ornare quam. Suspendisse et arcu purus. Etiam sit amet bibendum lacus. Nam eget felis vitae risus tincidunt vulputate. Sed vitae eros scelerisque, elementum dolor vel, venenatis ipsum. Curabitur et fringilla risus, eu aliquet enim. Aenean congue enim mauris, eget facilisis odio molestie non. Curabitur id varius mauris. Phasellus nec lacinia nibh. In dui sem, luctus in nibh a, rutrum consectetur sapien. '),
-                  leading: GestureDetector(
-                    onTap: () => Get.toNamed('/account', arguments: {
-                      "uid": null,
-                    }),
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          'https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-4.png'),
-                    ),
-                  ),
-                ),
+              child: CommentsList(
+                collectionRef: widget.collectionReference,
               ),
             ),
           ],

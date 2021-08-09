@@ -2,20 +2,17 @@ import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.da
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_quill/models/documents/document.dart';
-// import 'package:flutter_quill/flutter_quill.dart';
-import 'package:flutter_quill/widgets/controller.dart';
-import 'package:flutter_quill/widgets/editor.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:tethered/screens/components/gap.dart';
-import 'package:tethered/screens/home/book_details_page/components/book_details_info_text.dart';
-import 'package:tethered/screens/read/content.dart';
+import 'package:tethered/models/book_details.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/text_styles.dart';
+
+import 'components/tether_page.dart';
 
 class ReadingPage extends StatefulWidget {
+  final BookDetails bookDetails = Get.arguments["bookDetails"] as BookDetails;
+
   @override
   _ReadingPageState createState() => _ReadingPageState();
 }
@@ -26,19 +23,16 @@ class _ReadingPageState extends State<ReadingPage> {
   ScrollController _activeScrollController;
   Drag _drag;
   ValueNotifier<bool> _isVisible = ValueNotifier(true);
-  QuillController textController = QuillController(
-    document: Document.fromJson(content),
-    selection: const TextSelection.collapsed(offset: 0),
-  );
 
   Null Function() Function(ScrollController) _changeBarVisibility;
 
-  int numberOfPages = 15;
+  int numberOfPages;
   int currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    numberOfPages = widget.bookDetails.numberOfTethers;
     _pageController = PageController(
       initialPage: 0,
       viewportFraction: 1,
@@ -192,9 +186,19 @@ class _ReadingPageState extends State<ReadingPage> {
                         onTap: (int val) {
                           //returns tab id which is user tapped
                           if (val % 2 == 0)
-                            Get.toNamed('/index');
+                            Get.toNamed(
+                              '/index',
+                            );
                           else
-                            Get.toNamed('/comments');
+                            Get.toNamed(
+                              '/comments',
+                              arguments: {
+                                "collection": widget.bookDetails.doc.reference
+                                    .collection('tethers')
+                                    .doc(currentIndex.toString())
+                                    .collection('comments'),
+                              },
+                            );
                         },
                         currentIndex: 0,
                         items: [
@@ -270,56 +274,10 @@ class _ReadingPageState extends State<ReadingPage> {
                 backgroundColor: TetheredColors.primaryDark,
                 floating: true,
               ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: sy * 4),
-                  child: Column(
-                    children: [
-                      Gap(height: 5),
-                      Text(
-                        'The Story of How London Got Its Name',
-                        textAlign: TextAlign.center,
-                        style: TetheredTextStyles.authSubHeading.copyWith(
-                          color: TetheredColors.readingPageTitle,
-                        ),
-                      ),
-                      Gap(height: 5),
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        children: [
-                          BookDetailsInfoText(
-                            icon: Icons.visibility,
-                            text: '21M views',
-                            color: TetheredColors.readingPageInfo,
-                          ),
-                          BookDetailsInfoText(
-                            icon: Icons.arrow_upward,
-                            text: '12K upvotes',
-                            color: TetheredColors.readingPageInfo,
-                          ),
-                          BookDetailsInfoText(
-                            icon: Icons.list,
-                            text: '21 Tethers',
-                            color: TetheredColors.readingPageInfo,
-                          ),
-                        ],
-                      ),
-                      Gap(height: 5),
-                      QuillEditor(
-                        controller: textController,
-                        scrollController: ScrollController(),
-                        scrollable: true,
-                        focusNode: FocusNode(),
-                        autoFocus: true,
-                        readOnly: true,
-                        expands: false,
-                        padding: EdgeInsets.zero,
-                        showCursor: false,
-                      ),
-                      Gap(height: 5),
-                    ],
-                  ),
-                ),
+              TetherPage(
+                doc: widget.bookDetails.doc.reference
+                    .collection('tethers')
+                    .doc(index.toString()),
               ),
             ],
           ),

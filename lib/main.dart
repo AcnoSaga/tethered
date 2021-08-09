@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/route_manager.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tethered/injection/injection.dart';
+import 'package:tethered/models/tethered_user.dart';
+import 'package:tethered/riverpods/global/user_provider.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/routes.dart';
 
@@ -17,9 +20,9 @@ void main() async {
   runApp(ProviderScope(child: TetheredApp()));
 }
 
-class TetheredApp extends StatelessWidget {
+class TetheredApp extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ScopedReader watch) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -34,6 +37,11 @@ class TetheredApp extends StatelessWidget {
     );
     return LayoutBuilder(builder: (context, constraints) {
       SizeConfig.init(constraints, Orientation.portrait);
+      FirebaseAuth.instance.authStateChanges().listen((user) async {
+        final userStateNotifier = watch(userProvider.notifier);
+        if (user == null) userStateNotifier.reset();
+        userStateNotifier.getUserData(user.uid);
+      });
       return FutureBuilder(
           future: Routes.getInitialRoute(),
           builder: (context, snapshot) {

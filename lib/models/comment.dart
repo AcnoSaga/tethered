@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tethered/models/tethered_user.dart';
+import 'package:tethered/riverpods/global/user_provider.dart';
 
 class Comment {
   final String content;
@@ -26,5 +29,29 @@ class Comment {
       userRef: doc['userRef'],
       doc: doc,
     );
+  }
+
+  static Comment fromStringAndUser(String text, TetheredUser tetheredUser) {
+    print(tetheredUser);
+    if (tetheredUser == null) {
+      throw Exception();
+    }
+    return Comment(
+      content: text,
+      imageUrl: tetheredUser.imageUrl,
+      username: tetheredUser.name,
+      userRef: tetheredUser.doc.reference,
+      published: DateTime.now(),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "content": content,
+      "imageUrl": imageUrl,
+      "published": published,
+      "userRef": userRef,
+      "username": username,
+    };
   }
 }

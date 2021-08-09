@@ -11,12 +11,12 @@ class BookDetailsTag extends StatelessWidget {
   final Color color;
   final bool isNested;
 
-  const BookDetailsTag(
-      {Key key,
-      this.label,
-      this.color = TetheredColors.textFieldBackground,
-      this.isNested})
-      : super(key: key);
+  const BookDetailsTag({
+    Key key,
+    this.label,
+    this.color = TetheredColors.textFieldBackground,
+    this.isNested = true,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

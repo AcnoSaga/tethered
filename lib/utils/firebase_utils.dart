@@ -9,15 +9,15 @@ class FirebaseUtils {
   static Future<bool> changeLikeStatus(
       DocumentReference doc, DocumentReference indexDoc, bool isLiked) async {
     if (isLiked) {
-      await doc.update({
+      doc.update({
         "likes": FieldValue.arrayRemove([FirebaseAuth.instance.currentUser.uid])
       });
-      await indexDoc.update({"likes": FieldValue.increment(-1)});
+      indexDoc.update({"likes": FieldValue.increment(-1)});
     } else {
-      await doc.update({
+      doc.update({
         "likes": FieldValue.arrayUnion([FirebaseAuth.instance.currentUser.uid])
       });
-      await indexDoc.update({"likes": FieldValue.increment(1)});
+      indexDoc.update({"likes": FieldValue.increment(1)});
     }
     return !isLiked;
   }

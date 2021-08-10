@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
@@ -73,12 +72,12 @@ class _EntryPageState extends State<EntryPage> {
                   children: [
                     Align(
                       alignment: Alignment.center,
-                      child: FloatingNavbar(
-                        unselectedItemColor: Colors.white,
-                        selectedItemColor: Colors.white,
-                        selectedBackgroundColor: Colors.transparent,
-                        backgroundColor: Colors.transparent,
-                        onTap: (int val) {
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.chat_bubble_outline,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
                           //returns tab id which is user tapped
                           Get.toNamed(
                             '/comments',
@@ -90,14 +89,6 @@ class _EntryPageState extends State<EntryPage> {
                             },
                           );
                         },
-                        currentIndex: 0,
-                        items: [
-                          FloatingNavbarItem(icon: Icons.home, title: ''),
-                          FloatingNavbarItem(icon: Icons.menu, title: ''),
-                          FloatingNavbarItem(
-                              icon: Icons.chat_bubble_outline, title: ''),
-                          FloatingNavbarItem(icon: Icons.share, title: ''),
-                        ],
                       ),
                     )
                   ],

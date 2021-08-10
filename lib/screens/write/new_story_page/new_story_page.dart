@@ -117,6 +117,8 @@ class NewStoryPage extends HookWidget {
                   .map(
                     (str) => GestureDetector(
                       behavior: HitTestBehavior.opaque,
+                      onLongPress: () =>
+                          hashtags.value = [...hashtags.value]..remove(str),
                       child: BookDetailsTag(label: str),
                     ),
                   )

@@ -10,6 +10,7 @@ class HomeRoutes {
   static const String hashtagPage = '/hashtag-page';
   static const String genrePage = '/genre-page';
   static const String accountPage = '/account-page';
+  static const String settingsPage = '/settings-page';
 }
 
 final homeRouteBuilder = {
@@ -34,6 +35,11 @@ final homeRouteBuilder = {
         page: () => AccountPage(
           uid: args['uid'],
         ),
+
+      ),
+  HomeRoutes.settingsPage: (args) => GetPageRoute(
+        // Also present in global routes
+        page: () => SettingsPage(),
       ),
 };
 

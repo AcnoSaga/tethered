@@ -1,12 +1,14 @@
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:tethered/models/book.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/screens/search/search_page/components/user_item.dart';
 import 'package:tethered/screens/write/write_page/components/draft_item.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
 import 'package:tethered/utils/text_styles.dart';
-
+import 'package:algolia/algolia.dart';
+import 'components/algoliaapp.dart';
 import 'components/tag_item.dart';
 
 class SearchPage extends StatefulWidget {
@@ -16,6 +18,16 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   SearchType searchType = SearchType.works;
+
+  final Algolia _algoliaApp = AlgoliaApplication.algolia;
+
+  Future<List<Book>> _operation(String input) async {
+    AlgoliaQuery query =
+        _algoliaApp.instance.index("practice_algolia").query(input);
+    AlgoliaQuerySnapshot querySnap = await query.getObjects();
+    List<AlgoliaObjectSnapshot> results = querySnap.hits;
+    return results.map((snapshot) => Book.fromSnapshot(snapshot)).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +94,7 @@ class _SearchPageState extends State<SearchPage> {
                 case SearchType.works:
                   return DraftItem(
                     published: true,
+                    book: item,
                   );
                   break;
                 case SearchType.users:
@@ -92,7 +105,7 @@ class _SearchPageState extends State<SearchPage> {
               }
             },
             onSearch: (String text) {
-              return Future.value(List.filled(10, 1));
+              return _operation(text); //working here
             },
           ),
         ),

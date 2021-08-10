@@ -51,8 +51,8 @@ dependencies:
   provider: ^5.0.0
   pull_to_refresh: ^2.0.0
   shimmer: ^2.0.0
-  path_provider: ^2.0.2
   settings_ui: ^0.6.0
+  algolia: ^1.0.1
 
 dev_dependencies:
   build_runner: null

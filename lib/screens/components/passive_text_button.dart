@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../utils/text_styles.dart';
 
 class PassiveTextButton extends StatelessWidget {
   final String text;

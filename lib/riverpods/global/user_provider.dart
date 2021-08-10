@@ -1,5 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tethered/models/tethered_user.dart';
+import '../../models/tethered_user.dart';
 
 class UserStateNotifier extends StateNotifier<TetheredUser> {
   UserStateNotifier() : super(null);

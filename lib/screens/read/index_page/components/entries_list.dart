@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:tethered/injection/injection.dart';
-import 'package:tethered/models/book_details.dart';
-import 'package:tethered/models/entry_item.dart';
-import 'package:tethered/screens/read/index_page/components/entry_item_card.dart';
-import 'package:tethered/services/firestore_service.dart';
-import 'package:tethered/theme/size_config.dart';
+import '../../../../injection/injection.dart';
+import '../../../../models/book_details.dart';
+import '../../../../models/entry_item.dart';
+import 'entry_item_card.dart';
+import '../../../../services/firestore_service.dart';
+import '../../../../theme/size_config.dart';
 
 import '../../entry_page.dart';
 

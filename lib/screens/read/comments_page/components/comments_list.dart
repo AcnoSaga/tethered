@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:tethered/injection/injection.dart';
-import 'package:tethered/models/comment.dart';
-import 'package:tethered/riverpods/global/user_provider.dart';
-import 'package:tethered/services/firestore_service.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../../injection/injection.dart';
+import '../../../../models/comment.dart';
+import '../../../../riverpods/global/user_provider.dart';
+import '../../../../services/firestore_service.dart';
+import '../../../../utils/colors.dart';
+import '../../../../utils/text_styles.dart';
 
 class CommentsList extends StatefulWidget {
   final PagingController<Comment, Comment> pagingController;

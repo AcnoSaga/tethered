@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tethered/theme/size_config.dart';
+import '../theme/size_config.dart';
 
 import 'colors.dart';
 

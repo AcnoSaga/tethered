@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
-import 'package:tethered/services/authetication_service.dart';
+import '../../../services/authetication_service.dart';
 
 part 'signup_event.dart';
 part 'signup_state.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tethered/utils/number_shortener.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../../utils/number_shortener.dart';
+import '../../../../utils/text_styles.dart';
 
 class AccountNumericDataColumn extends StatelessWidget {
   final String title;

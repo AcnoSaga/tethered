@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:tethered/screens/components/gap.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/enums/tab_item.dart';
-import 'package:tethered/utils/inner_routes/write_routes.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../components/gap.dart';
+import '../../../../theme/size_config.dart';
+import '../../../../utils/colors.dart';
+import '../../../../utils/enums/tab_item.dart';
+import '../../../../utils/inner_routes/write_routes.dart';
+import '../../../../utils/text_styles.dart';
 
 class CreateNewIndexContainer extends StatelessWidget {
   final String text;

@@ -2,13 +2,13 @@ import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:tethered/models/published_draft.dart';
-import 'package:tethered/screens/components/gap.dart';
-import 'package:tethered/screens/components/image_error_widget.dart';
-import 'package:tethered/screens/components/widgets/book_details_tag.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../../models/published_draft.dart';
+import '../../../components/gap.dart';
+import '../../../components/image_error_widget.dart';
+import '../../../components/widgets/book_details_tag.dart';
+import '../../../../theme/size_config.dart';
+import '../../../../utils/colors.dart';
+import '../../../../utils/text_styles.dart';
 
 import 'draft_item.dart';
 

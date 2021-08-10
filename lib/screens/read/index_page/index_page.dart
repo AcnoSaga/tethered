@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/text_styles.dart';
 import 'components/entries_list.dart';
 import 'components/official_list.dart';
 

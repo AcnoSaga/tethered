@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:provider/provider.dart' as FlutterBase;
-import 'package:tethered/injection/injection.dart';
-import 'package:tethered/models/genre.dart';
-import 'package:tethered/riverpods/home/home_page_provider.dart';
-import 'package:tethered/screens/home/home_page/components/book_row.dart';
-import 'package:tethered/screens/components/gap.dart';
-import 'package:tethered/screens/home/home_page/components/home_carousel.dart';
-import 'package:tethered/services/authetication_service.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/enums/resource_types.dart';
-import 'package:tethered/utils/enums/tab_item.dart';
-import 'package:tethered/utils/inner_routes/home_routes.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../injection/injection.dart';
+import '../../../models/genre.dart';
+import '../../../riverpods/home/home_page_provider.dart';
+import 'components/book_row.dart';
+import '../../components/gap.dart';
+import 'components/home_carousel.dart';
+import '../../../services/authetication_service.dart';
+import '../../../theme/size_config.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/enums/resource_types.dart';
+import '../../../utils/enums/tab_item.dart';
+import '../../../utils/inner_routes/home_routes.dart';
+import '../../../utils/text_styles.dart';
 
 class HomePage extends ConsumerWidget {
   @override

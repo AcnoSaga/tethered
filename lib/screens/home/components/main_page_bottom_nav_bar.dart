@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
-import 'package:tethered/theme/tethered_icons.dart';
+import '../../../theme/tethered_icons.dart';
 
-import 'package:tethered/utils/colors.dart';
+import '../../../utils/colors.dart';
 
 class MainPageBottomNavBar extends StatelessWidget {
   final int selected;

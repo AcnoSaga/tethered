@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tethered/utils/colors.dart';
+import '../utils/colors.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override

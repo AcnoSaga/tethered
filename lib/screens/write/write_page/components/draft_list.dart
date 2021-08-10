@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:tethered/injection/injection.dart';
-import 'package:tethered/models/draft.dart';
-import 'package:tethered/screens/write/write_page/components/draft_item.dart';
-import 'package:tethered/services/firestore_service.dart';
-import 'package:tethered/theme/size_config.dart';
+import '../../../../injection/injection.dart';
+import '../../../../models/draft.dart';
+import 'draft_item.dart';
+import '../../../../services/firestore_service.dart';
+import '../../../../theme/size_config.dart';
 
 class DraftList extends StatefulWidget {
   DraftList({Key key}) : super(key: key);

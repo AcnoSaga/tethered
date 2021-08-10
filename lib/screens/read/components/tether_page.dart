@@ -4,13 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tethered/models/Tether.dart';
-import 'package:tethered/riverpods/read/tether_page_provider.dart';
-import 'package:tethered/screens/components/gap.dart';
+import '../../../models/Tether.dart';
+import '../../../riverpods/read/tether_page_provider.dart';
+import '../../components/gap.dart';
 
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../theme/size_config.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/text_styles.dart';
 
 class TetherPage extends StatefulWidget {
   final DocumentReference doc;

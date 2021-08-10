@@ -20,7 +20,7 @@ class EntryItem {
       title: doc["title"],
       description: doc["description"],
       published: (doc["published"] as Timestamp).toDate(),
-      likes: doc["likes"].length,
+      likes: doc["likes"],
       doc: doc,
     );
   }

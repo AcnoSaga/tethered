@@ -1,8 +1,8 @@
 import 'package:get/route_manager.dart';
-import 'package:tethered/screens/home/book_details_page/book_details_page.dart';
-import 'package:tethered/screens/home/hashtag_page/hashtag_page.dart';
-import 'package:tethered/screens/search/explore_page.dart';
-import 'package:tethered/screens/search/search_page/search_page.dart';
+import '../../screens/home/book_details_page/book_details_page.dart';
+import '../../screens/home/hashtag_page/hashtag_page.dart';
+import '../../screens/search/explore_page.dart';
+import '../../screens/search/search_page/search_page.dart';
 
 class SearchRoutes {
   static const String searchPage = '/search';

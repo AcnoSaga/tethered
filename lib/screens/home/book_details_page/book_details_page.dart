@@ -7,18 +7,18 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:tethered/models/book_cover.dart';
-import 'package:tethered/models/book_details.dart';
-import 'package:tethered/riverpods/home/book_detail/book_carousel_index_provider.dart';
-import 'package:tethered/riverpods/home/book_detail/book_info_provider.dart';
-import 'package:tethered/screens/components/gap.dart';
-import 'package:tethered/screens/components/image_error_widget.dart';
-import 'package:tethered/screens/components/proceed_button.dart';
-import 'package:tethered/screens/home/book_details_page/components/book_details_info_text.dart';
+import '../../../models/book_cover.dart';
+import '../../../models/book_details.dart';
+import '../../../riverpods/home/book_detail/book_carousel_index_provider.dart';
+import '../../../riverpods/home/book_detail/book_info_provider.dart';
+import '../../components/gap.dart';
+import '../../components/image_error_widget.dart';
+import '../../components/proceed_button.dart';
+import 'components/book_details_info_text.dart';
 
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../theme/size_config.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/text_styles.dart';
 
 import '../../components/widgets/book_details_tag.dart';
 

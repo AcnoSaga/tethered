@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/enums/resource_types.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../../utils/colors.dart';
+import '../../../../utils/enums/resource_types.dart';
+import '../../../../utils/text_styles.dart';
 
 class ResourceDropdownInput extends StatelessWidget {
   final ResourceTypes resourceType;

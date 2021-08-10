@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tethered/models/account.dart';
-import 'package:tethered/riverpods/home/account/account_page_provider.dart';
-import 'package:tethered/screens/components/gap.dart';
-import 'package:tethered/screens/components/proceed_button.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../models/account.dart';
+import '../../../riverpods/home/account/account_page_provider.dart';
+import '../../components/gap.dart';
+import '../../components/proceed_button.dart';
+import '../../../theme/size_config.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/text_styles.dart';
 
 import 'components/account_numeric_data_column.dart';
 import 'components/account_page_book_grid.dart';

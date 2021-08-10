@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tethered/models/entry_item.dart';
-import 'package:tethered/screens/components/gap.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../../models/entry_item.dart';
+import '../../../components/gap.dart';
+import '../../../../theme/size_config.dart';
+import '../../../../utils/colors.dart';
+import '../../../../utils/text_styles.dart';
 
 import 'index_icon_text_group.dart';
 

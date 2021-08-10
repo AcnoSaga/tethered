@@ -4,18 +4,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:injectable/injectable.dart';
-import 'package:tethered/models/Tether.dart';
-import 'package:tethered/models/account.dart';
-import 'package:tethered/models/book_cover.dart';
-import 'package:tethered/models/book_details.dart';
-import 'package:tethered/models/category_lists.dart';
-import 'package:tethered/models/comment.dart';
-import 'package:tethered/models/draft.dart';
-import 'package:tethered/models/entry_item.dart';
-import 'package:tethered/models/genre.dart';
-import 'package:tethered/models/hashtag.dart';
-import 'package:tethered/models/index_item.dart';
-import 'package:tethered/models/published_draft.dart';
+import '../models/Tether.dart';
+import '../models/account.dart';
+import '../models/book_cover.dart';
+import '../models/book_details.dart';
+import '../models/category_lists.dart';
+import '../models/comment.dart';
+import '../models/draft.dart';
+import '../models/entry_item.dart';
+import '../models/genre.dart';
+import '../models/hashtag.dart';
+import '../models/index_item.dart';
+import '../models/published_draft.dart';
 
 @lazySingleton
 class FirestoreService {

@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/route_manager.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tethered/injection/injection.dart';
-import 'package:tethered/riverpods/global/user_provider.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/routes.dart';
+import 'injection/injection.dart';
+import 'riverpods/global/user_provider.dart';
+import 'theme/size_config.dart';
+import 'utils/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

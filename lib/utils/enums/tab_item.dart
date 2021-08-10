@@ -1,6 +1,6 @@
-import 'package:tethered/utils/inner_routes/home_routes.dart';
-import 'package:tethered/utils/inner_routes/search_routes.dart';
-import 'package:tethered/utils/inner_routes/write_routes.dart';
+import '../inner_routes/home_routes.dart';
+import '../inner_routes/search_routes.dart';
+import '../inner_routes/write_routes.dart';
 
 enum TabItem {
   home,

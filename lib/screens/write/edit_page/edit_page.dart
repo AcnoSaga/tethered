@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tethered/riverpods/write/editor_page_provider.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
+import '../../../riverpods/write/editor_page_provider.dart';
+import '../../../theme/size_config.dart';
+import '../../../utils/colors.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 

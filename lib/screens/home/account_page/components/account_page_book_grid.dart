@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
-import 'package:tethered/injection/injection.dart';
-import 'package:tethered/models/book_cover.dart';
-import 'package:tethered/screens/components/book_card.dart';
-import 'package:tethered/services/firestore_service.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/enums/tab_item.dart';
-import 'package:tethered/utils/inner_routes/home_routes.dart';
+import '../../../../injection/injection.dart';
+import '../../../../models/book_cover.dart';
+import '../../../components/book_card.dart';
+import '../../../../services/firestore_service.dart';
+import '../../../../theme/size_config.dart';
+import '../../../../utils/enums/tab_item.dart';
+import '../../../../utils/inner_routes/home_routes.dart';
 
 class AccountPageBookGrid extends StatefulWidget {
   final String uid;

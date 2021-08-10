@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:tethered/screens/components/gap.dart';
-import 'package:tethered/screens/components/input_form_field.dart';
-import 'package:tethered/screens/components/validators/text_validators.dart';
-import 'package:tethered/screens/search/components/explore_card.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/enums/tab_item.dart';
-import 'package:tethered/utils/inner_routes/search_routes.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../components/gap.dart';
+import '../components/input_form_field.dart';
+import '../components/validators/text_validators.dart';
+import 'components/explore_card.dart';
+import '../../theme/size_config.dart';
+import '../../utils/colors.dart';
+import '../../utils/enums/tab_item.dart';
+import '../../utils/inner_routes/search_routes.dart';
+import '../../utils/text_styles.dart';
 
 class ExplorePage extends StatelessWidget {
   @override

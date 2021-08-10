@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tethered/injection/injection.dart';
-import 'package:tethered/models/account.dart';
-import 'package:tethered/services/firestore_service.dart';
+import '../../../injection/injection.dart';
+import '../../../models/account.dart';
+import '../../../services/firestore_service.dart';
 
 class AccountPageStateNotifier extends StateNotifier<AccountPageState> {
   AccountPageStateNotifier(String uid) : super(AccountPageInitial()) {

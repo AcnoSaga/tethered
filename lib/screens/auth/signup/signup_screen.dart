@@ -3,16 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:tethered/cubits/auth_blocs/signup_bloc/signup_bloc.dart';
-import 'package:tethered/injection/injection.dart';
-import 'package:tethered/screens/components/gap.dart';
-import 'package:tethered/screens/components/input_form_field.dart';
-import 'package:tethered/screens/components/passive_text_button.dart';
-import 'package:tethered/screens/components/proceed_button.dart';
-import 'package:tethered/screens/components/validators/text_validators.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../cubits/auth_blocs/signup_bloc/signup_bloc.dart';
+import '../../../injection/injection.dart';
+import '../../components/gap.dart';
+import '../../components/input_form_field.dart';
+import '../../components/passive_text_button.dart';
+import '../../components/proceed_button.dart';
+import '../../components/validators/text_validators.dart';
+import '../../../theme/size_config.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/text_styles.dart';
 
 class SignupScreen extends StatefulWidget {
   @override

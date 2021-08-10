@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tethered/models/tethered_user.dart';
+import 'tethered_user.dart';
 
 
 class Comment {

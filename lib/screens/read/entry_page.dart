@@ -1,11 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
-import 'package:tethered/models/book_details.dart';
-import 'package:tethered/models/entry_item.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
+import 'package:tethered/utils/firebase_utils.dart';
+import '../../models/book_details.dart';
+import '../../models/entry_item.dart';
+import '../../theme/size_config.dart';
+import '../../utils/colors.dart';
 
 import 'components/tether_page.dart';
 
@@ -25,10 +27,19 @@ class EntryPage extends StatefulWidget {
 class _EntryPageState extends State<EntryPage> {
   ValueNotifier<bool> _isVisible = ValueNotifier(true);
   ScrollController controller;
+  ValueNotifier<bool> isLikedNotifier = ValueNotifier(null);
 
   @override
   void initState() {
     super.initState();
+    FirebaseUtils.isLiked(
+      widget.bookDetails.doc.reference
+          .collection('proposals')
+          .doc(widget.entryItem.doc.id),
+      FirebaseAuth.instance.currentUser.uid,
+    ).then((value) {
+      return isLikedNotifier.value = value;
+    });
     controller = ScrollController();
     controller.addListener(() {
       // ignore: invalid_use_of_protected_member
@@ -98,7 +109,31 @@ class _EntryPageState extends State<EntryPage> {
         controller: controller,
         slivers: [
           SliverAppBar(
-            actions: [],
+            actions: [
+              ValueListenableBuilder<bool>(
+                  valueListenable: isLikedNotifier,
+                  builder: (context, isLiked, _) {
+                    print(isLiked);
+                    return IconButton(
+                      icon: Icon(Icons.arrow_circle_up),
+                      onPressed: isLiked == null
+                          ? null
+                          : () async {
+                              isLikedNotifier.value =
+                                  await FirebaseUtils.changeLikeStatus(
+                                widget.bookDetails.doc.reference
+                                    .collection('proposals')
+                                    .doc(widget.entryItem.doc.id),
+                                widget.bookDetails.doc.reference
+                                    .collection('proposalIndex')
+                                    .doc(widget.entryItem.doc.id),
+                                isLiked,
+                              );
+                            },
+                      color: isLiked == true ? Colors.blue : Colors.white,
+                    );
+                  }),
+            ],
             backgroundColor: TetheredColors.primaryDark,
             floating: true,
           ),

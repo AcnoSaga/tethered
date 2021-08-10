@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:tethered/injection/injection.dart';
-import 'package:tethered/models/published_draft.dart';
-import 'package:tethered/screens/write/write_page/components/published_item.dart';
-import 'package:tethered/services/firestore_service.dart';
-import 'package:tethered/theme/size_config.dart';
+import '../../../../injection/injection.dart';
+import '../../../../models/published_draft.dart';
+import 'published_item.dart';
+import '../../../../services/firestore_service.dart';
+import '../../../../theme/size_config.dart';
 
 class PublishedList extends StatefulWidget {
   PublishedList({Key key}) : super(key: key);

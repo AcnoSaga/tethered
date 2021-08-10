@@ -4,8 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:tethered/screens/components/image_error_widget.dart';
-import 'package:tethered/theme/size_config.dart';
+import '../../../components/image_error_widget.dart';
+import '../../../../theme/size_config.dart';
 
 class HomeCarousel extends StatelessWidget {
   @override

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tethered/injection/injection.dart';
-import 'package:tethered/models/book_cover.dart';
-import 'package:tethered/models/book_details.dart';
-import 'package:tethered/services/firestore_service.dart';
+import '../../../injection/injection.dart';
+import '../../../models/book_cover.dart';
+import '../../../models/book_details.dart';
+import '../../../services/firestore_service.dart';
 
 class BookDetailsStateNotifier extends StateNotifier<BookDetailsState> {
   BookDetailsStateNotifier(BookCover bookCover) : super(BookDetailsInitial()) {

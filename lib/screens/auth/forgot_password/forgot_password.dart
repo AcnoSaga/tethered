@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/route_manager.dart';
-import 'package:tethered/cubits/auth_blocs/login_bloc/login_bloc.dart';
-import 'package:tethered/screens/components/gap.dart';
-import 'package:tethered/screens/components/input_form_field.dart';
-import 'package:tethered/screens/components/passive_text_button.dart';
-import 'package:tethered/screens/components/proceed_button.dart';
-import 'package:tethered/screens/components/validators/text_validators.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/text_styles.dart';
+
+import '../../../cubits/auth_blocs/login_bloc/login_bloc.dart';
+import '../../../theme/size_config.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/text_styles.dart';
+import '../../components/gap.dart';
+import '../../components/input_form_field.dart';
+import '../../components/passive_text_button.dart';
+import '../../components/proceed_button.dart';
+import '../../components/validators/text_validators.dart';
 
 class ForgotPassword extends StatelessWidget {
   final TextEditingController controller = TextEditingController();

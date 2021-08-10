@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:tethered/models/category.dart';
-import 'package:tethered/models/genre.dart';
-import 'package:tethered/models/hashtag.dart';
-import 'package:tethered/screens/components/book_card.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/enums/resource_types.dart';
-import 'package:tethered/utils/enums/tab_item.dart';
-import 'package:tethered/utils/inner_routes/home_routes.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../../models/category.dart';
+import '../../../../models/genre.dart';
+import '../../../../models/hashtag.dart';
+import '../../../components/book_card.dart';
+import '../../../../theme/size_config.dart';
+import '../../../../utils/enums/resource_types.dart';
+import '../../../../utils/enums/tab_item.dart';
+import '../../../../utils/inner_routes/home_routes.dart';
+import '../../../../utils/text_styles.dart';
 
 class BookRow extends StatelessWidget {
   final String title;

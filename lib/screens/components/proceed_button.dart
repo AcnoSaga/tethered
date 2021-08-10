@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../theme/size_config.dart';
+import '../../utils/colors.dart';
+import '../../utils/text_styles.dart';
 
 class ProceedButton extends StatelessWidget {
   final String text;

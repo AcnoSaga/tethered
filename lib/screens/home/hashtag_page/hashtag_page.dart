@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tethered/riverpods/home/hashtag_page_provider.dart';
-import 'package:tethered/screens/components/book_card.dart';
-import 'package:tethered/screens/components/gap.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
+import '../../../riverpods/home/hashtag_page_provider.dart';
+import '../../components/book_card.dart';
+import '../../components/gap.dart';
+import '../../../theme/size_config.dart';
+import '../../../utils/colors.dart';
 import 'package:provider/provider.dart' as FlutterBase;
-import 'package:tethered/utils/enums/tab_item.dart';
-import 'package:tethered/utils/inner_routes/home_routes.dart';
+import '../../../utils/enums/tab_item.dart';
+import '../../../utils/inner_routes/home_routes.dart';
 
-import 'package:tethered/utils/text_styles.dart';
+import '../../../utils/text_styles.dart';
 
 class HashtagPage extends ConsumerWidget {
   final String hashtagId;

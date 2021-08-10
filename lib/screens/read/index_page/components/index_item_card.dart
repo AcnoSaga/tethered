@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tethered/models/index_item.dart';
-import 'package:tethered/screens/components/gap.dart';
-import 'package:tethered/screens/read/index_page/components/index_icon_text_group.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../../models/index_item.dart';
+import '../../../components/gap.dart';
+import 'index_icon_text_group.dart';
+import '../../../../theme/size_config.dart';
+import '../../../../utils/colors.dart';
+import '../../../../utils/text_styles.dart';
 
 class IndexItemCard extends StatelessWidget {
   final IndexItem indexItem;

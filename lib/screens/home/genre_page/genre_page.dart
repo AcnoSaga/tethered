@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tethered/models/genre.dart';
-import 'package:tethered/models/hashtag.dart';
-import 'package:tethered/riverpods/home/genre_page_provider.dart';
-import 'package:tethered/screens/components/gap.dart';
-import 'package:tethered/screens/home/home_page/components/book_row.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/enums/resource_types.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../models/genre.dart';
+import '../../../models/hashtag.dart';
+import '../../../riverpods/home/genre_page_provider.dart';
+import '../../components/gap.dart';
+import '../home_page/components/book_row.dart';
+import '../../../theme/size_config.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/enums/resource_types.dart';
+import '../../../utils/text_styles.dart';
 
 class GenrePage extends ConsumerWidget {
   final Genre genre;

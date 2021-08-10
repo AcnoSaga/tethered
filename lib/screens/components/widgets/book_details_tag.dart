@@ -2,9 +2,9 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/enums/tab_item.dart';
-import 'package:tethered/utils/inner_routes/home_routes.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/enums/tab_item.dart';
+import '../../../utils/inner_routes/home_routes.dart';
 
 class BookDetailsTag extends StatelessWidget {
   final String label;

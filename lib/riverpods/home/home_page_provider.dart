@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tethered/injection/injection.dart';
-import 'package:tethered/models/genre.dart';
-import 'package:tethered/services/firestore_service.dart';
+import '../../injection/injection.dart';
+import '../../models/genre.dart';
+import '../../services/firestore_service.dart';
 
 class HomePageStateNotifier extends StateNotifier<HomePageState> {
   HomePageStateNotifier() : super(HomePageInitial()) {

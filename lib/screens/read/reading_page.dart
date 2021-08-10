@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:tethered/models/book_details.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
+import 'package:tethered/utils/firebase_utils.dart';
 
 import 'components/tether_page.dart';
 
@@ -28,9 +30,19 @@ class _ReadingPageState extends State<ReadingPage> {
   int numberOfPages;
   int currentIndex = 0;
 
+  ValueNotifier<bool> isLikedNotifier = ValueNotifier(null);
+
   @override
   void initState() {
     super.initState();
+    FirebaseUtils.isLiked(
+      widget.bookDetails.doc.reference
+          .collection('tethers')
+          .doc(currentIndex.toString()),
+      FirebaseAuth.instance.currentUser.uid,
+    ).then((value) {
+      return isLikedNotifier.value = value;
+    });
     numberOfPages = widget.bookDetails.numberOfTethers;
     _pageController = PageController(
       initialPage: 0,
@@ -278,7 +290,31 @@ class _ReadingPageState extends State<ReadingPage> {
               }(),
               slivers: [
                 SliverAppBar(
-                  actions: [],
+                  actions: [
+                    ValueListenableBuilder<bool>(
+                        valueListenable: isLikedNotifier,
+                        builder: (context, isLiked, _) {
+                          print(isLiked);
+                          return IconButton(
+                            icon: Icon(Icons.arrow_circle_up),
+                            onPressed: isLiked == null
+                                ? null
+                                : () async {
+                                    isLikedNotifier.value =
+                                        await FirebaseUtils.changeLikeStatus(
+                                      widget.bookDetails.doc.reference
+                                          .collection('tethers')
+                                          .doc(currentIndex.toString()),
+                                      widget.bookDetails.doc.reference
+                                          .collection('index')
+                                          .doc(currentIndex.toString()),
+                                      isLiked,
+                                    );
+                                  },
+                            color: isLiked == true ? Colors.blue : Colors.white,
+                          );
+                        }),
+                  ],
                   backgroundColor: TetheredColors.primaryDark,
                   floating: true,
                 ),

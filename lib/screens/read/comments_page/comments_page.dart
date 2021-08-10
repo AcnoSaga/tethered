@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:tethered/models/comment.dart';
-import 'package:tethered/models/tethered_user.dart';
-import 'package:tethered/riverpods/global/user_provider.dart';
-import 'package:tethered/screens/components/gap.dart';
-import 'package:tethered/screens/components/validators/text_validators.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../models/comment.dart';
+import '../../../models/tethered_user.dart';
+import '../../../riverpods/global/user_provider.dart';
+import '../../components/gap.dart';
+import '../../components/validators/text_validators.dart';
+import '../../../theme/size_config.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/text_styles.dart';
 
 import 'components/comments_list.dart';
 

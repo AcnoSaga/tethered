@@ -1,32 +1,33 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:tethered/screens/components/book_card.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/enums/resource_types.dart';
-import 'package:tethered/utils/enums/tab_item.dart';
-import 'package:tethered/utils/inner_routes/home_routes.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../../models/category.dart';
+import '../../../../models/genre.dart';
+import '../../../../models/hashtag.dart';
+import '../../../components/book_card.dart';
+import '../../../../theme/size_config.dart';
+import '../../../../utils/enums/resource_types.dart';
+import '../../../../utils/enums/tab_item.dart';
+import '../../../../utils/inner_routes/home_routes.dart';
+import '../../../../utils/text_styles.dart';
 
 class BookRow extends StatelessWidget {
   final String title;
   final EdgeInsetsGeometry titlePadding;
   final bool isResourceExpandable;
   final ResourceTypes resourceType;
+  final Category resource;
   const BookRow({
     Key key,
     this.title,
     this.titlePadding,
     this.isResourceExpandable = false,
     this.resourceType = ResourceTypes.hashtag,
+    this.resource,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final urls = <String>[];
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -57,10 +58,10 @@ class BookRow extends StatelessWidget {
                               : HomeRoutes.hashtagPage,
                           arguments: resourceType == ResourceTypes.genre
                               ? {
-                                  "genre": title,
+                                  "genre": resource,
                                 }
                               : {
-                                  "hashtag": title,
+                                  "hashtagId": (resource as Hashtag).name,
                                 },
                           id: tabItemsToIndex[
                               Provider.of<TabItem>(context, listen: false)],
@@ -81,36 +82,22 @@ class BookRow extends StatelessWidget {
           height: sx * 22,
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: 20,
+            itemCount: () {
+              if (resource is Genre) {
+                return (resource as Genre).home.length;
+              } else if (resource is Hashtag) {
+                return (resource as Hashtag).works.length;
+              }
+              return 0;
+            }(),
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              Random rnd;
-              int min = 1050;
-              int max = 1080;
-              rnd = new Random();
-              int value = min + rnd.nextInt(max - min);
-              final String url = 'https://picsum.photos/id/$value/400/600';
-              urls.add(url);
               return Padding(
                 padding: EdgeInsets.symmetric(horizontal: sy * 2),
                 child: Container(
                   color: Colors.transparent,
                   width: sy * 30,
-                  child: GestureDetector(
-                    onTap: () => Get.toNamed(
-                      HomeRoutes.bookDetails,
-                      arguments: {
-                        "urls": urls,
-                        "index": urls.indexOf(url),
-                        "title": title,
-                      },
-                      id: tabItemsToIndex[TabItem.home],
-                    ),
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: sx),
-                      child: BookCard(url: url),
-                    ),
-                  ),
+                  child: _renderBookCard(index, context),
                 ),
               );
             },
@@ -118,5 +105,45 @@ class BookRow extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Widget _renderBookCard(int index, BuildContext context) {
+    if (resource is Genre) {
+      final bookCovers = (resource as Genre).home;
+      return GestureDetector(
+        onTap: () {
+          Get.toNamed(
+            HomeRoutes.bookDetails,
+            arguments: {
+              "bookCovers": bookCovers,
+              "index": index,
+            },
+            id: tabItemsToIndex[TabItem.home],
+          );
+        },
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: sx),
+          child: BookCard(bookCover: bookCovers[index]),
+        ),
+      );
+    } else if (resource is Hashtag) {
+      final bookCovers = (resource as Hashtag).works;
+      return GestureDetector(
+        onTap: () => Get.toNamed(
+          HomeRoutes.bookDetails,
+          arguments: {
+            "bookCovers": bookCovers,
+            "index": index,
+          },
+          id: tabItemsToIndex[Provider.of<TabItem>(context, listen: false)],
+        ),
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: sx),
+          child: BookCard(bookCover: bookCovers[index]),
+        ),
+      );
+    } else {
+      throw UnimplementedError();
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
+
 import 'package:tethered/models/book.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/screens/search/search_page/components/user_item.dart';

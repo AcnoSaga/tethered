@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
+import '../../../theme/size_config.dart';
+import '../../../utils/colors.dart';
 
 class BottomNavItem extends StatelessWidget {
   final IconData icon;

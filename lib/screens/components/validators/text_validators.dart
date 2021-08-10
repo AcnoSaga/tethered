@@ -20,4 +20,14 @@ class TextValidators {
     }
     return null;
   }
+
+  static String comment(String comment) {
+    if (comment.isEmpty) {
+      return 'Please enter a comment';
+    }
+    if (comment.length > 1000) {
+      return 'Comment is too long';
+    }
+    return null;
+  }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tethered/screens/components/gap.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/number_shortener.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../components/gap.dart';
+import '../../../../utils/colors.dart';
+import '../../../../utils/number_shortener.dart';
+import '../../../../utils/text_styles.dart';
 
 class IndexIconTextGroup extends StatelessWidget {
   final IconData icon;

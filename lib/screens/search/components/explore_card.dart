@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tethered/utils/colors.dart';
+import '../../../utils/colors.dart';
 
 class ExploreCard extends StatelessWidget {
   @override

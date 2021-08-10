@@ -5,6 +5,8 @@ import 'package:injectable/injectable.dart';
 class AuthenticationService {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
+  User get currentUser => _firebaseAuth.currentUser;
+
   Future loginWithEmailAndPassword(String email, String password) async {
     try {
       UserCredential user = await _firebaseAuth.signInWithEmailAndPassword(
@@ -32,6 +34,10 @@ class AuthenticationService {
 
   Future signOutUser() async {
     await _firebaseAuth.signOut();
+  }
+
+  User getCurrentUser() {
+    return _firebaseAuth.currentUser;
   }
 
   bool isUserLoggedIn() {

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tethered/screens/read/index_page/components/index_item.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/text_styles.dart';
-
-import 'components/create_new_tether_container.dart';
+import 'package:get/get.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/text_styles.dart';
+import 'components/entries_list.dart';
+import 'components/official_list.dart';
 
 class IndexPage extends StatelessWidget {
   @override
@@ -24,13 +23,13 @@ class IndexPage extends StatelessWidget {
             tabs: [
               Tab(
                 child: Text(
-                  'ENTRIES',
+                  'OFFICIAL',
                   style: TetheredTextStyles.indexTabTextStyle,
                 ),
               ),
               Tab(
                 child: Text(
-                  'OFFICIAL',
+                  'ENTRIES',
                   style: TetheredTextStyles.indexTabTextStyle,
                 ),
               ),
@@ -40,36 +39,12 @@ class IndexPage extends StatelessWidget {
         backgroundColor: TetheredColors.primaryDark,
         body: TabBarView(
           children: [
-            ListView.builder(
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: sx,
-                      vertical: sx / 1.5,
-                    ),
-                    child: CreateNewIndexContainer(
-                      text: 'Create New Tether',
-                    ),
-                  );
-                }
-                return Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: sx,
-                    vertical: sx / 1.5,
-                  ),
-                  child: IndexItem(),
-                );
-              },
+            OfficialList(
+              bookDetails: Get.arguments["bookDetails"],
+              pageController: Get.arguments["pageController"],
             ),
-            ListView.builder(
-              itemBuilder: (context, index) => Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: sx,
-                  vertical: sx / 1.5,
-                ),
-                child: IndexItem(),
-              ),
+            EntriesList(
+              bookDetails: Get.arguments["bookDetails"],
             ),
           ],
         ),

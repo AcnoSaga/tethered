@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:tethered/theme/size_config.dart';
+import '../../theme/size_config.dart';
 
 class Gap extends StatelessWidget {
   final double height;

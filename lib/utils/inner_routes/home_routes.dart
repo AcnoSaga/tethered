@@ -1,10 +1,9 @@
 import 'package:get/route_manager.dart';
-import 'package:tethered/screens/home/account_page/account_page.dart';
-import 'package:tethered/screens/home/book_details_page/book_details_page.dart';
-import 'package:tethered/screens/home/genre_page/genre_page.dart';
-import 'package:tethered/screens/home/hashtag_page/hashtag_page.dart';
-import 'package:tethered/screens/home/home_page/home_page.dart';
-import 'package:tethered/screens/home/settings_page/settings_page.dart';
+import '../../screens/home/account_page/account_page.dart';
+import '../../screens/home/book_details_page/book_details_page.dart';
+import '../../screens/home/genre_page/genre_page.dart';
+import '../../screens/home/hashtag_page/hashtag_page.dart';
+import '../../screens/home/home_page/home_page.dart';
 
 class HomeRoutes {
   static const String bookDetails = '/book-details';
@@ -17,13 +16,13 @@ class HomeRoutes {
 final homeRouteBuilder = {
   HomeRoutes.bookDetails: (args) => GetPageRoute(
         page: () => BookDetailPage(
-          urls: args["urls"],
-          startingIndex: args["index"],
+          bookCoverList: args["bookCovers"],
+          index: args["index"],
         ),
       ),
   HomeRoutes.hashtagPage: (args) => GetPageRoute(
         page: () => HashtagPage(
-          hashtag: args["hashtag"],
+          hashtagId: args["hashtagId"],
         ),
       ),
   HomeRoutes.genrePage: (args) => GetPageRoute(
@@ -33,7 +32,10 @@ final homeRouteBuilder = {
       ),
   HomeRoutes.accountPage: (args) => GetPageRoute(
         // Also present in global routes
-        page: () => AccountPage(),
+        page: () => AccountPage(
+          uid: args['uid'],
+        ),
+
       ),
   HomeRoutes.settingsPage: (args) => GetPageRoute(
         // Also present in global routes

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:tethered/screens/read/index_page/components/create_new_tether_container.dart';
-import 'package:tethered/screens/write/write_page/components/draft_item.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/text_styles.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+import 'components/draft_list.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/enums/tab_item.dart';
+import '../../../utils/inner_routes/write_routes.dart';
+import '../../../utils/text_styles.dart';
+
+import 'components/published_list.dart';
 
 class WritePage extends StatelessWidget {
   @override
@@ -16,6 +20,16 @@ class WritePage extends StatelessWidget {
             'Write',
             style: TetheredTextStyles.secondaryAppBarHeading,
           ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () => Get.toNamed(
+                WriteRoutes.newStory,
+                id: tabItemsToIndex[
+                    Provider.of<TabItem>(context, listen: false)],
+              ),
+            )
+          ],
           centerTitle: true,
           backgroundColor: TetheredColors.textFieldBackground,
           bottom: TabBar(
@@ -39,45 +53,8 @@ class WritePage extends StatelessWidget {
         backgroundColor: TetheredColors.primaryDark,
         body: TabBarView(
           children: [
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: sx,
-                      vertical: sx / 1.5,
-                    ),
-                    child: CreateNewIndexContainer(
-                      text: 'Create New Story',
-                    ),
-                  );
-                }
-                return Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: sx,
-                    vertical: sx / 1.5,
-                  ),
-                  child: DraftItem(
-                    published: false,
-                  ),
-                );
-              },
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: 20,
-              itemBuilder: (context, index) => Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: sx,
-                  vertical: sx / 1.5,
-                ),
-                child: DraftItem(
-                  published: true,
-                ),
-              ),
-            ),
+            DraftList(),
+            PublishedList(),
           ],
         ),
       ),

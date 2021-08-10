@@ -1,17 +1,15 @@
-import 'dart:math';
-
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:tethered/models/book.dart';
-import 'package:tethered/screens/components/gap.dart';
-import 'package:tethered/screens/components/image_error_widget.dart';
-import 'package:tethered/screens/components/widgets/book_details_tag.dart';
-import 'package:tethered/theme/size_config.dart';
-import 'package:tethered/utils/colors.dart';
-import 'package:tethered/utils/text_styles.dart';
+import '../../../../models/draft.dart';
+import '../../../components/gap.dart';
+import '../../../components/image_error_widget.dart';
+import '../../../components/widgets/book_details_tag.dart';
+import '../../../../theme/size_config.dart';
+import '../../../../utils/colors.dart';
+import '../../../../utils/text_styles.dart';
 
 class DraftItem extends StatelessWidget {
   final String title = 'Jules and Vega';
@@ -20,21 +18,16 @@ class DraftItem extends StatelessWidget {
       "Hitmen Jules Winnfield and Vincent Vega arrive at an apartment to retrieve a briefcase for their boss, gangster Marsellus Wallace, from a business partner.";
   final bool published;
   final DocumentType documentType;
-  final Book book;
+  final Draft draft;
 
-  DraftItem({
-    Key key,
-    this.published,
-    this.documentType = DocumentType.tether,
-    // this.title,
-    // this.description,
-    // this.imgUrl
-    this.book,
-  }) : super(key: key);
+  const DraftItem(
+      {Key key, this.published, this.documentType = DocumentType.tether, this.draft})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: published ? null : () => Get.toNamed('/edit'),
+      onTap: published ? null : () => Get.toNamed('/edit', arguments: draft.doc),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: sy * 2,

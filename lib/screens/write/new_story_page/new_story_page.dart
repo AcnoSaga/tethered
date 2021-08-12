@@ -211,8 +211,8 @@ class NewStoryPage extends HookWidget {
                     .doc();
 
                 try {
-                  final ref = await FirebaseStorage.instance
-                      .ref('acounts/' + uid + '/drafts/' + workRef.id + '.png');
+                  final ref = FirebaseStorage.instance.ref(
+                      'accounts/' + uid + '/drafts/' + workRef.id + '.png');
 
                   await ref.putFile(imageFile.value);
 

@@ -5,12 +5,14 @@ class BookDetails {
   final String description;
   final String imageUrl;
   final String creatorId;
+  final String genre;
   final List<String> hashtags;
   final int numberOfTethers;
   final DocumentSnapshot doc;
 
   BookDetails({
     this.creatorId,
+    this.genre,
     this.title,
     this.description,
     this.imageUrl,
@@ -23,6 +25,7 @@ class BookDetails {
     print(doc["creatorId"]);
     return BookDetails(
       title: doc["title"],
+      genre: doc["genre"],
       description: doc["description"],
       imageUrl: doc["imageUrl"],
       creatorId: doc["creatorId"],

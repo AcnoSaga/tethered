@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 class Draft {
   final String title;
@@ -8,6 +9,7 @@ class Draft {
   final List<String> hashtags;
   final DateTime lastUpdated;
   final bool isTether;
+  final DocumentReference workRef;
   final DocumentSnapshot doc;
 
   Draft({
@@ -18,18 +20,20 @@ class Draft {
     this.hashtags,
     this.lastUpdated,
     this.isTether,
+    this.workRef,
     this.doc,
   });
 
   static Draft fromDocument(DocumentSnapshot doc) {
     return Draft(
-       title: doc["title"],
+      title: doc["title"],
       description: doc["description"],
       imageUrl: doc["imageUrl"],
       genre: doc["genre"],
       hashtags: <String>[...(doc["hashtags"])].toList(),
       lastUpdated: (doc["lastUpdated"] as Timestamp).toDate(),
       isTether: doc["isTether"],
+      workRef: doc["isTether"] == true ? doc["workRef"] : null,
       doc: doc,
     );
   }

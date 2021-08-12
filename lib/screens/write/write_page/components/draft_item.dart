@@ -1,5 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
@@ -137,6 +138,12 @@ class DraftItem extends StatelessWidget {
         actions: [
           TextButton.icon(
             onPressed: () async {
+              if (!draft.doc['isTether']) {
+                final ref = FirebaseStorage.instance
+                    .ref(draft.doc.reference.path + '.png');
+                print(draft.doc.reference.path + '.png');
+                await ref.delete();
+              }
               await draft.doc.reference.delete();
               onDelete();
               Get.back();

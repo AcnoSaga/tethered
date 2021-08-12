@@ -35,7 +35,7 @@ class TextValidators {
     if (description.isEmpty) {
       return 'Please enter a description';
     }
-    if (description.length > 1000) {
+    if (description.length > 300) {
       return 'Description is too long';
     }
     return null;

@@ -1,10 +1,15 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:provider/provider.dart' as FlutterBase;
+import 'package:tethered/screens/components/validators/text_validators.dart';
 import '../../../models/category_lists.dart';
 import '../../../riverpods/write/new_story_page_provider.dart';
 import '../../components/gap.dart';
@@ -22,13 +27,17 @@ import 'package:image_cropper/image_cropper.dart';
 
 class NewStoryPage extends HookWidget {
   final ImagePicker _picker = ImagePicker();
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     final imageFile = useState<File>(null);
     final hashtags = useState<List<String>>([]);
+    final genre = useState<String>(null);
     final state = useProvider(newStoryPageStateProvider);
-
+    final uploading = useState<bool>(false);
     return Scaffold(
       backgroundColor: TetheredColors.primaryDark,
       appBar: AppBar(
@@ -46,8 +55,13 @@ class NewStoryPage extends HookWidget {
           } else if (state is NewStoryPageLoading) {
             return Center(child: CircularProgressIndicator());
           } else if (state is NewStoryPageLoaded) {
-            return _createStoryDataInputs(
-                context, hashtags, imageFile, state.categoryLists);
+            return Form(
+              key: _formKey,
+              child: uploading.value
+                  ? Center(child: CircularProgressIndicator())
+                  : _createStoryDataInputs(context, hashtags, genre, imageFile,
+                      state.categoryLists, uploading),
+            );
           } else {
             return Center(child: Text('Please try again'));
           }
@@ -59,8 +73,10 @@ class NewStoryPage extends HookWidget {
   Widget _createStoryDataInputs(
       BuildContext context,
       ValueNotifier<List<String>> hashtags,
+      ValueNotifier<String> genre,
       ValueNotifier<File> imageFile,
-      CategoryLists categoryLists) {
+      CategoryLists categoryLists,
+      ValueNotifier<bool> uploading) {
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.symmetric(
@@ -77,6 +93,8 @@ class NewStoryPage extends HookWidget {
             Gap(height: 2),
             InputFormField(
               hintText: 'Untitled Story',
+              controller: titleController,
+              validator: TextValidators.title,
             ),
             Gap(height: 4),
             Text(
@@ -87,6 +105,8 @@ class NewStoryPage extends HookWidget {
             InputFormField(
               hintText: 'Description',
               maxLines: 10,
+              controller: descriptionController,
+              validator: TextValidators.description,
               minLines: 2,
             ),
             Gap(height: 4),
@@ -100,6 +120,9 @@ class NewStoryPage extends HookWidget {
               categoryList: categoryLists.genres
                   .map<String>((map) => map["name"])
                   .toList(),
+              onSelect: (genreName) {
+                genre.value = genreName;
+              },
             ),
             Gap(height: 4),
             GestureDetector(
@@ -150,7 +173,8 @@ class NewStoryPage extends HookWidget {
               onPressed: () async {
                 final imageSource = await _getImageSource(context);
                 if (imageSource == null) return;
-
+                SystemChannels.textInput.invokeMethod('TextInput.hide');
+                FocusScope.of(context).requestFocus(new FocusNode());
                 XFile image = await _picker.pickImage(
                   source: imageSource,
                 );
@@ -172,7 +196,54 @@ class NewStoryPage extends HookWidget {
             Gap(height: 4),
             ProceedButton(
               text: 'Create',
-              onPressed: () {},
+              onPressed: () async {
+                if (!_formKey.currentState.validate() ||
+                    imageFile.value == null ||
+                    genre.value == null) return;
+
+                uploading.value = true;
+
+                final uid = FirebaseAuth.instance.currentUser.uid;
+                final workRef = FirebaseFirestore.instance
+                    .collection('accounts')
+                    .doc(uid)
+                    .collection('drafts')
+                    .doc();
+
+                try {
+                  final ref = await FirebaseStorage.instance
+                      .ref('acounts/' + uid + '/drafts/' + workRef.id + '.png');
+
+                  await ref.putFile(imageFile.value);
+
+                  print(await ref.getDownloadURL());
+
+                  await workRef.set({
+                    "content": '[{"insert":"\n"}]',
+                    "description": descriptionController.text,
+                    "genre": categoryLists.genres
+                        .where((map) => map["name"] == genre.value)
+                        .first["id"],
+                    "hashtags": hashtags.value,
+                    "imageUrl": await ref.getDownloadURL(),
+                    "isTether": false,
+                    "lastUpdated": Timestamp.now(),
+                    "title": titleController.text,
+                  });
+                } catch (e) {
+                  // TODO: Manage error
+                  Get.back(
+                      id: tabItemsToIndex[FlutterBase.Provider.of<TabItem>(
+                          context,
+                          listen: false)]);
+                  print(e);
+                }
+                uploading.value = false;
+                Get.back(
+                    id: tabItemsToIndex[FlutterBase.Provider.of<TabItem>(
+                        context,
+                        listen: false)]);
+              },
             ),
           ],
         ),

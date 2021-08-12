@@ -14,7 +14,7 @@ class DraftList extends StatefulWidget {
 }
 
 class _DraftListState extends State<DraftList> {
-   PagingController<Draft, Draft> _pagingController =
+  PagingController<Draft, Draft> _pagingController =
       PagingController(firstPageKey: null);
 
   @override
@@ -38,9 +38,10 @@ class _DraftListState extends State<DraftList> {
               vertical: sx / 1.5,
             ),
             child: DraftItem(
-              draft: draft,
-              published: false,
-            ),
+                draft: draft,
+                onDelete: () {
+                  _pagingController.refresh();
+                }),
           ),
         ),
       ),

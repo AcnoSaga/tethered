@@ -57,7 +57,7 @@ class _EditPageState extends State<EditPage> {
       ),
       body: WillPopScope(
         onWillPop: () async {
-          await _saveContent();
+           await _saveContent();
           return true;
         },
         child: SafeArea(
@@ -134,7 +134,10 @@ class _EditPageState extends State<EditPage> {
   void _saveContent() async {
     final docRef = widget.docSnapshot.reference;
     print(_controller.document.toDelta().toJson());
-    await docRef.update({"content": jsonEncode(_controller.document.toDelta().toJson())});
-    print(121212);
+    if (widget.docSnapshot.exists)
+    await docRef.update({
+      "content": jsonEncode(_controller.document.toDelta().toJson()),
+      "lastUpdated": Timestamp.now(),
+    });
   }
 }

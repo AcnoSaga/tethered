@@ -166,7 +166,6 @@ class _SearchPageState extends State<SearchPage> {
                 case SearchType.works:
                   return PublishedDraftItem(
                     publishedDraft: item,
-                    documentType: DocumentType.story,
                   );
                   break;
                 case SearchType.users:

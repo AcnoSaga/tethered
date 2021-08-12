@@ -32,6 +32,8 @@ class _PublishedListState extends State<PublishedList> {
       child: PagedListView(
         pagingController: _pagingController,
         builderDelegate: PagedChildBuilderDelegate(
+          firstPageErrorIndicatorBuilder: (context) =>
+              Center(child: Text(_pagingController.error.toString())),
           itemBuilder: (context, publishedDraft, index) => Padding(
             padding: EdgeInsets.symmetric(
               horizontal: sx,

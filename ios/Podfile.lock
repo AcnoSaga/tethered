@@ -242,6 +242,9 @@ PODS:
   - Firebase/Functions (8.3.0):
     - Firebase/CoreOnly
     - FirebaseFunctions (~> 8.3.0)
+  - Firebase/Storage (8.3.0):
+    - Firebase/CoreOnly
+    - FirebaseStorage (~> 8.3.0)
   - firebase_analytics (8.1.2):
     - Firebase/Analytics (= 8.3.0)
     - firebase_core
@@ -252,6 +255,10 @@ PODS:
     - Flutter
   - firebase_core (1.4.0):
     - Firebase/CoreOnly (= 8.3.0)
+    - Flutter
+  - firebase_storage (10.0.1):
+    - Firebase/Storage (= 8.3.0)
+    - firebase_core
     - Flutter
   - FirebaseAnalytics (8.3.0):
     - FirebaseAnalytics/AdIdSupport (= 8.3.0)
@@ -305,6 +312,9 @@ PODS:
     - GoogleUtilities/Environment (~> 7.4)
     - GoogleUtilities/UserDefaults (~> 7.4)
     - PromisesObjC (< 3.0, >= 1.2)
+  - FirebaseStorage (8.3.0):
+    - FirebaseCore (~> 8.0)
+    - GTMSessionFetcher/Core (~> 1.5)
   - Flutter (1.0.0)
   - flutter_keyboard_visibility (0.0.1):
     - Flutter
@@ -401,6 +411,7 @@ DEPENDENCIES:
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
+  - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `Flutter`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
@@ -422,6 +433,7 @@ SPEC REPOS:
     - FirebaseFirestore
     - FirebaseFunctions
     - FirebaseInstallations
+    - FirebaseStorage
     - FMDB
     - GoogleAppMeasurement
     - GoogleDataTransport
@@ -445,6 +457,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_auth/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
+  firebase_storage:
+    :path: ".symlinks/plugins/firebase_storage/ios"
   Flutter:
     :path: Flutter
   flutter_keyboard_visibility:
@@ -471,6 +485,7 @@ SPEC CHECKSUMS:
   firebase_analytics: 796e1691b8f54a327995241f1e390fc8385bd62e
   firebase_auth: 5d48a6c2c9de6d8f7946269ef904136298c6aa12
   firebase_core: 72374607c8c6f5a0adc0559e5c5bf57deda975e3
+  firebase_storage: 0569941c22a1362f682ebef93755d8916601d22f
   FirebaseAnalytics: 456f2c51599870a15ded4548d1f1f7b2cabf65a7
   FirebaseAuth: fd12c82de44e7ad3b821610c387b8251f03aa0f9
   FirebaseCore: a6dba751680d7033b9d3831e1cfc95ead0605118
@@ -478,6 +493,7 @@ SPEC CHECKSUMS:
   FirebaseFirestore: f4f42828c6d82f6945575611c23dd343e0e7d0aa
   FirebaseFunctions: f391cdeef45d2e85ef4e16a6ecca05f30e162c41
   FirebaseInstallations: 1585729afc787877763208c2088ed84221161f77
+  FirebaseStorage: ff380720c204593d98c3e5482e62ccfbb522f0c5
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a

@@ -1,6 +1,8 @@
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../models/published_draft.dart';
 import '../../../components/gap.dart';
@@ -10,15 +12,11 @@ import '../../../../theme/size_config.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/text_styles.dart';
 
-import 'draft_item.dart';
-
 class PublishedDraftItem extends StatelessWidget {
-  final DocumentType documentType;
   final PublishedDraft publishedDraft;
 
   const PublishedDraftItem({
     Key key,
-    this.documentType = DocumentType.tether,
     this.publishedDraft,
   }) : super(key: key);
   @override
@@ -41,7 +39,7 @@ class PublishedDraftItem extends StatelessWidget {
                 color: TetheredColors.indexItemTextColor,
               ),
               badgeColor: TetheredColors.primaryDark,
-              showBadge: documentType == DocumentType.tether,
+              showBadge: publishedDraft.isTether,
               position: BadgePosition.bottomEnd(),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
@@ -62,7 +60,7 @@ class PublishedDraftItem extends StatelessWidget {
                   ),
                   errorWidget: (context, url, error) => ImageErrorWidget(),
                   fit: BoxFit.fill,
-                  imageUrl: 'https://picsum.photos/seed/picsum/200/300',
+                  imageUrl: publishedDraft.imageUrl,
                 ),
               ),
             ),
@@ -73,16 +71,43 @@ class PublishedDraftItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Jules and Vega',
-                    style: TetheredTextStyles.indexItemHeading),
+                Stack(
+                  children: [
+                    Text(publishedDraft.title,
+                        style: TetheredTextStyles.indexItemHeading),
+                    if (publishedDraft.creatorId ==
+                        FirebaseAuth.instance.currentUser.uid)
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: GestureDetector(
+                          onTap: () => _showDeleteDialog(context),
+                          child: Icon(
+                            Icons.more_horiz,
+                            color: TetheredColors.indexItemTextColor,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
                 Gap(height: 1.5),
                 Text(
-                  'Last updated: 19/11/20',
+                  'Published: ' +
+                      publishedDraft.published.day.toString() +
+                      '/' +
+                      publishedDraft.published.month.toString() +
+                      '/' +
+                      publishedDraft.published.year.toString(),
                   style: TetheredTextStyles.indexItemDescription,
                 ),
                 Gap(height: 1.5),
                 Text(
-                  'Hitmen Jules Winnfield and Vincent Vega arrive at an apartment to retrieve a briefcase for their boss, gangster Marsellus Wallace, from a business partner.',
+                  () {
+                    if (publishedDraft.description.length > 150) {
+                      return publishedDraft.description.substring(0, 150) +
+                          '...';
+                    }
+                    return publishedDraft.description;
+                  }(),
                   style: TetheredTextStyles.indexItemDescription,
                   textAlign: TextAlign.justify,
                   strutStyle: StrutStyle(height: 1.5),
@@ -91,25 +116,75 @@ class PublishedDraftItem extends StatelessWidget {
                 Gap(height: 2),
                 Wrap(
                   spacing: sy,
-                  children: [
-                    BookDetailsTag(
-                      label: '#horror',
-                      color: TetheredColors.primaryDark,
-                    ),
-                    BookDetailsTag(
-                      label: '#thriller',
-                      color: TetheredColors.primaryDark,
-                    ),
-                    BookDetailsTag(
-                      label: '#action',
-                      color: TetheredColors.primaryDark,
-                    ),
-                  ],
+                  children: publishedDraft.hashtags
+                      .map(
+                        (label) => BookDetailsTag(
+                          label: label,
+                          color: TetheredColors.primaryDark,
+                        ),
+                      )
+                      .toList(),
                 ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Future _deleteDialog() async {
+    await Get.dialog(
+      AlertDialog(
+        title: Text(
+            'Are you sure you want to delete this ${publishedDraft.isTether ? 'draft' : 'story'}?'),
+        actions: [
+          TextButton.icon(
+            onPressed: Get.back,
+            icon: Icon(
+              Icons.check_circle,
+              color: TetheredColors.acceptNegativeColor,
+            ),
+            label: Text(
+              'Yes',
+              style: TetheredTextStyles.acceptNegativeText,
+            ),
+          ),
+          TextButton.icon(
+            onPressed: Get.back,
+            icon: Icon(
+              Icons.cancel,
+              color: TetheredColors.rejectNegativeColor,
+            ),
+            label: Text(
+              'No',
+              style: TetheredTextStyles.rejectNegativeText,
+            ),
+          ),
+        ],
+      ),
+    );
+    Get.back();
+  }
+
+  void _showDeleteDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => BottomSheet(
+        builder: (BuildContext context) => ListView(
+          shrinkWrap: true,
+          children: [
+            ListTile(
+              title: Text('Delete'),
+              leading: Icon(Icons.delete),
+              onTap: () async {
+                await _deleteDialog();
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+        onClosing: () {},
       ),
     );
   }

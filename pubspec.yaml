@@ -31,6 +31,7 @@ dependencies:
   firebase_analytics: ^8.1.2
   firebase_auth: ^1.0.3
   firebase_core: ^1.0.3
+  firebase_storage: ^10.0.1
   flappy_search_bar: ^1.7.2
   floating_bottom_navigation_bar: ^1.4.1
   flutter:

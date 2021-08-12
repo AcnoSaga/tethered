@@ -21,6 +21,26 @@ class TextValidators {
     return null;
   }
 
+  static String title(String title) {
+    if (title.isEmpty) {
+      return 'Please enter a title';
+    }
+    if (title.length > 1000) {
+      return 'Title is too long';
+    }
+    return null;
+  }
+
+  static String description(String description) {
+    if (description.isEmpty) {
+      return 'Please enter a description';
+    }
+    if (description.length > 1000) {
+      return 'Description is too long';
+    }
+    return null;
+  }
+
   static String comment(String comment) {
     if (comment.isEmpty) {
       return 'Please enter a comment';

@@ -12,17 +12,13 @@ import '../../../../utils/colors.dart';
 import '../../../../utils/text_styles.dart';
 
 class DraftItem extends StatelessWidget {
-  final bool published;
-  final DocumentType documentType;
   final Draft draft;
-
-  const DraftItem(
-      {Key key, this.published, this.documentType = DocumentType.tether, this.draft})
-      : super(key: key);
+  final void Function() onDelete;
+  const DraftItem({Key key, this.draft, this.onDelete}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: published ? null : () => Get.toNamed('/edit', arguments: draft.doc),
+      onTap: () => Get.toNamed('/edit', arguments: draft.doc),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: sy * 2,
@@ -41,7 +37,7 @@ class DraftItem extends StatelessWidget {
                   color: TetheredColors.indexItemTextColor,
                 ),
                 badgeColor: TetheredColors.primaryDark,
-                showBadge: documentType == DocumentType.tether,
+                showBadge: draft.isTether,
                 position: BadgePosition.bottomEnd(),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
@@ -62,7 +58,7 @@ class DraftItem extends StatelessWidget {
                     ),
                     errorWidget: (context, url, error) => ImageErrorWidget(),
                     fit: BoxFit.fill,
-                    imageUrl: 'https://picsum.photos/seed/picsum/200/300',
+                    imageUrl: draft.imageUrl,
                   ),
                 ),
               ),
@@ -75,29 +71,38 @@ class DraftItem extends StatelessWidget {
                 children: [
                   Stack(
                     children: [
-                      Text('Jules and Vega',
+                      Text(draft.title,
                           style: TetheredTextStyles.indexItemHeading),
-                      if (!published)
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: GestureDetector(
-                            onTap: () => _showDeleteDialog(context),
-                            child: Icon(
-                              Icons.more_horiz,
-                              color: TetheredColors.indexItemTextColor,
-                            ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: GestureDetector(
+                          onTap: () => _showDeleteDialog(context),
+                          child: Icon(
+                            Icons.more_horiz,
+                            color: TetheredColors.indexItemTextColor,
                           ),
                         ),
+                      ),
                     ],
                   ),
                   Gap(height: 1.5),
                   Text(
-                    '${published ? "Published" : "Last updated"}: 19/11/20',
+                    'Last updated: ' +
+                        draft.lastUpdated.day.toString() +
+                        '/' +
+                        draft.lastUpdated.month.toString() +
+                        '/' +
+                        draft.lastUpdated.year.toString(),
                     style: TetheredTextStyles.indexItemDescription,
                   ),
                   Gap(height: 1.5),
                   Text(
-                    'Hitmen Jules Winnfield and Vincent Vega arrive at an apartment to retrieve a briefcase for their boss, gangster Marsellus Wallace, from a business partner.',
+                    () {
+                      if (draft.description.length > 150) {
+                        return draft.description.substring(0, 150) + '...';
+                      }
+                      return draft.description;
+                    }(),
                     style: TetheredTextStyles.indexItemDescription,
                     textAlign: TextAlign.justify,
                     strutStyle: StrutStyle(height: 1.5),
@@ -106,20 +111,14 @@ class DraftItem extends StatelessWidget {
                   Gap(height: 2),
                   Wrap(
                     spacing: sy,
-                    children: [
-                      BookDetailsTag(
-                        label: '#horror',
-                        color: TetheredColors.primaryDark,
-                      ),
-                      BookDetailsTag(
-                        label: '#thriller',
-                        color: TetheredColors.primaryDark,
-                      ),
-                      BookDetailsTag(
-                        label: '#action',
-                        color: TetheredColors.primaryDark,
-                      ),
-                    ],
+                    children: draft.hashtags
+                        .map(
+                          (label) => BookDetailsTag(
+                            label: label,
+                            color: TetheredColors.primaryDark,
+                          ),
+                        )
+                        .toList(),
                   ),
                 ],
               ),
@@ -134,10 +133,14 @@ class DraftItem extends StatelessWidget {
     await Get.dialog(
       AlertDialog(
         title: Text(
-            'Are you sure you want to delete this ${documentType == DocumentType.tether ? 'draft' : 'story'}?'),
+            'Are you sure you want to delete this ${draft.isTether ? 'draft' : 'story'}?'),
         actions: [
           TextButton.icon(
-            onPressed: Get.back,
+            onPressed: () async {
+              await draft.doc.reference.delete();
+              onDelete();
+              Get.back();
+            },
             icon: Icon(
               Icons.check_circle,
               color: TetheredColors.acceptNegativeColor,
@@ -161,6 +164,7 @@ class DraftItem extends StatelessWidget {
         ],
       ),
     );
+    print('------------------------------');
     Get.back();
   }
 
@@ -176,13 +180,9 @@ class DraftItem extends StatelessWidget {
               leading: Icon(Icons.delete),
               onTap: () async {
                 await _deleteDialog();
+
                 Navigator.pop(context);
               },
-            ),
-            ListTile(
-              title: Text('Edit'),
-              leading: Icon(Icons.edit),
-              onTap: () => Navigator.pop(context),
             ),
           ],
         ),

@@ -61,6 +61,7 @@ class BookDetailsPage extends HookWidget {
     return Scaffold(
       backgroundColor: TetheredColors.primaryDark,
       appBar: AppBar(
+        brightness: Brightness.dark,
         elevation: 0,
         backgroundColor: TetheredColors.primaryDark,
         actions: [
@@ -177,12 +178,9 @@ class BookDetailsPage extends HookWidget {
                     id: tabItemsToIndex[FlutterBase.Provider.of<TabItem>(
                         context,
                         listen: false)]),
-                child: CircleAvatar(
-                  //TODO: Setup background image as fallback
-                  foregroundImage: NetworkImage(
-                    // TODO: Calculate link according to user id
-                    'https://images.unsplash.com/photo-1552058544-f2b08422138a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1244&q=80',
-                  ),
+                child: Icon(
+                  Icons.account_circle,
+                  color: Colors.white,
                 ),
               ),
               Gap(height: 2),

@@ -32,6 +32,7 @@ class _CommentsPageState extends State<CommentsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.dark,
         title: Text(
           'Comments',
           style: TetheredTextStyles.secondaryAppBarHeading,

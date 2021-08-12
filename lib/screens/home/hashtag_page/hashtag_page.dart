@@ -25,6 +25,8 @@ class HashtagPage extends ConsumerWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            brightness: Brightness.dark,
+
             elevation: 10,
             // pinned: true,
             floating: true,

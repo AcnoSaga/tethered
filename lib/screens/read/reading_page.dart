@@ -288,6 +288,7 @@ class _ReadingPageState extends State<ReadingPage> {
               }(),
               slivers: [
                 SliverAppBar(
+                  brightness: Brightness.dark,
                   actions: [
                     ValueListenableBuilder<bool>(
                         valueListenable: isLikedNotifier,

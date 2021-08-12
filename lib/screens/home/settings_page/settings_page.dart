@@ -11,6 +11,7 @@ class SettingsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: TetheredColors.primaryDark,
       appBar: AppBar(
+        brightness: Brightness.dark,
         title: Text('Settings', style: TetheredTextStyles.homeAppBarHeading),
         backgroundColor: TetheredColors.primaryDark,
       ),

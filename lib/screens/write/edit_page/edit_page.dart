@@ -51,13 +51,14 @@ class _EditPageState extends State<EditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.dark,
         centerTitle: true,
         backgroundColor: TetheredColors.textFieldBackground,
         title: Text('Editor'),
       ),
       body: WillPopScope(
         onWillPop: () async {
-           await _saveContent();
+          await _saveContent();
           return true;
         },
         child: SafeArea(
@@ -135,9 +136,9 @@ class _EditPageState extends State<EditPage> {
     final docRef = widget.docSnapshot.reference;
     print(_controller.document.toDelta().toJson());
     if (widget.docSnapshot.exists)
-    await docRef.update({
-      "content": jsonEncode(_controller.document.toDelta().toJson()),
-      "lastUpdated": Timestamp.now(),
-    });
+      await docRef.update({
+        "content": jsonEncode(_controller.document.toDelta().toJson()),
+        "lastUpdated": Timestamp.now(),
+      });
   }
 }

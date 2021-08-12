@@ -100,6 +100,7 @@ class _EntryPageState extends State<EntryPage> {
         controller: controller,
         slivers: [
           SliverAppBar(
+            brightness: Brightness.dark,
             actions: [
               ValueListenableBuilder<bool>(
                   valueListenable: isLikedNotifier,

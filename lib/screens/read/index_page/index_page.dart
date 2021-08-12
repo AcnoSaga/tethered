@@ -14,6 +14,7 @@ class IndexPage extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          brightness: Brightness.dark,
           actions: [
             IconButton(
               icon: Icon(Icons.add),

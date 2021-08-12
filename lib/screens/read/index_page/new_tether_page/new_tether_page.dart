@@ -29,6 +29,7 @@ class _NewTetherPageState extends State<NewTetherPage> {
     return Scaffold(
       backgroundColor: TetheredColors.primaryDark,
       appBar: AppBar(
+        brightness: Brightness.dark,
         elevation: 10,
         backgroundColor: TetheredColors.primaryDark,
         title: Text(

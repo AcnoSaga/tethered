@@ -29,6 +29,7 @@ class AccountPage extends ConsumerWidget {
     return Scaffold(
         backgroundColor: TetheredColors.primaryDark,
         appBar: AppBar(
+          brightness: Brightness.dark,
           actions: [
             if (currentId == uid)
               IconButton(

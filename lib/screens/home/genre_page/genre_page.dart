@@ -21,6 +21,7 @@ class GenrePage extends ConsumerWidget {
     return Scaffold(
         backgroundColor: TetheredColors.primaryDark,
         appBar: AppBar(
+          brightness: Brightness.dark,
           elevation: 0,
           backgroundColor: TetheredColors.primaryDark,
         ),

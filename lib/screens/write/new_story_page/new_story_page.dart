@@ -41,6 +41,7 @@ class NewStoryPage extends HookWidget {
     return Scaffold(
       backgroundColor: TetheredColors.primaryDark,
       appBar: AppBar(
+        brightness: Brightness.dark,
         elevation: 10,
         backgroundColor: TetheredColors.primaryDark,
         title: Text(

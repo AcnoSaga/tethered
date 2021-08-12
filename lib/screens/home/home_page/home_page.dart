@@ -23,6 +23,7 @@ class HomePage extends ConsumerWidget {
     return Scaffold(
         backgroundColor: TetheredColors.primaryDark,
         appBar: AppBar(
+          brightness: Brightness.dark,
           elevation: 10,
           backgroundColor: TetheredColors.primaryDark,
           leading: IconButton(

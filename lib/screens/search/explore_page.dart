@@ -11,6 +11,7 @@ import '../../utils/enums/tab_item.dart';
 import '../../utils/inner_routes/search_routes.dart';
 import '../../utils/text_styles.dart';
 
+// ! Not being used in the app
 class ExplorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

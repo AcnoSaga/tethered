@@ -16,6 +16,7 @@ class WritePage extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          brightness: Brightness.dark,
           title: Text(
             'Write',
             style: TetheredTextStyles.secondaryAppBarHeading,

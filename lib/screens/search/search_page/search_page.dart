@@ -61,6 +61,7 @@ class _SearchPageState extends State<SearchPage> {
         List<PublishedDraft> publishedDrafts = [];
 
         for (AlgoliaObjectSnapshot snapshot in results) {
+          
           publishedDrafts.add(
             PublishedDraft.fromDocument(
               await FirebaseFirestore.instance

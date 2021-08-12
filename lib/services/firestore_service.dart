@@ -50,6 +50,7 @@ class FirestoreService {
 
   Future<BookDetails> getBookDetails(BookCover bookCover) async {
     final docSnapshot = await bookCover.workRef.get();
+    print(bookCover.workRef);
     return BookDetails.fromDocument(docSnapshot);
   }
 

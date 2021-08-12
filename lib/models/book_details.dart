@@ -22,7 +22,7 @@ class BookDetails {
   });
 
   static BookDetails fromDocument(DocumentSnapshot doc) {
-    print(doc["creatorId"]);
+    print(doc.data());
     return BookDetails(
       title: doc["title"],
       genre: doc["genre"],

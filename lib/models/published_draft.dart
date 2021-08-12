@@ -26,6 +26,15 @@ class PublishedDraft {
   });
 
   static PublishedDraft fromDocument(DocumentSnapshot doc) {
+    final isBook =
+        (doc.data() as Map).containsKey('isTether') && doc["isTether"] == true
+            ? false
+            : true;
+    final hasWorkRef = (doc.data() as Map).containsKey('workRef');
+
+    print(isBook);
+    print(hasWorkRef);
+    print('+++++++++++++++++++++=');
     return PublishedDraft(
       title: doc["title"],
       description: doc["description"],
@@ -33,9 +42,9 @@ class PublishedDraft {
       genre: doc["genre"],
       hashtags: <String>[...(doc["hashtags"])].toList(),
       published: (doc["published"] as Timestamp).toDate(),
-      isTether: doc["isTether"],
+      isTether: isBook ? null : doc["isTether"],
       creatorId: doc["creatorId"],
-      workRef: doc["workRef"],
+      workRef: hasWorkRef ? doc["workRef"] : doc.reference,
       doc: doc,
     );
   }

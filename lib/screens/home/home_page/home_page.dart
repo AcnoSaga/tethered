@@ -21,38 +21,21 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, ScopedReader watch) {
     final state = watch(homePageStateProvider);
     return Scaffold(
-        drawer: Drawer(
-          child: Container(
-            color: TetheredColors.primaryDark,
-            child: ListView(
-              children: [
-                DrawerHeader(
-                  child: GestureDetector(
-                    onTap: () async {
-                      await Get.toNamed(HomeRoutes.accountPage,
-                          id: tabItemsToIndex[FlutterBase.Provider.of<TabItem>(
-                            context,
-                            listen: false,
-                          )],
-                          arguments: {
-                            "uid": locator<AuthenticationService>()
-                                .currentUser
-                                .uid,
-                          });
-                      // Get cannot manage this, Drawer is controlled by default Navigator
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('Account'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
         backgroundColor: TetheredColors.primaryDark,
         appBar: AppBar(
           elevation: 10,
           backgroundColor: TetheredColors.primaryDark,
+          leading: IconButton(
+            icon: Icon(Icons.account_circle, color: Colors.white),
+            onPressed: () => Get.toNamed(HomeRoutes.accountPage,
+                id: tabItemsToIndex[FlutterBase.Provider.of<TabItem>(
+                  context,
+                  listen: false,
+                )],
+                arguments: {
+                  "uid": locator<AuthenticationService>().currentUser.uid,
+                }),
+          ),
           title: Text(
             'Tethered',
             style: TetheredTextStyles.homeAppBarHeading,

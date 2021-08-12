@@ -1,6 +1,7 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' as bloc;
 import 'package:get/get.dart';
+import 'package:tethered/screens/home/settings_page/settings_page.dart';
 import '../cubits/auth_blocs/login_bloc/login_bloc.dart';
 import '../injection/injection.dart';
 import '../screens/auth/forgot_password/forgot_password.dart';
@@ -77,20 +78,20 @@ class Routes {
       ),
       GetPage(
         name: '/book-details',
-        page: () => BookDetailPage(),
+        page: () => BookDetailsPage(),
       ),
       GetPage(
         name: '/hashtag',
         page: () => HashtagPage(),
       ),
       GetPage(
-        name: '/account',
-        page: () => AccountPage(),
-      ),
-      GetPage(
         name: '/new-story',
         page: () => NewStoryPage(),
         transition: Transition.downToUp,
+      ),
+      GetPage(
+        name: '/settings',
+        page: () => SettingsPage(),
       ),
     ];
   }

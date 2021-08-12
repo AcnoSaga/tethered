@@ -7,7 +7,8 @@ import 'package:tethered/utils/enums/tab_item.dart';
 import 'package:tethered/utils/inner_routes/home_routes.dart';
 
 class TagItem extends StatelessWidget {
-  const TagItem({Key key}) : super(key: key);
+  final String hashtagId;
+  const TagItem({Key key, this.hashtagId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class TagItem extends StatelessWidget {
       onTap: () => Get.toNamed(
         HomeRoutes.hashtagPage,
         arguments: {
-          "hashtag": 'thriller',
+          "hashtagId": hashtagId,
         },
         id: tabItemsToIndex[Provider.of<TabItem>(context, listen: false)],
       ),
@@ -23,18 +24,11 @@ class TagItem extends StatelessWidget {
         backgroundImage: AssetImage("assets/images/TagIcon.png"),
       ),
       title: Text(
-        'thriller',
+        hashtagId,
         style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: sText * 4,
             color: TetheredColors.textColor),
-      ),
-      subtitle: Text(
-        "50M",
-        style: TextStyle(
-          fontSize: sText * 3,
-          color: TetheredColors.textColor,
-        ),
       ),
     );
   }

@@ -124,6 +124,12 @@ class _EntryPageState extends State<EntryPage> {
                       color: isLiked == true ? Colors.blue : Colors.white,
                     );
                   }),
+              IconButton(
+                icon: Icon(Icons.account_circle),
+                onPressed: () => Get.toNamed('/account', arguments: {
+                  "uid": widget.bookDetails.creatorId,
+                }),
+              ),
             ],
             backgroundColor: TetheredColors.primaryDark,
             floating: true,

@@ -1,4 +1,5 @@
 import 'package:get/route_manager.dart';
+import 'package:tethered/screens/home/settings_page/settings_page.dart';
 import '../../screens/home/account_page/account_page.dart';
 import '../../screens/home/book_details_page/book_details_page.dart';
 import '../../screens/home/genre_page/genre_page.dart';
@@ -15,7 +16,7 @@ class HomeRoutes {
 
 final homeRouteBuilder = {
   HomeRoutes.bookDetails: (args) => GetPageRoute(
-        page: () => BookDetailPage(
+        page: () => BookDetailsPage(
           bookCoverList: args["bookCovers"],
           index: args["index"],
         ),
@@ -35,7 +36,6 @@ final homeRouteBuilder = {
         page: () => AccountPage(
           uid: args['uid'],
         ),
-
       ),
   HomeRoutes.settingsPage: (args) => GetPageRoute(
         // Also present in global routes

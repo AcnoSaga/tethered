@@ -12,11 +12,11 @@ import '../../../../utils/text_styles.dart';
 
 import 'draft_item.dart';
 
-class PubslishedDraftItem extends StatelessWidget {
+class PublishedDraftItem extends StatelessWidget {
   final DocumentType documentType;
   final PublishedDraft publishedDraft;
 
-  const PubslishedDraftItem({
+  const PublishedDraftItem({
     Key key,
     this.documentType = DocumentType.tether,
     this.publishedDraft,

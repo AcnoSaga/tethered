@@ -21,27 +21,29 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
-  flutter_test:
-    sdk: flutter
+  algolia: ^1.0.1
   badges: ^2.0.1
   cached_network_image: ^3.0.0
   carousel_slider: ^3.0.0
   cloud_firestore: ^2.2.2
+  cloud_functions: ^3.0.0
   cupertino_icons: ^1.0.2
   firebase_analytics: ^8.1.2
   firebase_auth: ^1.0.3
   firebase_core: ^1.0.3
   flappy_search_bar: ^1.7.2
   floating_bottom_navigation_bar: ^1.4.1
+  flutter:
+    sdk: flutter
   flutter_bloc: ^7.0.0
+  flutter_hooks: null
   flutter_quill: ^1.1.8
   flutter_snake_navigationbar: ^0.5.0
   flutter_spinkit: ^5.0.0
-  flutter_hooks:
   flutter_svg: ^0.22.0
-  cloud_functions: "^3.0.0"
+  flutter_test:
+    sdk: flutter
+  freezed_annotation: null
   get: ^4.1.4
   get_it: ^7.1.3
   google_fonts: ^2.0.0
@@ -53,15 +55,13 @@ dependencies:
   path_provider: ^2.0.2
   provider: ^5.0.0
   pull_to_refresh: ^2.0.0
+  settings_ui: ^1.0.0
   shimmer: ^2.0.0
-  freezed_annotation:
-  settings_ui: ^0.6.0
-  algolia: ^1.0.1
 
 dev_dependencies:
   build_runner: null
+  freezed: null
   injectable_generator: ^1.0.4
-  freezed:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter.

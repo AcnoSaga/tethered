@@ -20,7 +20,7 @@ final searchRouteBuilder = {
         ),
       ),
   SearchRoutes.bookDetails: (args) => GetPageRoute(
-        page: () => BookDetailPage(
+        page: () => BookDetailsPage(
           bookCoverList: args["bookCovers"],
           index: args["index"],
         ),

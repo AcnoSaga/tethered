@@ -201,7 +201,7 @@ class _ReadingPageState extends State<ReadingPage> {
                           backgroundColor: Colors.transparent,
                           onTap: (int val) {
                             //returns tab id which is user tapped
-                            if (val % 2 == 0)
+                            if (val == 0)
                               Get.toNamed(
                                 '/index',
                                 arguments: {
@@ -222,11 +222,9 @@ class _ReadingPageState extends State<ReadingPage> {
                           },
                           currentIndex: 0,
                           items: [
-                            FloatingNavbarItem(icon: Icons.home, title: ''),
                             FloatingNavbarItem(icon: Icons.menu, title: ''),
                             FloatingNavbarItem(
                                 icon: Icons.chat_bubble_outline, title: ''),
-                            FloatingNavbarItem(icon: Icons.share, title: ''),
                           ],
                         ),
                       )
@@ -314,6 +312,12 @@ class _ReadingPageState extends State<ReadingPage> {
                             color: isLiked == true ? Colors.blue : Colors.white,
                           );
                         }),
+                    IconButton(
+                      icon: Icon(Icons.account_circle),
+                      onPressed: () => Get.toNamed('/account', arguments: {
+                        "uid": widget.bookDetails.creatorId,
+                      }),
+                    ),
                   ],
                   backgroundColor: TetheredColors.primaryDark,
                   floating: true,

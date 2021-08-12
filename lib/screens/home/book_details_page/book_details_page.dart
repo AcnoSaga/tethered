@@ -6,7 +6,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:provider/provider.dart' as FlutterBase;
 import 'package:shimmer/shimmer.dart';
+import 'package:tethered/utils/enums/tab_item.dart';
+import 'package:tethered/utils/inner_routes/home_routes.dart';
 import '../../../models/book_cover.dart';
 import '../../../models/book_details.dart';
 import '../../../riverpods/home/book_detail/book_carousel_index_provider.dart';
@@ -22,11 +25,11 @@ import '../../../utils/text_styles.dart';
 
 import '../../components/widgets/book_details_tag.dart';
 
-class BookDetailPage extends HookWidget {
+class BookDetailsPage extends HookWidget {
   final List<BookCover> bookCoverList;
   final int index;
 
-  const BookDetailPage({
+  const BookDetailsPage({
     this.bookCoverList,
     this.index,
     Key key,
@@ -91,7 +94,7 @@ class BookDetailPage extends HookWidget {
                     child: Text("Please try again."),
                   );
                 } else if (bookDetailsState is BookDetailsLoaded) {
-                  return _bookInfo(bookDetailsState.bookDetails);
+                  return _bookInfo(bookDetailsState.bookDetails, context);
                 } else {
                   throw UnimplementedError();
                 }
@@ -153,7 +156,7 @@ class BookDetailPage extends HookWidget {
     );
   }
 
-  Widget _bookInfo(BookDetails details) {
+  Widget _bookInfo(BookDetails details, BuildContext context) {
     return Column(
       children: [
         Padding(
@@ -164,6 +167,23 @@ class BookDetailPage extends HookWidget {
                 details.title,
                 style: TetheredTextStyles.bookDetailsHeading,
                 textAlign: TextAlign.center,
+              ),
+              Gap(height: 2),
+              GestureDetector(
+                onTap: () => Get.toNamed(HomeRoutes.accountPage,
+                    arguments: {
+                      "uid": details.creatorId,
+                    },
+                    id: tabItemsToIndex[FlutterBase.Provider.of<TabItem>(
+                        context,
+                        listen: false)]),
+                child: CircleAvatar(
+                  //TODO: Setup background image as fallback
+                  foregroundImage: NetworkImage(
+                    // TODO: Calculate link according to user id
+                    'https://images.unsplash.com/photo-1552058544-f2b08422138a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1244&q=80',
+                  ),
+                ),
               ),
               Gap(height: 2),
               Wrap(

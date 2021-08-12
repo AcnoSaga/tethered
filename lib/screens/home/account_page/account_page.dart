@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tethered/utils/enums/tab_item.dart';
+import 'package:provider/provider.dart' as FlutterBase;
+import 'package:tethered/utils/inner_routes/home_routes.dart';
 import '../../../models/account.dart';
 import '../../../riverpods/home/account/account_page_provider.dart';
 import '../../components/gap.dart';
@@ -14,8 +18,9 @@ import 'components/account_page_book_grid.dart';
 
 class AccountPage extends ConsumerWidget {
   final String uid;
+  final currentId = FirebaseAuth.instance.currentUser.uid;
 
-  const AccountPage({Key key, this.uid}) : super(key: key);
+  AccountPage({Key key, this.uid}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
@@ -24,8 +29,20 @@ class AccountPage extends ConsumerWidget {
     return Scaffold(
         backgroundColor: TetheredColors.primaryDark,
         appBar: AppBar(
+          actions: [
+            if (currentId == uid)
+              IconButton(
+                  onPressed: () => Get.toNamed(
+                        HomeRoutes.settingsPage,
+                        id: tabItemsToIndex[FlutterBase.Provider.of<TabItem>(
+                          context,
+                          listen: false,
+                        )],
+                      ),
+                  icon: Icon(Icons.settings))
+          ],
           title: Text(
-            state is AccountPageLoaded ? state.account.name : 'Account',
+            state is AccountPageLoaded ? state.account.name : '',
             style: TetheredTextStyles.homeAppBarHeading,
           ),
           backgroundColor: TetheredColors.primaryDark,
@@ -83,18 +100,15 @@ class AccountPage extends ConsumerWidget {
                       title: 'Works',
                       data: account.works,
                     ),
-                    AccountNumericDataColumn(
-                      title: 'Following',
-                      data: account.following,
-                    ),
                   ],
                   direction: Axis.horizontal,
                 ),
-                Gap(height: 2),
-                ProceedButton(
-                  text: 'Follow',
-                  onPressed: () {},
-                ),
+                if (currentId != id) Gap(height: 2),
+                if (currentId != id)
+                  ProceedButton(
+                    text: 'Follow',
+                    onPressed: () {},
+                  ),
               ],
             ),
           ),

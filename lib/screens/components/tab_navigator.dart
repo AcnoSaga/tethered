@@ -11,24 +11,30 @@ class TabNavigator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Provider<TabItem>.value(
       value: tabItem,
-      child: Navigator(
-          key: Get.nestedKey(tabItemsToIndex[tabItem]),
-          initialRoute: '/',
-          onGenerateRoute: (routeSettings) {
-            Map<String, GetPageRoute Function(dynamic)> routes = {};
-            tabItems
-                .forEach((item) => routes.addAll(tabItemToRouteBuilders[item]));
-            routes.putIfAbsent('/', () => tabItemToInitialRoute[tabItem]);
-            final getPageRoute =
-                routes[routeSettings.name](routeSettings.arguments);
-            return GetPageRoute(
-              page: getPageRoute.page,
-              transition: getPageRoute.transition,
-              curve: getPageRoute.curve,
-              transitionDuration: getPageRoute.transitionDuration,
-              settings: routeSettings,
-            );
-          }),
+      child: WillPopScope(
+        onWillPop: () async {
+          Get.back(id: tabItemsToIndex[tabItem]);
+          return false;
+        },
+        child: Navigator(
+            key: Get.nestedKey(tabItemsToIndex[tabItem]),
+            initialRoute: '/',
+            onGenerateRoute: (routeSettings) {
+              Map<String, GetPageRoute Function(dynamic)> routes = {};
+              tabItems.forEach(
+                  (item) => routes.addAll(tabItemToRouteBuilders[item]));
+              routes.putIfAbsent('/', () => tabItemToInitialRoute[tabItem]);
+              final getPageRoute =
+                  routes[routeSettings.name](routeSettings.arguments);
+              return GetPageRoute(
+                page: getPageRoute.page,
+                transition: getPageRoute.transition,
+                curve: getPageRoute.curve,
+                transitionDuration: getPageRoute.transitionDuration,
+                settings: routeSettings,
+              );
+            }),
+      ),
     );
   }
 }

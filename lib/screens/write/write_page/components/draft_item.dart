@@ -12,10 +12,6 @@ import '../../../../utils/colors.dart';
 import '../../../../utils/text_styles.dart';
 
 class DraftItem extends StatelessWidget {
-  final String title = 'Jules and Vega';
-  final String imgUrl = "https://picsum.photos/seed/picsum/200/300";
-  final String description =
-      "Hitmen Jules Winnfield and Vincent Vega arrive at an apartment to retrieve a briefcase for their boss, gangster Marsellus Wallace, from a business partner.";
   final bool published;
   final DocumentType documentType;
   final Draft draft;
@@ -23,7 +19,6 @@ class DraftItem extends StatelessWidget {
   const DraftItem(
       {Key key, this.published, this.documentType = DocumentType.tether, this.draft})
       : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -67,7 +62,7 @@ class DraftItem extends StatelessWidget {
                     ),
                     errorWidget: (context, url, error) => ImageErrorWidget(),
                     fit: BoxFit.fill,
-                    imageUrl: book == null ? imgUrl : book.imgUrl,
+                    imageUrl: 'https://picsum.photos/seed/picsum/200/300',
                   ),
                 ),
               ),
@@ -80,7 +75,7 @@ class DraftItem extends StatelessWidget {
                 children: [
                   Stack(
                     children: [
-                      Text(book == null ? title : book.authorName,
+                      Text('Jules and Vega',
                           style: TetheredTextStyles.indexItemHeading),
                       if (!published)
                         Align(
@@ -97,12 +92,12 @@ class DraftItem extends StatelessWidget {
                   ),
                   Gap(height: 1.5),
                   Text(
-                    '${published ? "Published" : "Last updated"}: ${book == null ? "Dummy Date" : book.date}',
+                    '${published ? "Published" : "Last updated"}: 19/11/20',
                     style: TetheredTextStyles.indexItemDescription,
                   ),
                   Gap(height: 1.5),
                   Text(
-                    book == null ? description : book.desc,
+                    'Hitmen Jules Winnfield and Vincent Vega arrive at an apartment to retrieve a briefcase for their boss, gangster Marsellus Wallace, from a business partner.',
                     style: TetheredTextStyles.indexItemDescription,
                     textAlign: TextAlign.justify,
                     strutStyle: StrutStyle(height: 1.5),

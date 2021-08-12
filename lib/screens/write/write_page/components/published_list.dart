@@ -37,7 +37,7 @@ class _PublishedListState extends State<PublishedList> {
               horizontal: sx,
               vertical: sx / 1.5,
             ),
-            child: PubslishedDraftItem(
+            child: PublishedDraftItem(
               publishedDraft: publishedDraft,
             ),
           ),

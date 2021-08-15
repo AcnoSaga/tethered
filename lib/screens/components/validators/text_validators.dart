@@ -25,7 +25,7 @@ class TextValidators {
     if (title.isEmpty) {
       return 'Please enter a title';
     }
-    if (title.length > 1000) {
+    if (title.length > 40) {
       return 'Title is too long';
     }
     return null;

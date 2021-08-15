@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'tethered_user.dart';
 
-
 class Comment {
   final String content;
   final String imageUrl;
@@ -38,7 +37,7 @@ class Comment {
     return Comment(
       content: text,
       imageUrl: tetheredUser.imageUrl,
-      username: tetheredUser.name,
+      username: tetheredUser.username,
       userRef: tetheredUser.doc.reference,
       published: DateTime.now(),
     );

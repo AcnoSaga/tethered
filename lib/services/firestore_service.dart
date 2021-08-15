@@ -153,10 +153,15 @@ class FirestoreService {
   Future<List<IndexItem>> getIndexItems(
       IndexItem lastIndexItem, BookDetails bookDetails) async {
     final query = lastIndexItem == null
-        ? await bookDetails.doc.reference.collection('index').limit(10).get()
+        ? await bookDetails.doc.reference
+            .collection('index')
+            .orderBy('published')
+            .limit(10)
+            .get()
         : await bookDetails.doc.reference
             .collection('index')
             .limit(10)
+            .orderBy('published')
             .startAfterDocument(lastIndexItem.doc)
             .get();
     return query.docs.map((doc) => IndexItem.fromDocument(doc)).toList();

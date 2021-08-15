@@ -1,7 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:tethered/screens/components/no_user_found_widget.dart';
 import 'package:tethered/utils/enums/tab_item.dart';
 import 'package:provider/provider.dart' as FlutterBase;
 import 'package:tethered/utils/inner_routes/home_routes.dart';
@@ -73,10 +76,48 @@ class AccountPage extends ConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircleAvatar(
-                  maxRadius: sy * 15,
-                  minRadius: sy * 10,
-                  backgroundImage: NetworkImage(account.imageUrl),
+                Container(
+                  height: sx * 15,
+                  width: sx * 15,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: account.imageUrl.isEmpty
+                      ? NoUserFoundWidget(name: account.name)
+                      : CachedNetworkImage(
+                          imageBuilder: (context, imageProvider) => Container(
+                            width: sy * 50,
+                            height: sy * 50,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                fit: BoxFit.fill,
+                                image: imageProvider,
+                              ),
+                            ),
+                          ),
+                          // width: 300,
+                          placeholder: (context, url) => Shimmer.fromColors(
+                            baseColor: Colors.grey[500],
+                            highlightColor: Colors.grey[400],
+                            child: Center(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                ),
+                                child: LimitedBox(
+                                  maxHeight: sx * 20,
+                                  child: SizedBox.expand(),
+                                ),
+                              ),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              NoUserFoundWidget(name: account.name),
+                          fit: BoxFit.fill,
+                          imageUrl: account.imageUrl,
+                        ),
                 ),
                 Gap(height: 2),
                 Text(

@@ -19,11 +19,16 @@ class UserItem extends StatelessWidget {
           arguments: {
             "uid": user.uid,
           }),
-      leading: CircleAvatar(
-        backgroundImage: NetworkImage(user.imageUrl),
-      ),
+      leading: user.imageUrl.isEmpty
+          ? CircleAvatar(
+              child: Text(user.name.substring(0, 1)),
+              backgroundColor: TetheredColors.textFieldBackground,
+            )
+          : CircleAvatar(
+              backgroundImage: NetworkImage(user.imageUrl),
+            ),
       title: Text(
-        user.name,
+        user.username,
         style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: sText * 4,

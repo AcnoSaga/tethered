@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/route_manager.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tethered/utils/colors.dart';
 import 'injection/injection.dart';
 import 'riverpods/global/user_provider.dart';
 import 'theme/size_config.dart';
@@ -27,7 +28,7 @@ class TetheredApp extends ConsumerWidget {
     ]);
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
+        statusBarColor: TetheredColors.primaryDark,
         statusBarBrightness: Brightness.dark,
         statusBarIconBrightness: Brightness.dark,
         systemNavigationBarColor: Colors.white,
@@ -38,7 +39,10 @@ class TetheredApp extends ConsumerWidget {
       SizeConfig.init(constraints, Orientation.portrait);
       FirebaseAuth.instance.authStateChanges().listen((user) async {
         final userStateNotifier = watch(userProvider.notifier);
-        if (user == null) userStateNotifier.reset();
+        if (user == null) {
+          userStateNotifier.reset();
+          return;
+        }
         userStateNotifier.getUserData(user.uid);
       });
       return FutureBuilder(

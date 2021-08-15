@@ -37,13 +37,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             await authenticationService.sendEmailForVerificationToCurrentUser();
             Get.snackbar(
               'User not verified',
-              'We have sent you a verification link on your email for verification\nYou will not  be able to access certain features without verification',
+              'We have sent you a verification link on your email for verification.',
               instantInit: false,
               duration: Duration(seconds: 4),
               colorText: Colors.white,
             );
+            await authenticationService.signOutUser();
+            yield LoginInitial();
+          } else {
+            yield LoginSuccess();
           }
-          yield LoginSuccess();
         } else {
           Get.snackbar('Login failed', 'The user could not be logged in');
           yield LoginFailure();

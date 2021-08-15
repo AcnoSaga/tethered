@@ -20,9 +20,9 @@ class EditPage extends StatefulWidget {
 }
 
 class _EditPageState extends State<EditPage> {
-  QuillController _controller = new QuillController.basic();
+  QuillController _controller = QuillController.basic();
 
-  final FocusNode _editorFocusNode = new FocusNode();
+  final FocusNode _editorFocusNode = FocusNode();
 
   bool dataLoaded = false;
 
@@ -55,6 +55,12 @@ class _EditPageState extends State<EditPage> {
         centerTitle: true,
         backgroundColor: TetheredColors.textFieldBackground,
         title: Text('Editor'),
+        actions: [
+          TextButton(
+            child: Text('Submit'),
+            onPressed: () {},
+          )
+        ],
       ),
       body: WillPopScope(
         onWillPop: () async {
@@ -71,7 +77,7 @@ class _EditPageState extends State<EditPage> {
               return Center(child: CircularProgressIndicator());
             } else if (state is EditPageLoaded) {
               _controller.dispose();
-              _controller = new QuillController(
+              _controller = QuillController(
                 document: Document.fromDelta(state.content),
                 selection: const TextSelection.collapsed(offset: 0),
               );

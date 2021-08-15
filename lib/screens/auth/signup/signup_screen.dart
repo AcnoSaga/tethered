@@ -39,7 +39,8 @@ class _SignupScreenState extends State<SignupScreen> {
           body: BlocConsumer<SignupBloc, SignupState>(
             listener: (context, state) {
               if (state is SignupSuccess) {
-                Get.offAllNamed('/home');
+                // Go to verification screen
+                Get.toNamed('/verify');
               }
             },
             builder: (context, state) {
@@ -177,8 +178,9 @@ class _SignupScreenState extends State<SignupScreen> {
                 await pageController.animateToPage(
                   2,
                   duration: Duration(milliseconds: 1500),
-                  curve:
-                      Platform.isAndroid ? Curves.easeInOutSine : Curves.easeInOutBack,
+                  curve: Platform.isAndroid
+                      ? Curves.easeInOutSine
+                      : Curves.easeInOutBack,
                 );
               }
             },
@@ -244,8 +246,9 @@ class _SignupScreenState extends State<SignupScreen> {
               await pageController.animateToPage(
                 0,
                 duration: Duration(milliseconds: 1500),
-                curve:
-                    Platform.isAndroid ? Curves.easeInOutSine : Curves.easeInOutBack,
+                curve: Platform.isAndroid
+                    ? Curves.easeInOutSine
+                    : Curves.easeInOutBack,
               );
             },
           ),

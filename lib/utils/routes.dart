@@ -1,6 +1,7 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' as bloc;
 import 'package:get/get.dart';
+import 'package:tethered/screens/auth/verification/verification_screen.dart';
 import 'package:tethered/screens/home/settings_page/settings_page.dart';
 import '../cubits/auth_blocs/login_bloc/login_bloc.dart';
 import '../injection/injection.dart';
@@ -92,6 +93,10 @@ class Routes {
       GetPage(
         name: '/settings',
         page: () => SettingsPage(),
+      ),
+      GetPage(
+        name: '/verify',
+        page: () => VerificationScreen(),
       ),
     ];
   }

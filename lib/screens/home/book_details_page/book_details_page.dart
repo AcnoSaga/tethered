@@ -64,15 +64,6 @@ class BookDetailsPage extends HookWidget {
         brightness: Brightness.dark,
         elevation: 0,
         backgroundColor: TetheredColors.primaryDark,
-        actions: [
-          GestureDetector(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: sy * 5),
-              child: Icon(Icons.bookmark_border),
-            ),
-            onTap: () {},
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: GestureDetector(

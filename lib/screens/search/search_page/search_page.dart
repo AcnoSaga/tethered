@@ -5,7 +5,6 @@ import 'package:tethered/models/published_draft.dart';
 import 'package:tethered/models/tethered_user.dart';
 import 'package:tethered/screens/components/gap.dart';
 import 'package:tethered/screens/search/search_page/components/user_item.dart';
-import 'package:tethered/screens/write/write_page/components/draft_item.dart';
 import 'package:tethered/screens/write/write_page/components/published_item.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
@@ -53,48 +52,53 @@ class _SearchPageState extends State<SearchPage> {
   Future<List<dynamic>> _operation(String input) async {
     AlgoliaQuery query =
         _algoliaApp.instance.index(searchTypeToIndex()).query(input);
-    AlgoliaQuerySnapshot querySnap = await query.getObjects();
-    List<AlgoliaObjectSnapshot> results = querySnap.hits;
+    try {
+      AlgoliaQuerySnapshot querySnap = await query.getObjects();
+      print('Success');
+      List<AlgoliaObjectSnapshot> results = querySnap.hits;
 
-    switch (searchType.value) {
-      case SearchType.works:
-        List<PublishedDraft> publishedDrafts = [];
+      switch (searchType.value) {
+        case SearchType.works:
+          List<PublishedDraft> publishedDrafts = [];
 
-        for (AlgoliaObjectSnapshot snapshot in results) {
-          publishedDrafts.add(
-            PublishedDraft.fromDocument(
-              await FirebaseFirestore.instance
-                  .doc('works/' + await snapshot.data["id"])
-                  .get(),
-            ),
-          );
-          // print(publishedDrafts);
-        }
+          for (AlgoliaObjectSnapshot snapshot in results) {
+            publishedDrafts.add(
+              PublishedDraft.fromDocument(
+                await FirebaseFirestore.instance
+                    .doc('works/' + await snapshot.data["id"])
+                    .get(),
+              ),
+            );
+            // print(publishedDrafts);
+          }
 
-        return publishedDrafts;
-        break;
-      case SearchType.users:
-        List<TetheredUser> users = [];
+          return publishedDrafts;
+          break;
+        case SearchType.users:
+          List<TetheredUser> users = [];
 
-        for (AlgoliaObjectSnapshot snapshot in results) {
-          users.add(await TetheredUser.fromUserId(snapshot.data["id"]));
-          // print(publishedDrafts);
-        }
+          for (AlgoliaObjectSnapshot snapshot in results) {
+            users.add(await TetheredUser.fromUserId(snapshot.data["id"]));
+            // print(publishedDrafts);
+          }
 
-        return users;
-        break;
-      case SearchType.tags:
-        List<String> hashtags = [];
+          return users;
+          break;
+        case SearchType.tags:
+          List<String> hashtags = [];
 
-        for (AlgoliaObjectSnapshot snapshot in results) {
-          hashtags.add(
-            snapshot.data["hashtagId"],
-          );
-          // print(publishedDrafts);
-        }
+          for (AlgoliaObjectSnapshot snapshot in results) {
+            hashtags.add(
+              snapshot.data["hashtagId"],
+            );
+            // print(publishedDrafts);
+          }
 
-        return hashtags;
-        break;
+          return hashtags;
+          break;
+      }
+    } on AlgoliaError catch (e) {
+      print(e.error);
     }
     throw UnimplementedError();
   }
@@ -181,7 +185,10 @@ class _SearchPageState extends State<SearchPage> {
               }
             },
             onError: (error) {
-              return Text(error.toString());
+              return Text(
+                error.toString(),
+                style: TextStyle(color: Colors.white),
+              );
             },
             onSearch: (String text) {
               return _operation(text); //working here

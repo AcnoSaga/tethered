@@ -90,7 +90,7 @@ class _NewTetherPageState extends State<NewTetherPage> {
 
                             try {
                               await workRef.set({
-                                "content": '[{"insert":"\n"}]',
+                                "content": '[{"insert":"\\n"}]',
                                 "description": descriptionController.text,
                                 "genre": widget.bookDetails.genre,
                                 "hashtags": widget.bookDetails.hashtags,

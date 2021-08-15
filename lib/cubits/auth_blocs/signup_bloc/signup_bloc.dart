@@ -21,8 +21,9 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   ) async* {
     if (event is Signup) {
       yield SignupLoading();
-      final isUserSignedUpOrError = await authenticationService
-          .signUpWithEmailAndPassword(event.email, event.password);
+      final isUserSignedUpOrError =
+          await authenticationService.signUpWithEmailAndPassword(
+              event.email, event.password, event.name, event.username);
       if (isUserSignedUpOrError is String) {
         Get.snackbar(
           'Signup failed',
@@ -32,6 +33,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         yield SignupFailure();
       } else {
         if (isUserSignedUpOrError as bool) {
+          await authenticationService.sendEmailForVerificationToCurrentUser();
+          await authenticationService.signOutUser();
           yield SignupSuccess();
         } else {
           Get.snackbar('Login failed', 'The user could not be logged in');

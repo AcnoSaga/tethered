@@ -220,7 +220,7 @@ class NewStoryPage extends HookWidget {
                   print(await ref.getDownloadURL());
 
                   await workRef.set({
-                    "content": '[{"insert":"\n"}]',
+                    "content": '[{"insert":"\\n"}]',
                     "description": descriptionController.text,
                     "genre": categoryLists.genres
                         .where((map) => map["name"] == genre.value)

@@ -64,7 +64,12 @@ class NewStoryPage extends HookWidget {
                       state.categoryLists, uploading),
             );
           } else {
-            return Center(child: Text('Please try again'));
+            return Center(
+              child: Text(
+                'An unexpected error occured.',
+                style: TextStyle(color: Colors.white),
+              ),
+            );
           }
         }(),
       ),

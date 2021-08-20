@@ -113,7 +113,7 @@ class EditProfilePage extends HookWidget {
                       InputFormField(
                         hintText: 'Name',
                         controller: nameController,
-                        validator: TextValidators.title,
+                        validator: TextValidators.name,
                       ),
                       Gap(height: 4),
                       Text(
@@ -124,7 +124,7 @@ class EditProfilePage extends HookWidget {
                       InputFormField(
                         hintText: 'Username',
                         controller: usernameController,
-                        validator: TextValidators.title,
+                        validator: TextValidators.username,
                       ),
                       Gap(height: 4),
                       Text(

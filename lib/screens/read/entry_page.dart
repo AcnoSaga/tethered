@@ -128,7 +128,7 @@ class _EntryPageState extends State<EntryPage> {
               IconButton(
                 icon: Icon(Icons.account_circle),
                 onPressed: () => Get.toNamed('/account', arguments: {
-                  "uid": widget.bookDetails.creatorId,
+                  "wuid": widget.bookDetails.creatorId,
                 }),
               ),
             ],

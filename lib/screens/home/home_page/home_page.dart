@@ -50,7 +50,11 @@ class HomePage extends ConsumerWidget {
           } else if (state is HomePageLoaded) {
             return _loadedPage(state.genres);
           } else {
-            return Center(child: Text('Please try again'));
+            return Center(
+                child: Text(
+              'An unexpected error occured.',
+              style: TextStyle(color: Colors.white),
+            ));
           }
         }());
   }

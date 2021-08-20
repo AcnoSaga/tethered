@@ -6,6 +6,7 @@ class Account {
   final int following;
   final String imageUrl;
   final String name;
+  final String username;
   final int works;
   final DocumentSnapshot doc;
 
@@ -15,6 +16,7 @@ class Account {
     this.following,
     this.imageUrl,
     this.name,
+    this.username,
     this.works,
     this.doc,
   });
@@ -27,6 +29,7 @@ class Account {
       following: doc["following"].length,
       imageUrl: doc["imageUrl"],
       name: doc["name"],
+      username: doc["username"],
       works: doc["works"],
       doc: doc,
     );

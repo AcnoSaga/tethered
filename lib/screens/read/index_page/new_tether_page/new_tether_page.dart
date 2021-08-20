@@ -57,9 +57,10 @@ class _NewTetherPageState extends State<NewTetherPage> {
                         ),
                         Gap(height: 2),
                         InputFormField(
-                            hintText: 'Untitled Tether',
-                            controller: titleController,
-                            validator: TextValidators.title),
+                          hintText: 'Untitled Tether',
+                          controller: titleController,
+                          validator: TextValidators.title,
+                        ),
                         Gap(height: 4),
                         Text(
                           'Description',

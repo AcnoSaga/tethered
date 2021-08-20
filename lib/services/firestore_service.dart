@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:injectable/injectable.dart';
+import 'package:tethered/utils/network_handler.dart';
 import '../models/Tether.dart';
 import '../models/account.dart';
 import '../models/book_cover.dart';
@@ -20,6 +21,8 @@ import '../models/published_draft.dart';
 @lazySingleton
 class FirestoreService {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  NetworkHandler _networkHandler = NetworkHandler(
+      baseURL: 'https://secret-bastion-04725.herokuapp.com/api/v1/');
 
   Future<List<Genre>> getHomeGenres() async {
     List<Genre> genres = [];
@@ -181,5 +184,29 @@ class FirestoreService {
             .startAfterDocument(lastEntryItem.doc)
             .get();
     return query.docs.map((doc) => EntryItem.fromDocument(doc)).toList();
+  }
+
+  Future<bool> submitDraft(String docPath, String workRef, String uid) async {
+    try {
+      Map data = {
+        'docPath': docPath,
+        'workRef': workRef,
+        'uid': uid,
+      };
+      return (await _networkHandler.post('submitdraft', data))['success'];
+    } catch (e) {
+      return false;
+    }
+  }
+   Future<bool> submitNewStory(String docPath, String uid) async {
+    try {
+      Map data = {
+        'docPath': docPath,
+        'uid': uid,
+      };
+      return (await _networkHandler.post('submitdraft', data))['success'];
+    } catch (e) {
+      return false;
+    }
   }
 }

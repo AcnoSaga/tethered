@@ -1,10 +1,14 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tethered/injection/injection.dart';
+import 'package:tethered/services/firestore_service.dart';
+import 'package:tethered/utils/text_styles.dart';
 import '../../../riverpods/write/editor_page_provider.dart';
 import '../../../theme/size_config.dart';
 import '../../../utils/colors.dart';
@@ -29,11 +33,20 @@ class _EditPageState extends State<EditPage> {
   bool busySaving = false;
 
   @override
+  void initState() {
+    super.initState();
+    _controller.changes.listen((event) {
+      print(_controller.plainTextEditingValue);
+    });
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!dataLoaded) {
       dataLoaded = true;
       _controller.addListener(() {
+        print(busySaving);
         if (!busySaving) {
           busySaving = true;
           Future.delayed(Duration(seconds: 3)).then((_) async {
@@ -58,7 +71,7 @@ class _EditPageState extends State<EditPage> {
         actions: [
           TextButton(
             child: Text('Submit'),
-            onPressed: () {},
+            onPressed: _submitDialog,
           )
         ],
       ),
@@ -83,7 +96,7 @@ class _EditPageState extends State<EditPage> {
               );
               return _editor(context);
             } else {
-              return Center(child: Text('Please try again'));
+              return Center(child: Text('An unexpected error occured.'));
             }
           }),
         ),
@@ -146,5 +159,62 @@ class _EditPageState extends State<EditPage> {
         "content": jsonEncode(_controller.document.toDelta().toJson()),
         "lastUpdated": Timestamp.now(),
       });
+  }
+
+  Future _submitDialog() async {
+    print(_controller.plainTextEditingValue.text);
+    final textLength = _controller.plainTextEditingValue.text.length;
+    if (textLength > 10000 || textLength < 100) {
+      Get.snackbar('Length Error',
+          'The document should have at least 100 and at most 10,000 characters.',
+          backgroundColor: Colors.white);
+      return;
+    }
+    await Get.dialog(
+      AlertDialog(
+        title: Text(
+            'Are you sure you want to submit this draft?\nThis action can not be reversed.'),
+        actions: [
+          TextButton.icon(
+            onPressed: () async {
+              if (widget.docSnapshot['isTether'] == true) {
+                await locator<FirestoreService>().submitDraft(
+                  widget.docSnapshot.reference.path,
+                  FirebaseAuth.instance.currentUser.uid,
+                  (widget.docSnapshot['workRef'] as DocumentReference).path,
+                );
+              } else {
+                await locator<FirestoreService>().submitNewStory(
+                  widget.docSnapshot.reference.path,
+                  FirebaseAuth.instance.currentUser.uid,
+                );
+              }
+              Get.back();
+            },
+            icon: Icon(
+              Icons.check_circle,
+              color: TetheredColors.acceptNegativeColor,
+            ),
+            label: Text(
+              'Yes',
+              style: TetheredTextStyles.acceptNegativeText,
+            ),
+          ),
+          TextButton.icon(
+            onPressed: Get.back,
+            icon: Icon(
+              Icons.cancel,
+              color: TetheredColors.rejectNegativeColor,
+            ),
+            label: Text(
+              'No',
+              style: TetheredTextStyles.rejectNegativeText,
+            ),
+          ),
+        ],
+      ),
+    );
+    print('------------------------------');
+    Get.back();
   }
 }

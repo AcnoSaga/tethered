@@ -25,7 +25,8 @@ class VerificationScreen extends StatelessWidget {
                   style: TetheredTextStyles.authHeading,
                 ),
                 Gap(height: 3),
-                Text('Please check your email.'),
+                Text('Please check your email.\nLogin after verification.',
+                    style: TetheredTextStyles.authSubHeading),
                 Gap(height: 25),
                 PassiveTextButton(
                   text: 'Back',

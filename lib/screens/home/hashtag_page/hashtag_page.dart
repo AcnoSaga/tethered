@@ -60,7 +60,10 @@ class HashtagPage extends ConsumerWidget {
                 } else if (hashtagPageState is HashtagPageError) {
                   return SliverToBoxAdapter(
                     child: Center(
-                      child: Text("Please try again."),
+                      child: Text(
+                        "An unexpected error occured..",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   );
                 } else if (hashtagPageState is HashtagPageLoaded) {

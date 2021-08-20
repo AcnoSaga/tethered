@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
@@ -46,7 +47,7 @@ class AccountPage extends ConsumerWidget {
                   icon: Icon(Icons.settings))
           ],
           title: Text(
-            state is AccountPageLoaded ? state.account.name : '',
+            state is AccountPageLoaded ? state.account.username : '',
             style: TetheredTextStyles.homeAppBarHeading,
           ),
           backgroundColor: TetheredColors.primaryDark,
@@ -59,7 +60,12 @@ class AccountPage extends ConsumerWidget {
           } else if (state is AccountPageLoaded) {
             return _accountsDetails(state.account, id);
           } else {
-            return Center(child: Text('Please try again'));
+            return Center(
+              child: Text(
+                'An unexpected error occured.',
+                style: TextStyle(color: Colors.white),
+              ),
+            );
           }
         }());
   }
@@ -130,14 +136,31 @@ class AccountPage extends ConsumerWidget {
                   style: TetheredTextStyles.descriptionText,
                 ),
                 Gap(height: 2),
+                TextButton(
+                  child: Text(
+                    'ID: ' + account.doc.id,
+                    style: TetheredTextStyles.descriptionText,
+                  ),
+                  onPressed: () {
+                    Clipboard.setData(new ClipboardData(text: account.doc.id))
+                        .then((_) {
+                      Get.snackbar(
+                        'ID copied to clipboard',
+                        'You can use it to search for this account',
+                        colorText: Colors.white,
+                      );
+                    });
+                  },
+                ),
+                Gap(height: 2),
                 Wrap(
                   alignment: WrapAlignment.spaceBetween,
                   spacing: sy * 10,
                   children: [
-                    AccountNumericDataColumn(
-                      title: 'Followers',
-                      data: account.followers,
-                    ),
+                    // AccountNumericDataColumn(
+                    //   title: 'Followers',
+                    //   data: account.followers,
+                    // ),
                     AccountNumericDataColumn(
                       title: 'Works',
                       data: account.works,
@@ -145,12 +168,12 @@ class AccountPage extends ConsumerWidget {
                   ],
                   direction: Axis.horizontal,
                 ),
-                if (currentId != id) Gap(height: 2),
-                if (currentId != id)
-                  ProceedButton(
-                    text: 'Follow',
-                    onPressed: () {},
-                  ),
+                // if (currentId != id) Gap(height: 2),
+                // if (currentId != id)
+                //   ProceedButton(
+                //     text: 'Follow',
+                //     onPressed: () {},
+                //   ),
               ],
             ),
           ),

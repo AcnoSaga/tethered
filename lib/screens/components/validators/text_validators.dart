@@ -8,16 +8,33 @@ class TextValidators {
   }
 
   static String name(String name) {
-    if (name.length == 0) {
-      return 'Name should not be empty';
+    if (name.isEmpty) {
+      return 'Please enter a name';
+    }
+    if (name.length > 40) {
+      return 'Name can not be more than 40 characters';
+    }
+    return null;
+  }
+
+  static String username(String username) {
+    if (username.isEmpty) {
+      return 'Please enter a username';
+    }
+    if (username.length > 40) {
+      return 'Username can not be more than 40 characters';
     }
     return null;
   }
 
   static String password(String password) {
     if (password.length < 8) {
-      return 'Password should have minimum eight characters';
+      return 'Password should have minimum 8 characters';
     }
+    if (password.length > 100) {
+      return 'Password should have maximum 100 characters';
+    }
+
     return null;
   }
 
@@ -26,7 +43,7 @@ class TextValidators {
       return 'Please enter a title';
     }
     if (title.length > 40) {
-      return 'Title is too long';
+      return 'Title can not be more than 40 characters';
     }
     return null;
   }
@@ -36,7 +53,7 @@ class TextValidators {
       return 'Please enter a description';
     }
     if (description.length > 300) {
-      return 'Description is too long';
+      return 'Description can not be more than 300 characters';
     }
     return null;
   }
@@ -46,7 +63,7 @@ class TextValidators {
       return 'Please enter a comment';
     }
     if (comment.length > 1000) {
-      return 'Comment is too long';
+      return 'Comment can not be more than 1000 characters';
     }
     return null;
   }

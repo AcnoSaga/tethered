@@ -53,7 +53,7 @@ class _AccountPageBookGridState extends State<AccountPageBookGrid> {
                   HomeRoutes.bookDetails,
                   arguments: {
                     "bookCovers": [bookCover],
-                    "index": index,
+                    "index": 0,
                   },
                   id: tabItemsToIndex[
                       Provider.of<TabItem>(context, listen: false)],
@@ -63,7 +63,7 @@ class _AccountPageBookGridState extends State<AccountPageBookGrid> {
                   '/book-details',
                   arguments: {
                     "bookCovers": [bookCover],
-                    "index": index,
+                    "index": 0,
                   },
                 );
               }

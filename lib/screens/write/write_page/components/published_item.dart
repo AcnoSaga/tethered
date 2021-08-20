@@ -93,24 +93,8 @@ class PublishedDraftItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Stack(
-                    children: [
-                      Text(publishedDraft.title,
-                          style: TetheredTextStyles.indexItemHeading),
-                      if (publishedDraft.creatorId ==
-                          FirebaseAuth.instance.currentUser.uid)
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: GestureDetector(
-                            onTap: () => _showDeleteDialog(context),
-                            child: Icon(
-                              Icons.more_horiz,
-                              color: TetheredColors.indexItemTextColor,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
+                  Text(publishedDraft.title,
+                      style: TetheredTextStyles.indexItemHeading),
                   Gap(height: 1.5),
                   Text(
                     'Published: ' +
@@ -152,61 +136,6 @@ class PublishedDraftItem extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Future _deleteDialog() async {
-    await Get.dialog(
-      AlertDialog(
-        title: Text('Are you sure you want to delete this story?'),
-        actions: [
-          TextButton.icon(
-            onPressed: Get.back,
-            icon: Icon(
-              Icons.check_circle,
-              color: TetheredColors.acceptNegativeColor,
-            ),
-            label: Text(
-              'Yes',
-              style: TetheredTextStyles.acceptNegativeText,
-            ),
-          ),
-          TextButton.icon(
-            onPressed: Get.back,
-            icon: Icon(
-              Icons.cancel,
-              color: TetheredColors.rejectNegativeColor,
-            ),
-            label: Text(
-              'No',
-              style: TetheredTextStyles.rejectNegativeText,
-            ),
-          ),
-        ],
-      ),
-    );
-    Get.back();
-  }
-
-  void _showDeleteDialog(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => BottomSheet(
-        builder: (BuildContext context) => ListView(
-          shrinkWrap: true,
-          children: [
-            ListTile(
-              title: Text('Delete'),
-              leading: Icon(Icons.delete),
-              onTap: () async {
-                await _deleteDialog();
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-        onClosing: () {},
       ),
     );
   }

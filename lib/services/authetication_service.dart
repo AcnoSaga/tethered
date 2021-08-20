@@ -1,13 +1,17 @@
+import 'package:algolia/algolia.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:injectable/injectable.dart';
+import 'package:tethered/screens/search/search_page/components/algoliaapp.dart';
 
 @lazySingleton
 class AuthenticationService {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  AlgoliaIndexReference algoliaUserIndex =
+      AlgoliaApplication.writeAlgolia.index('users');
 
   User get currentUser => _firebaseAuth.currentUser;
 
@@ -34,6 +38,7 @@ class AuthenticationService {
           .collection('accounts')
           .doc(authResult.user.uid)
           .set({
+        "email": email,
         "description": "Hi! I'm " + name,
         "followers": [],
         "following": [],
@@ -41,6 +46,11 @@ class AuthenticationService {
         "name": name,
         "username": username,
         "works": 0,
+      });
+      await algoliaUserIndex.addObject({
+        "objectID": authResult.user.uid,
+        "name": name,
+        "id": authResult.user.uid,
       });
       return authResult.user != null;
     } catch (e) {
@@ -92,15 +102,16 @@ class AuthenticationService {
             .collection('drafts')
             .get())
         .docs
-        .forEach((doc) async {
-      await _firebaseStorage
-          .ref('accounts/${getCurrentUser().uid}/drafts/${doc.id}.png')
-          .delete();
-    });
+        .forEach(await (doc) async {
+          await _firebaseStorage
+              .ref('accounts/${getCurrentUser().uid}/drafts/${doc.id}.png')
+              .delete();
+        });
     await _firebaseFirestore
         .collection('accounts')
         .doc(getCurrentUser().uid)
         .delete();
+    await algoliaUserIndex.object(getCurrentUser().uid).deleteObject();
     await _firebaseAuth.currentUser.delete();
   }
 }

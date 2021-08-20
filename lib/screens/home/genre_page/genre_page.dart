@@ -33,7 +33,11 @@ class GenrePage extends ConsumerWidget {
           } else if (state is GenrePageLoaded) {
             return _loadedPage(state.hashtags);
           } else {
-            return Center(child: Text('Please try again'));
+            return Center(
+                child: Text(
+              'An unexpected error occured.',
+              style: TextStyle(color: Colors.white),
+            ));
           }
         }());
   }

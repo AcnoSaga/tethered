@@ -41,6 +41,22 @@ class _OfficialListState extends State<OfficialList> {
       child: PagedListView(
         pagingController: _pagingController,
         builderDelegate: PagedChildBuilderDelegate<IndexItem>(
+          firstPageErrorIndicatorBuilder: (context) => Center(
+            child: Text(
+              'An unexpected error occured.',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+          noItemsFoundIndicatorBuilder: (context) => Center(
+            child: Text(
+              'Seems like this list is empty',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
           itemBuilder: (context, item, index) => Padding(
             padding: EdgeInsets.symmetric(
               horizontal: sx,

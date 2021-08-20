@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -83,7 +84,10 @@ class BookDetailsPage extends HookWidget {
                   return CircularProgressIndicator();
                 } else if (bookDetailsState is BookDetailsError) {
                   return Center(
-                    child: Text("Please try again."),
+                    child: Text(
+                      "An unexpected error occured..",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   );
                 } else if (bookDetailsState is BookDetailsLoaded) {
                   return _bookInfo(bookDetailsState.bookDetails, context);
@@ -175,21 +179,23 @@ class BookDetailsPage extends HookWidget {
                 ),
               ),
               Gap(height: 2),
-              Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                alignment: WrapAlignment.center,
-                children: [
-                  BookDetailsInfoText(
-                    icon: Icons.arrow_upward,
-                    text: '12K upvotes',
-                  ),
-                  BookDetailsInfoText(
-                    icon: Icons.list,
-                    text: '21 Tethers',
-                  ),
-                ],
+              TextButton(
+                child: Text(
+                  'ID: ' + details.doc.id,
+                  style: TetheredTextStyles.descriptionText,
+                ),
+                onPressed: () {
+                  Clipboard.setData(new ClipboardData(text: details.doc.id))
+                      .then((_) {
+                    Get.snackbar(
+                      'ID copied to clipboard',
+                      'You can use it to search for this work.',
+                      colorText: Colors.white,
+                    );
+                  });
+                },
               ),
-              Gap(height: 1),
+              Gap(height: 2),
               Text(
                 details.description,
                 style: TetheredTextStyles.descriptionText,

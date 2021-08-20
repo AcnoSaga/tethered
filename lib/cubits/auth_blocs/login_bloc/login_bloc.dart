@@ -65,7 +65,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       } else {
         Get.snackbar(
           'Failed to send email',
-          'Reset password email could not be sent to ${event.email}\nPlease try again later',
+          'Reset password email could not be sent to ${event.email}\nAn unexpected error occured. later',
           colorText: Colors.white,
         );
       }

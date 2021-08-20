@@ -32,6 +32,22 @@ class _DraftListState extends State<DraftList> {
       child: PagedListView(
         pagingController: _pagingController,
         builderDelegate: PagedChildBuilderDelegate(
+          firstPageErrorIndicatorBuilder: (context) => Center(
+            child: Text(
+              'An unexpected error occured.',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+          noItemsFoundIndicatorBuilder: (context) => Center(
+            child: Text(
+              'Seems like this list is empty',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
           itemBuilder: (context, draft, index) => Padding(
             padding: EdgeInsets.symmetric(
               horizontal: sx,

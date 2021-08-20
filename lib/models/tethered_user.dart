@@ -7,11 +7,13 @@ class TetheredUser {
   final String description;
   final int followers;
   final String imageUrl;
+  final String email;
   final int following;
   final DocumentSnapshot doc;
 
   TetheredUser({
     this.imageUrl,
+    this.email,
     this.uid,
     this.name,
     this.username,
@@ -27,6 +29,7 @@ class TetheredUser {
     return TetheredUser(
       uid: uid,
       name: doc["name"],
+      email: doc["email"],
       username: doc["username"],
       description: doc["description"],
       followers: doc["followers"].length,

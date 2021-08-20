@@ -1,9 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tethered/injection/injection.dart';
 import 'package:tethered/models/tethered_user.dart';
 import 'package:tethered/riverpods/global/user_provider.dart';
+import 'package:tethered/screens/components/input_form_field.dart';
+import 'package:tethered/screens/components/validators/text_validators.dart';
 import 'package:tethered/services/authetication_service.dart';
 import 'package:tethered/utils/colors.dart';
 import 'package:tethered/utils/text_styles.dart';
@@ -12,7 +15,9 @@ import 'package:settings_ui/settings_ui.dart';
 import 'edit_profile_page.dart';
 
 class SettingsPage extends ConsumerWidget {
-  const SettingsPage({Key key}) : super(key: key);
+  SettingsPage({Key key}) : super(key: key);
+  final _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
@@ -93,38 +98,67 @@ class SettingsPage extends ConsumerWidget {
 
   Future _deleteDialog(TetheredUser user) async {
     await Get.dialog(
-      AlertDialog(
-        title: Text(
-            'Are you sure you want to delete your account?\nThis action can not be reversed.'),
-        actions: [
-          TextButton.icon(
-            onPressed: () async {
-              Get.back();
-              Get.offAndToNamed('/login');
-              await locator<AuthenticationService>().deleteCurrentUserAccount(
-                  !(user == null || user.imageUrl.isEmpty));
-            },
-            icon: Icon(
-              Icons.check_circle,
-              color: TetheredColors.acceptNegativeColor,
-            ),
-            label: Text(
-              'Yes',
-              style: TetheredTextStyles.acceptNegativeText,
-            ),
+      Form(
+        key: _formKey,
+        child: AlertDialog(
+          title: Text(
+              'Are you sure you want to delete your account?\nThis action can not be reversed.'),
+          content: InputFormField(
+            controller: _passwordController,
+            isObscure: true,
+            hintText: 'Password',
+            validator: TextValidators.password,
           ),
-          TextButton.icon(
-            onPressed: Get.back,
-            icon: Icon(
-              Icons.cancel,
-              color: TetheredColors.rejectNegativeColor,
+          actions: [
+            TextButton.icon(
+              onPressed: () async {
+                if (!_formKey.currentState.validate()) {
+                  return;
+                }
+                try {
+                  await FirebaseAuth.instance.currentUser
+                      .reauthenticateWithCredential(
+                    EmailAuthProvider.credential(
+                      email: user.email,
+                      password: _passwordController.text,
+                    ),
+                  );
+                } on FirebaseAuthException catch (e) {
+                  print(e.runtimeType);
+                  Get.snackbar(
+                    'Login failed',
+                    e.message,
+                    colorText: Colors.white,
+                  );
+                  return;
+                }
+                Get.back();
+                Get.offAndToNamed('/login');
+                await locator<AuthenticationService>().deleteCurrentUserAccount(
+                    !(user == null || user.imageUrl.isEmpty));
+              },
+              icon: Icon(
+                Icons.check_circle,
+                color: TetheredColors.acceptNegativeColor,
+              ),
+              label: Text(
+                'Yes',
+                style: TetheredTextStyles.acceptNegativeText,
+              ),
             ),
-            label: Text(
-              'No',
-              style: TetheredTextStyles.rejectNegativeText,
+            TextButton.icon(
+              onPressed: Get.back,
+              icon: Icon(
+                Icons.cancel,
+                color: TetheredColors.rejectNegativeColor,
+              ),
+              label: Text(
+                'No',
+                style: TetheredTextStyles.rejectNegativeText,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
     print('------------------------------');

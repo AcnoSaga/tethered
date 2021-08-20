@@ -39,6 +39,22 @@ class _CommentsListState extends State<CommentsList> {
       child: PagedListView<Comment, Comment>(
         pagingController: widget.pagingController,
         builderDelegate: PagedChildBuilderDelegate(
+          firstPageErrorIndicatorBuilder: (context) => Center(
+            child: Text(
+              'An unexpected error occured.',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+          noItemsFoundIndicatorBuilder: (context) => Center(
+            child: Text(
+              'Seems like this list is empty',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
           itemBuilder: (context, comment, index) => ListTile(
             title: GestureDetector(
               onTap: () => Get.toNamed('/account', arguments: {

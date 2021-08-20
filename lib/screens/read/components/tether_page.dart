@@ -52,7 +52,7 @@ class _TetherPageState extends State<TetherPage> {
             );
             return _content(state.tether);
           } else {
-            return Center(child: Text('Please try again'));
+            return Center(child: Text('An unexpected error occured.'));
           }
         },
       ),

@@ -32,8 +32,22 @@ class _PublishedListState extends State<PublishedList> {
       child: PagedListView(
         pagingController: _pagingController,
         builderDelegate: PagedChildBuilderDelegate(
-          firstPageErrorIndicatorBuilder: (context) =>
-              Center(child: Text(_pagingController.error.toString())),
+          firstPageErrorIndicatorBuilder: (context) => Center(
+            child: Text(
+              'An unexpected error occured.',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+          noItemsFoundIndicatorBuilder: (context) => Center(
+            child: Text(
+              'Seems like this list is empty',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
           itemBuilder: (context, publishedDraft, index) => Padding(
             padding: EdgeInsets.symmetric(
               horizontal: sx,

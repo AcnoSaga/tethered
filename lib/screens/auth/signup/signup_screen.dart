@@ -13,6 +13,7 @@ import '../../components/validators/text_validators.dart';
 import '../../../theme/size_config.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/text_styles.dart';
+import 'components/terms_of_use_widget.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -252,6 +253,8 @@ class _SignupScreenState extends State<SignupScreen> {
               );
             },
           ),
+          Gap(height: 3),
+          TermsOfUseWidget(),
         ],
       ),
     );

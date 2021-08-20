@@ -44,6 +44,18 @@ class _AccountPageBookGridState extends State<AccountPageBookGrid> {
     return PagedSliverGrid(
       pagingController: _pagingController,
       builderDelegate: PagedChildBuilderDelegate<BookCover>(
+        firstPageErrorIndicatorBuilder: (context) => Center(
+          child: Text(
+            'An unexpected error occured.',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        noItemsFoundIndicatorBuilder: (context) => Center(
+          child: Text(
+            'No posts yet.',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
         itemBuilder: (context, bookCover, index) {
           print(bookCover.workRef);
           return GestureDetector(

@@ -2,18 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Permission required to allow picking images in the story editor.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Permission required to allow picking images in the story editor.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Permission required to allow picking images in the story editor.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Permission required to allow picking images in the story editor.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>LSSupportsOpeningDocumentsInPlace</key>
-	<true/>
+	<key>CFBundleDisplayName</key>
+	<string>Tethered</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -30,8 +22,27 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-7031715585886499~5333045823</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Permission required to allow picking images in the story editor.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Permission required to allow picking images in the story editor.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Permission required to allow picking images in the story editor.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Permission required to allow picking images in the story editor.</string>
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>cstr6suwn9.skadnetwork</string>
+		</dict>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

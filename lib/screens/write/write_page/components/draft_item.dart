@@ -15,7 +15,10 @@ import '../../../../utils/text_styles.dart';
 class DraftItem extends StatelessWidget {
   final Draft draft;
   final void Function() onDelete;
-  const DraftItem({Key key, this.draft, this.onDelete}) : super(key: key);
+  DraftItem({Key key, this.draft, this.onDelete}) : super(key: key);
+
+  final ValueNotifier<bool> deleting = ValueNotifier<bool>(false);
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -137,17 +140,19 @@ class DraftItem extends StatelessWidget {
             'Are you sure you want to delete this ${draft.isTether ? 'draft' : 'story'}?'),
         actions: [
           TextButton.icon(
-            onPressed: () async {
-              if (!draft.doc['isTether']) {
-                final ref = FirebaseStorage.instance
-                    .ref(draft.doc.reference.path + '.png');
-                print(draft.doc.reference.path + '.png');
-                await ref.delete();
-              }
-              await draft.doc.reference.delete();
-              onDelete();
-              Get.back();
-            },
+            onPressed: deleting.value
+                ? null
+                : () async {
+                    if (!draft.doc['isTether']) {
+                      final ref = FirebaseStorage.instance
+                          .ref(draft.doc.reference.path + '.png');
+                      print(draft.doc.reference.path + '.png');
+                      await ref.delete();
+                    }
+                    await draft.doc.reference.delete();
+                    onDelete();
+                    Get.back();
+                  },
             icon: Icon(
               Icons.check_circle,
               color: TetheredColors.acceptNegativeColor,
@@ -158,7 +163,7 @@ class DraftItem extends StatelessWidget {
             ),
           ),
           TextButton.icon(
-            onPressed: Get.back,
+            onPressed: deleting.value ? null : () => Get.back(),
             icon: Icon(
               Icons.cancel,
               color: TetheredColors.rejectNegativeColor,

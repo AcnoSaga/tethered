@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:provider/provider.dart' as FlutterBase;
 import 'package:shimmer/shimmer.dart';
@@ -18,7 +19,6 @@ import '../../../riverpods/home/book_detail/book_info_provider.dart';
 import '../../components/gap.dart';
 import '../../components/image_error_widget.dart';
 import '../../components/proceed_button.dart';
-import 'components/book_details_info_text.dart';
 
 import '../../../theme/size_config.dart';
 import '../../../utils/colors.dart';
@@ -153,6 +153,13 @@ class BookDetailsPage extends HookWidget {
   }
 
   Widget _bookInfo(BookDetails details, BuildContext context) {
+    final BannerAd adBanner = BannerAd(
+      adUnitId: 'ca-app-pub-7031715585886499/6085808574',
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: BannerAdListener(),
+    );
+    final loadBanner = adBanner.load();
     return Column(
       children: [
         Padding(
@@ -242,6 +249,14 @@ class BookDetailsPage extends HookWidget {
               ),
             ),
             Gap(height: 8),
+            FutureBuilder(
+              future: loadBanner,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done)
+                  return Container(height: 50, child: AdWidget(ad: adBanner));
+                return Container();
+              },
+            ),
           ],
         ),
       ],

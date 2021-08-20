@@ -12,12 +12,9 @@ import 'package:tethered/utils/inner_routes/home_routes.dart';
 import '../../../models/account.dart';
 import '../../../riverpods/home/account/account_page_provider.dart';
 import '../../components/gap.dart';
-import '../../components/proceed_button.dart';
 import '../../../theme/size_config.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/text_styles.dart';
-
-import 'components/account_numeric_data_column.dart';
 import 'components/account_page_book_grid.dart';
 
 class AccountPage extends ConsumerWidget {
@@ -153,21 +150,7 @@ class AccountPage extends ConsumerWidget {
                   },
                 ),
                 Gap(height: 2),
-                Wrap(
-                  alignment: WrapAlignment.spaceBetween,
-                  spacing: sy * 10,
-                  children: [
-                    // AccountNumericDataColumn(
-                    //   title: 'Followers',
-                    //   data: account.followers,
-                    // ),
-                    AccountNumericDataColumn(
-                      title: 'Works',
-                      data: account.works,
-                    ),
-                  ],
-                  direction: Axis.horizontal,
-                ),
+
                 // if (currentId != id) Gap(height: 2),
                 // if (currentId != id)
                 //   ProceedButton(

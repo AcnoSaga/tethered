@@ -43,160 +43,164 @@ class EditProfilePage extends HookWidget {
       },
       [],
     );
-    return Scaffold(
-      backgroundColor: TetheredColors.primaryDark,
-      appBar: AppBar(
-        brightness: Brightness.dark,
+    return WillPopScope(
+      onWillPop: () async => !uploading.value,
+      child: Scaffold(
         backgroundColor: TetheredColors.primaryDark,
-        title: Text('Edit Profile'),
-        actions: [
-          TextButton(
-            onPressed: uploading.value
-                ? null
-                : () async {
-                    if (_formKey.currentState.validate()) {
-                      uploading.value = true;
-                      Reference ref;
-                      if (imageFile.value != null) {
-                        if (!user.imageUrl.isEmpty) {
-                          ref = await FirebaseStorage.instance
-                              .refFromURL(user.imageUrl);
-                        } else {
-                          ref = await FirebaseStorage.instance
-                              .ref('accounts/${user.uid}/profile/profile.png');
+        appBar: AppBar(
+          brightness: Brightness.dark,
+          backgroundColor: TetheredColors.primaryDark,
+          title: Text('Edit Profile'),
+          actions: [
+            TextButton(
+              onPressed: uploading.value
+                  ? null
+                  : () async {
+                      if (_formKey.currentState.validate()) {
+                        uploading.value = true;
+                        Reference ref;
+                        if (imageFile.value != null) {
+                          if (!user.imageUrl.isEmpty) {
+                            ref = await FirebaseStorage.instance
+                                .refFromURL(user.imageUrl);
+                          } else {
+                            ref = await FirebaseStorage.instance.ref(
+                                'accounts/${user.uid}/profile/profile.png');
+                          }
+                          await ref.putFile(imageFile.value);
                         }
-                        await ref.putFile(imageFile.value);
+                        print('Success');
+                        await FirebaseFirestore.instance
+                            .collection('accounts')
+                            .doc(user.uid)
+                            .update({
+                          "name": nameController.text,
+                          "username": usernameController.text,
+                          "description": descriptionController.text,
+                          "imageUrl": await ref?.getDownloadURL() ?? ''
+                        });
+                        userNotifier.getUserData(user.uid);
+                        try {
+                          Get.back(
+                              id: tabItemsToIndex[
+                                  FlutterBase.Provider.of<TabItem>(context,
+                                      listen: false)]);
+                        } catch (e) {
+                          Get.back();
+                        }
                       }
-                      print('Success');
-                      await FirebaseFirestore.instance
-                          .collection('accounts')
-                          .doc(user.uid)
-                          .update({
-                        "name": nameController.text,
-                        "username": usernameController.text,
-                        "description": descriptionController.text,
-                        "imageUrl": await ref?.getDownloadURL() ?? ''
-                      });
-                      userNotifier.getUserData(user.uid);
-                      try {
-                        Get.back(
-                            id: tabItemsToIndex[
-                                FlutterBase.Provider.of<TabItem>(context,
-                                    listen: false)]);
-                      } catch (e) {
-                        Get.back();
-                      }
-                    }
-                  },
-            child: Text('Save'),
-          ),
-        ],
-      ),
-      body: uploading.value
-          ? Center(child: CircularProgressIndicator())
-          : Form(
-              key: _formKey,
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: sy * 5,
-                    vertical: sx * 2,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Name',
-                        style: TetheredTextStyles.bookDetailsHeading,
-                      ),
-                      Gap(height: 2),
-                      InputFormField(
-                        hintText: 'Name',
-                        controller: nameController,
-                        validator: TextValidators.name,
-                      ),
-                      Gap(height: 4),
-                      Text(
-                        'Username',
-                        style: TetheredTextStyles.bookDetailsHeading,
-                      ),
-                      Gap(height: 2),
-                      InputFormField(
-                        hintText: 'Username',
-                        controller: usernameController,
-                        validator: TextValidators.username,
-                      ),
-                      Gap(height: 4),
-                      Text(
-                        'Description',
-                        style: TetheredTextStyles.bookDetailsHeading,
-                      ),
-                      Gap(height: 2),
-                      InputFormField(
-                        hintText: 'Description',
-                        maxLines: 10,
-                        controller: descriptionController,
-                        validator: TextValidators.description,
-                        minLines: 2,
-                      ),
-                      Gap(height: 4),
-                      Text(
-                        'Cover Image',
-                        style: TetheredTextStyles.bookDetailsHeading,
-                      ),
-                      Gap(height: 1),
-                      Text(
-                        'Aspect Ratio - 1:1',
-                        style: TetheredTextStyles.subheadingText,
-                      ),
-                      Gap(height: 2),
-                      imageFile.value == null
-                          ? Container()
-                          : Container(
-                              width: sy * 50,
-                              height: sy * 50,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: FileImage(imageFile.value),
+                    },
+              child: Text('Save'),
+            ),
+          ],
+        ),
+        body: uploading.value
+            ? Center(child: CircularProgressIndicator())
+            : Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: sy * 5,
+                      vertical: sx * 2,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Name',
+                          style: TetheredTextStyles.bookDetailsHeading,
+                        ),
+                        Gap(height: 2),
+                        InputFormField(
+                          hintText: 'Name',
+                          controller: nameController,
+                          validator: TextValidators.name,
+                        ),
+                        Gap(height: 4),
+                        Text(
+                          'Username',
+                          style: TetheredTextStyles.bookDetailsHeading,
+                        ),
+                        Gap(height: 2),
+                        InputFormField(
+                          hintText: 'Username',
+                          controller: usernameController,
+                          validator: TextValidators.username,
+                        ),
+                        Gap(height: 4),
+                        Text(
+                          'Description',
+                          style: TetheredTextStyles.bookDetailsHeading,
+                        ),
+                        Gap(height: 2),
+                        InputFormField(
+                          hintText: 'Description',
+                          maxLines: 10,
+                          controller: descriptionController,
+                          validator: TextValidators.description,
+                          minLines: 2,
+                        ),
+                        Gap(height: 4),
+                        Text(
+                          'Cover Image',
+                          style: TetheredTextStyles.bookDetailsHeading,
+                        ),
+                        Gap(height: 1),
+                        Text(
+                          'Aspect Ratio - 1:1',
+                          style: TetheredTextStyles.subheadingText,
+                        ),
+                        Gap(height: 2),
+                        imageFile.value == null
+                            ? Container()
+                            : Container(
+                                width: sy * 50,
+                                height: sy * 50,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: FileImage(imageFile.value),
+                                  ),
                                 ),
                               ),
-                            ),
-                      imageFile.value == null ? Container() : Gap(height: 3),
-                      ProceedButton(
-                        text: 'Select Image',
-                        onPressed: () async {
-                          final imageSource = await _getImageSource(context);
-                          if (imageSource == null) return;
-                          SystemChannels.textInput
-                              .invokeMethod('TextInput.hide');
-                          FocusScope.of(context).requestFocus(new FocusNode());
-                          XFile image = await _picker.pickImage(
-                            source: imageSource,
-                          );
-
-                          if (image != null) {
-                            File croppedFile = await ImageCropper.cropImage(
-                              cropStyle: CropStyle.circle,
-                              iosUiSettings: IOSUiSettings(
-                                rotateButtonsHidden: true,
-                              ),
-                              sourcePath: image.path,
-                              aspectRatio:
-                                  CropAspectRatio(ratioX: 1, ratioY: 1),
+                        imageFile.value == null ? Container() : Gap(height: 3),
+                        ProceedButton(
+                          text: 'Select Image',
+                          onPressed: () async {
+                            final imageSource = await _getImageSource(context);
+                            if (imageSource == null) return;
+                            SystemChannels.textInput
+                                .invokeMethod('TextInput.hide');
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
+                            XFile image = await _picker.pickImage(
+                              source: imageSource,
                             );
-                            if (croppedFile != null) {
-                              imageFile.value = File(croppedFile.path);
+
+                            if (image != null) {
+                              File croppedFile = await ImageCropper.cropImage(
+                                cropStyle: CropStyle.circle,
+                                iosUiSettings: IOSUiSettings(
+                                  rotateButtonsHidden: true,
+                                ),
+                                sourcePath: image.path,
+                                aspectRatio:
+                                    CropAspectRatio(ratioX: 1, ratioY: 1),
+                              );
+                              if (croppedFile != null) {
+                                imageFile.value = File(croppedFile.path);
+                              }
                             }
-                          }
-                        },
-                      ),
-                    ],
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+      ),
     );
   }
 

@@ -1,9 +1,13 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:tethered/models/book_details.dart';
 import 'package:tethered/theme/size_config.dart';
 import 'package:tethered/utils/colors.dart';
@@ -209,7 +213,7 @@ class _ReadingPageState extends State<ReadingPage> {
                                   "pageController": _pageController,
                                 },
                               );
-                            else
+                            else {
                               Get.toNamed(
                                 '/comments',
                                 arguments: {
@@ -219,6 +223,22 @@ class _ReadingPageState extends State<ReadingPage> {
                                       .collection('comments'),
                                 },
                               );
+                              if (Random().nextInt(5) == 0)
+                                InterstitialAd.load(
+                                    adUnitId: Platform.isAndroid
+                                        ? 'ca-app-pub-3940256099942544/5135589807'
+                                        : 'ca-app-pub-7031715585886499/4071935041',
+                                    request: AdRequest(),
+                                    adLoadCallback: InterstitialAdLoadCallback(
+                                      onAdLoaded: (InterstitialAd ad) {
+                                        ad.show();
+                                      },
+                                      onAdFailedToLoad: (LoadAdError error) {
+                                        print(
+                                            'InterstitialAd failed to load: $error');
+                                      },
+                                    ));
+                            }
                           },
                           currentIndex: 0,
                           items: [
@@ -271,9 +291,23 @@ class _ReadingPageState extends State<ReadingPage> {
                 //   newController
                 //       .addListener(_changeBarVisibility(newController));
                 //   _listScrollControllers.add(newController);
-                // }
+                // }s
                 currentIndex = index;
                 // _activeScrollController = _listScrollControllers[index];
+                if (Random().nextInt(5) == 0)
+                  InterstitialAd.load(
+                      adUnitId: Platform.isAndroid
+                          ? 'ca-app-pub-3940256099942544/8691691433'
+                          : 'ca-app-pub-7031715585886499/4071935041',
+                      request: AdRequest(),
+                      adLoadCallback: InterstitialAdLoadCallback(
+                        onAdLoaded: (InterstitialAd ad) {
+                          ad.show();
+                        },
+                        onAdFailedToLoad: (LoadAdError error) {
+                          print('InterstitialAd failed to load: $error');
+                        },
+                      ));
               });
             },
             itemBuilder: (context, index) => CustomScrollView(

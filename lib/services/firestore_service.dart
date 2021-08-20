@@ -174,12 +174,12 @@ class FirestoreService {
       EntryItem lastEntryItem, BookDetails bookDetails) async {
     final query = lastEntryItem == null
         ? await bookDetails.doc.reference
-            .collection('proposalIndex')
+            .collection('proposals')
             .orderBy(FieldPath.documentId)
             .limit(10)
             .get()
         : await bookDetails.doc.reference
-            .collection('proposalIndex')
+            .collection('proposals')
             .limit(10)
             .startAfterDocument(lastEntryItem.doc)
             .get();
@@ -190,7 +190,7 @@ class FirestoreService {
     try {
       Map data = {
         'docPath': docPath,
-        'workRef': workRef,
+        'workPath': workRef,
         'uid': uid,
       };
       return (await _networkHandler.post('submitdraft', data))['success'];
@@ -198,7 +198,8 @@ class FirestoreService {
       return false;
     }
   }
-   Future<bool> submitNewStory(String docPath, String uid) async {
+
+  Future<bool> submitNewStory(String docPath, String uid) async {
     try {
       Map data = {
         'docPath': docPath,

@@ -5,6 +5,7 @@ class EntryItem {
   final String description;
   final DateTime published;
   final int likes;
+  final String creatorId;
   final DocumentSnapshot doc;
 
   EntryItem({
@@ -12,15 +13,20 @@ class EntryItem {
     this.description,
     this.published,
     this.likes,
+    this.creatorId,
     this.doc,
   });
 
   static EntryItem fromDocument(DocumentSnapshot doc) {
+    ;
     return EntryItem(
       title: doc["title"],
       description: doc["description"],
       published: (doc["published"] as Timestamp).toDate(),
-      likes: doc["likes"],
+      likes: doc["likes"].length,
+      creatorId: (doc.data() as Map).containsKey('creatorId')
+          ? doc["creatorId"]
+          : null,
       doc: doc,
     );
   }

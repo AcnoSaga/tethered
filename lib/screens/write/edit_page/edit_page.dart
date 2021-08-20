@@ -32,6 +32,8 @@ class _EditPageState extends State<EditPage> {
 
   bool busySaving = false;
 
+  final uploading = ValueNotifier<bool>(false);
+
   @override
   void initState() {
     super.initState();
@@ -71,12 +73,15 @@ class _EditPageState extends State<EditPage> {
         actions: [
           TextButton(
             child: Text('Submit'),
-            onPressed: _submitDialog,
+            onPressed: uploading.value ? null : () => _submitDialog(),
           )
         ],
       ),
       body: WillPopScope(
         onWillPop: () async {
+          if (uploading.value) {
+            return false;
+          }
           await _saveContent();
           return true;
         },
@@ -162,6 +167,7 @@ class _EditPageState extends State<EditPage> {
   }
 
   Future _submitDialog() async {
+    await _saveContent();
     print(_controller.plainTextEditingValue.text);
     final textLength = _controller.plainTextEditingValue.text.length;
     if (textLength > 10000 || textLength < 100) {
@@ -176,21 +182,47 @@ class _EditPageState extends State<EditPage> {
             'Are you sure you want to submit this draft?\nThis action can not be reversed.'),
         actions: [
           TextButton.icon(
-            onPressed: () async {
-              if (widget.docSnapshot['isTether'] == true) {
-                await locator<FirestoreService>().submitDraft(
-                  widget.docSnapshot.reference.path,
-                  FirebaseAuth.instance.currentUser.uid,
-                  (widget.docSnapshot['workRef'] as DocumentReference).path,
-                );
-              } else {
-                await locator<FirestoreService>().submitNewStory(
-                  widget.docSnapshot.reference.path,
-                  FirebaseAuth.instance.currentUser.uid,
-                );
-              }
-              Get.back();
-            },
+            onPressed: uploading.value
+                ? null
+                : () async {
+                    uploading.value = true;
+                    try {
+                      if (widget.docSnapshot['isTether'] == true) {
+                        print(widget.docSnapshot.reference.path);
+                        print(
+                            (widget.docSnapshot['workRef'] as DocumentReference)
+                                .path);
+                        print(FirebaseAuth.instance.currentUser.uid);
+
+                        await locator<FirestoreService>().submitDraft(
+                          widget.docSnapshot.reference.path,
+                          (widget.docSnapshot['workRef'] as DocumentReference)
+                              .path,
+                          FirebaseAuth.instance.currentUser.uid,
+                        );
+                      } else {
+                        await locator<FirestoreService>().submitNewStory(
+                          widget.docSnapshot.reference.path,
+                          FirebaseAuth.instance.currentUser.uid,
+                        );
+                      }
+                      Get.back();
+                      Get.snackbar(
+                        'Success 🥳',
+                        'Draft has been submitted.',
+                        duration: Duration(seconds: 5),
+                        backgroundColor: Colors.white,
+                      );
+                    } catch (e) {
+                      Get.back();
+                      Get.snackbar(
+                        'Error',
+                        'Draft could not be created.',
+                        backgroundColor: Colors.white,
+                      );
+                    }
+                    uploading.value = false;
+                  },
             icon: Icon(
               Icons.check_circle,
               color: TetheredColors.acceptNegativeColor,
@@ -201,7 +233,7 @@ class _EditPageState extends State<EditPage> {
             ),
           ),
           TextButton.icon(
-            onPressed: Get.back,
+            onPressed: uploading.value ? null : () => Get.back(),
             icon: Icon(
               Icons.cancel,
               color: TetheredColors.rejectNegativeColor,

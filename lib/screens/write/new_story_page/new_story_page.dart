@@ -38,40 +38,45 @@ class NewStoryPage extends HookWidget {
     final genre = useState<String>(null);
     final state = useProvider(newStoryPageStateProvider);
     final uploading = useState<bool>(false);
-    return Scaffold(
-      backgroundColor: TetheredColors.primaryDark,
-      appBar: AppBar(
-        brightness: Brightness.dark,
-        elevation: 10,
+    return WillPopScope(
+      onWillPop: () async {
+        return !uploading.value;
+      },
+      child: Scaffold(
         backgroundColor: TetheredColors.primaryDark,
-        title: Text(
-          'Create New Story',
-          style: TetheredTextStyles.secondaryAppBarHeading,
+        appBar: AppBar(
+          brightness: Brightness.dark,
+          elevation: 10,
+          backgroundColor: TetheredColors.primaryDark,
+          title: Text(
+            'Create New Story',
+            style: TetheredTextStyles.secondaryAppBarHeading,
+          ),
         ),
-      ),
-      body: SafeArea(
-        child: () {
-          if (state is NewStoryPageInitial) {
-            return Container();
-          } else if (state is NewStoryPageLoading) {
-            return Center(child: CircularProgressIndicator());
-          } else if (state is NewStoryPageLoaded) {
-            return Form(
-              key: _formKey,
-              child: uploading.value
-                  ? Center(child: CircularProgressIndicator())
-                  : _createStoryDataInputs(context, hashtags, genre, imageFile,
-                      state.categoryLists, uploading),
-            );
-          } else {
-            return Center(
-              child: Text(
-                'An unexpected error occured.',
-                style: TextStyle(color: Colors.white),
-              ),
-            );
-          }
-        }(),
+        body: SafeArea(
+          child: () {
+            if (state is NewStoryPageInitial) {
+              return Container();
+            } else if (state is NewStoryPageLoading) {
+              return Center(child: CircularProgressIndicator());
+            } else if (state is NewStoryPageLoaded) {
+              return Form(
+                key: _formKey,
+                child: uploading.value
+                    ? Center(child: CircularProgressIndicator())
+                    : _createStoryDataInputs(context, hashtags, genre,
+                        imageFile, state.categoryLists, uploading),
+              );
+            } else {
+              return Center(
+                child: Text(
+                  'An unexpected error occured.',
+                  style: TextStyle(color: Colors.white),
+                ),
+              );
+            }
+          }(),
+        ),
       ),
     );
   }
@@ -222,8 +227,6 @@ class NewStoryPage extends HookWidget {
 
                   await ref.putFile(imageFile.value);
 
-                  print(await ref.getDownloadURL());
-
                   await workRef.set({
                     "content": '[{"insert":"\\n"}]',
                     "description": descriptionController.text,
@@ -236,19 +239,30 @@ class NewStoryPage extends HookWidget {
                     "lastUpdated": Timestamp.now(),
                     "title": titleController.text,
                   });
+                  Get.snackbar(
+                    'Success 🥳',
+                    'Draft has been created. Get Tethering!',
+                    duration: Duration(seconds: 5),
+                    backgroundColor: Colors.white,
+                  );
                 } catch (e) {
                   // TODO: Manage error
                   Get.back(
                       id: tabItemsToIndex[FlutterBase.Provider.of<TabItem>(
                           context,
                           listen: false)]);
+                  Get.snackbar(
+                    'Error',
+                    'Draft could not be created.',
+                    backgroundColor: Colors.white,
+                  );
                   print(e);
                 }
                 uploading.value = false;
                 Get.back(
-                    id: tabItemsToIndex[FlutterBase.Provider.of<TabItem>(
-                        context,
-                        listen: false)]);
+                  id: tabItemsToIndex[
+                      FlutterBase.Provider.of<TabItem>(context, listen: false)],
+                );
               },
             ),
           ],

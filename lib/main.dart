@@ -11,9 +11,11 @@ import 'injection/injection.dart';
 import 'riverpods/global/user_provider.dart';
 import 'theme/size_config.dart';
 import 'utils/routes.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await MobileAds.instance.initialize();
   await Firebase.initializeApp();
   configureInit();
   HttpOverrides.global = new MyHttpOverrides();

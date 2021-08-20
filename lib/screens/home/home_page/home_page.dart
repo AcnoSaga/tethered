@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:provider/provider.dart' as FlutterBase;
 import '../../../injection/injection.dart';
@@ -74,15 +75,41 @@ class HomePage extends ConsumerWidget {
               physics: NeverScrollableScrollPhysics(),
               itemCount: genres.length,
               itemBuilder: (context, index) {
+                final BannerAd adBanner = BannerAd(
+                  adUnitId: 'ca-app-pub-7031715585886499/8543331392',
+                  size: AdSize.banner,
+                  request: AdRequest(),
+                  listener: BannerAdListener(),
+                );
+                final loadBanner = adBanner.load();
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: sx),
-                  child: BookRow(
-                    resource: genres[index],
-                    titlePadding: EdgeInsets.symmetric(
-                        horizontal: sy * 3, vertical: sx * 2),
-                    title: genres[index].name,
-                    isResourceExpandable: index != 0,
-                    resourceType: ResourceTypes.genre,
+                  child: Column(
+                    children: [
+                      BookRow(
+                        resource: genres[index],
+                        titlePadding: EdgeInsets.symmetric(
+                            horizontal: sy * 3, vertical: sx * 2),
+                        title: genres[index].name,
+                        isResourceExpandable: index != 0,
+                        resourceType: ResourceTypes.genre,
+                      ),
+                      FutureBuilder(
+                        future: loadBanner,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.done)
+                            return Column(
+                              children: [
+                                Gap(height: 4),
+                                Container(
+                                    height: 50, child: AdWidget(ad: adBanner)),
+                                Gap(height: 2),
+                              ],
+                            );
+                          return Container();
+                        },
+                      ),
+                    ],
                   ),
                 );
               },

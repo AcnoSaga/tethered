@@ -26,96 +26,111 @@ class _NewTetherPageState extends State<NewTetherPage> {
   final ValueNotifier<bool> uploading = ValueNotifier<bool>(false);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: TetheredColors.primaryDark,
-      appBar: AppBar(
-        brightness: Brightness.dark,
-        elevation: 10,
+    return WillPopScope(
+      onWillPop: () async {
+        return !uploading.value;
+      },
+      child: Scaffold(
         backgroundColor: TetheredColors.primaryDark,
-        title: Text(
-          'Create New Tether',
-          style: TetheredTextStyles.secondaryAppBarHeading,
+        appBar: AppBar(
+          brightness: Brightness.dark,
+          elevation: 10,
+          backgroundColor: TetheredColors.primaryDark,
+          title: Text(
+            'Create New Tether',
+            style: TetheredTextStyles.secondaryAppBarHeading,
+          ),
         ),
-      ),
-      body: uploading.value
-          ? Center(child: CircularProgressIndicator())
-          : Form(
-              key: _formKey,
-              child: SafeArea(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: sy * 5,
-                      vertical: sx * 2,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Title',
-                          style: TetheredTextStyles.bookDetailsHeading,
-                        ),
-                        Gap(height: 2),
-                        InputFormField(
-                          hintText: 'Untitled Tether',
-                          controller: titleController,
-                          validator: TextValidators.title,
-                        ),
-                        Gap(height: 4),
-                        Text(
-                          'Description',
-                          style: TetheredTextStyles.bookDetailsHeading,
-                        ),
-                        Gap(height: 2),
-                        InputFormField(
-                          hintText: 'Description',
-                          maxLines: 10,
-                          minLines: 2,
-                          controller: descriptionController,
-                          validator: TextValidators.description,
-                        ),
-                        Gap(height: 4),
-                        ProceedButton(
-                          text: 'Create',
-                          onPressed: () async {
-                            if (!_formKey.currentState.validate()) return;
+        body: uploading.value
+            ? Center(child: CircularProgressIndicator())
+            : Form(
+                key: _formKey,
+                child: SafeArea(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: sy * 5,
+                        vertical: sx * 2,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Title',
+                            style: TetheredTextStyles.bookDetailsHeading,
+                          ),
+                          Gap(height: 2),
+                          InputFormField(
+                            hintText: 'Untitled Tether',
+                            controller: titleController,
+                            validator: TextValidators.title,
+                          ),
+                          Gap(height: 4),
+                          Text(
+                            'Description',
+                            style: TetheredTextStyles.bookDetailsHeading,
+                          ),
+                          Gap(height: 2),
+                          InputFormField(
+                            hintText: 'Description',
+                            maxLines: 10,
+                            minLines: 2,
+                            controller: descriptionController,
+                            validator: TextValidators.description,
+                          ),
+                          Gap(height: 4),
+                          ProceedButton(
+                            text: 'Create',
+                            onPressed: () async {
+                              if (!_formKey.currentState.validate()) return;
 
-                            uploading.value = true;
+                              uploading.value = true;
 
-                            final uid = FirebaseAuth.instance.currentUser.uid;
-                            final workRef = FirebaseFirestore.instance
-                                .collection('accounts')
-                                .doc(uid)
-                                .collection('drafts')
-                                .doc();
+                              final uid = FirebaseAuth.instance.currentUser.uid;
+                              final workRef = FirebaseFirestore.instance
+                                  .collection('accounts')
+                                  .doc(uid)
+                                  .collection('drafts')
+                                  .doc();
 
-                            try {
-                              await workRef.set({
-                                "content": '[{"insert":"\\n"}]',
-                                "description": descriptionController.text,
-                                "genre": widget.bookDetails.genre,
-                                "hashtags": widget.bookDetails.hashtags,
-                                "imageUrl": widget.bookDetails.imageUrl,
-                                "isTether": true,
-                                "lastUpdated": Timestamp.now(),
-                                "title": titleController.text,
-                                "workRef": widget.bookDetails.doc.reference,
-                              });
-                            } catch (e) {
-                              // TODO: Manage error
+                              try {
+                                await workRef.set({
+                                  "content": '[{"insert":"\\n"}]',
+                                  "description": descriptionController.text,
+                                  "genre": widget.bookDetails.genre,
+                                  "hashtags": widget.bookDetails.hashtags,
+                                  "imageUrl": widget.bookDetails.imageUrl,
+                                  "isTether": true,
+                                  "lastUpdated": Timestamp.now(),
+                                  "title": titleController.text,
+                                  "workRef": widget.bookDetails.doc.reference,
+                                });
+                              } catch (e) {
+                                Get.back();
+                                Get.snackbar(
+                                  'Error',
+                                  'Draft could not be created.',
+                                  backgroundColor: Colors.white,
+                                );
+                                print(e);
+                              }
+                              uploading.value = false;
                               Get.back();
-                              print(e);
-                            }
-                            uploading.value = false;
-                            Get.back();
-                          },
-                        ),
-                      ],
+                              Get.snackbar(
+                                'Success 🥳',
+                                'Draft has been created. Get Tethering!',
+                                duration: Duration(seconds: 5),
+                                backgroundColor: Colors.white,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
+      ),
     );
   }
 }

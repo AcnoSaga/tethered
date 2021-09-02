@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/route_manager.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tethered/riverpods/global/app_busy_status_provider.dart';
 import 'package:tethered/utils/colors.dart';
 import 'injection/injection.dart';
 import 'riverpods/global/user_provider.dart';
 import 'theme/size_config.dart';
 import 'utils/routes.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 void main() async {
@@ -25,6 +27,8 @@ void main() async {
 class TetheredApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ScopedReader watch) {
+    final isAppBusyNotifier = watch(appBusyStatusProvider.notifier);
+    final isAppBusy = watch(appBusyStatusProvider);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -61,14 +65,55 @@ class TetheredApp extends ConsumerWidget {
                 }
                 SystemChannels.textInput.invokeMethod('TextInput.hide');
               },
-              child: GetMaterialApp(
-                title: 'Tethered',
-                getPages: Routes.getPages(),
-                initialRoute: snapshot.data,
+              child: GlobalLoaderOverlay(
+                overlayOpacity: 0.5,
+                child: AbsorbPointer(
+                  absorbing: isAppBusy,
+                  child: AppWidget(
+                    initialRoute: snapshot.data,
+                    isAppBusyNotifier: isAppBusyNotifier,
+                  ),
+                ),
               ),
             );
           });
     });
+  }
+}
+
+class AppWidget extends StatefulWidget {
+  final String initialRoute;
+  final AppBusyStatusNotifier isAppBusyNotifier;
+  const AppWidget({
+    Key key,
+    this.initialRoute,
+    this.isAppBusyNotifier,
+  }) : super(key: key);
+
+  @override
+  _AppWidgetState createState() => _AppWidgetState();
+}
+
+class _AppWidgetState extends State<AppWidget> {
+  @override
+  void initState() {
+    super.initState();
+    widget.isAppBusyNotifier.addListener((isAppBusy) {
+      if (isAppBusy) {
+        context.loaderOverlay.show();
+      } else {
+        context.loaderOverlay.hide();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      title: 'Tethered',
+      getPages: Routes.getPages(),
+      initialRoute: widget.initialRoute,
+    );
   }
 }
 

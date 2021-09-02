@@ -3,7 +3,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:tethered/riverpods/global/app_busy_status_provider.dart';
 import '../../../../models/draft.dart';
 import '../../../components/gap.dart';
 import '../../../components/image_error_widget.dart';
@@ -12,7 +14,7 @@ import '../../../../theme/size_config.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/text_styles.dart';
 
-class DraftItem extends StatelessWidget {
+class DraftItem extends ConsumerWidget {
   final Draft draft;
   final void Function() onDelete;
   DraftItem({Key key, this.draft, this.onDelete}) : super(key: key);
@@ -20,7 +22,8 @@ class DraftItem extends StatelessWidget {
   final ValueNotifier<bool> deleting = ValueNotifier<bool>(false);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ScopedReader watch) {
+    final isAppBusyStatusNotifier = watch(appBusyStatusProvider.notifier);
     return GestureDetector(
       onTap: () => Get.toNamed('/edit', arguments: draft.doc),
       child: Container(
@@ -80,7 +83,8 @@ class DraftItem extends StatelessWidget {
                       Align(
                         alignment: Alignment.centerRight,
                         child: GestureDetector(
-                          onTap: () => _showDeleteDialog(context),
+                          onTap: () => _showDeleteDialog(
+                              context, isAppBusyStatusNotifier),
                           child: Icon(
                             Icons.more_horiz,
                             color: TetheredColors.indexItemTextColor,
@@ -133,7 +137,7 @@ class DraftItem extends StatelessWidget {
     );
   }
 
-  Future _deleteDialog() async {
+  Future _deleteDialog(AppBusyStatusNotifier appBusyStatusNotifier) async {
     await Get.dialog(
       AlertDialog(
         title: Text(
@@ -143,6 +147,7 @@ class DraftItem extends StatelessWidget {
             onPressed: deleting.value
                 ? null
                 : () async {
+                    appBusyStatusNotifier.startWork();
                     if (!draft.doc['isTether']) {
                       final ref = FirebaseStorage.instance
                           .ref(draft.doc.reference.path + '.png');
@@ -152,6 +157,7 @@ class DraftItem extends StatelessWidget {
                     await draft.doc.reference.delete();
                     onDelete();
                     Get.back();
+                    appBusyStatusNotifier.endWork();
                   },
             icon: Icon(
               Icons.check_circle,
@@ -180,7 +186,8 @@ class DraftItem extends StatelessWidget {
     Get.back();
   }
 
-  void _showDeleteDialog(BuildContext context) {
+  void _showDeleteDialog(
+      BuildContext context, AppBusyStatusNotifier appBusyStatusNotifier) {
     showModalBottomSheet(
       context: context,
       builder: (context) => BottomSheet(
@@ -191,7 +198,7 @@ class DraftItem extends StatelessWidget {
               title: Text('Delete'),
               leading: Icon(Icons.delete),
               onTap: () async {
-                await _deleteDialog();
+                await _deleteDialog(appBusyStatusNotifier);
 
                 Navigator.pop(context);
               },

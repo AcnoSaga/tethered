@@ -1,10 +1,17 @@
+import 'package:algolia/algolia.dart';
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:provider/provider.dart' as FlutterBase;
 import 'package:shimmer/shimmer.dart';
 import 'package:tethered/models/book_cover.dart';
+import 'package:tethered/riverpods/global/app_busy_status_provider.dart';
+import 'package:tethered/screens/search/search_page/components/algoliaapp.dart';
 import 'package:tethered/utils/enums/tab_item.dart';
 import 'package:tethered/utils/inner_routes/home_routes.dart';
 import '../../../../models/published_draft.dart';
@@ -15,15 +22,24 @@ import '../../../../theme/size_config.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/text_styles.dart';
 
-class PublishedDraftItem extends StatelessWidget {
+class PublishedDraftItem extends ConsumerWidget {
   final PublishedDraft publishedDraft;
+  final void Function() onDelete;
 
-  const PublishedDraftItem({
+  PublishedDraftItem({
     Key key,
     this.publishedDraft,
+    this.onDelete,
   }) : super(key: key);
+
+  final ValueNotifier<bool> deleting = ValueNotifier<bool>(false);
+  AlgoliaIndexReference algoliaUserIndex =
+      AlgoliaApplication.writeAlgolia.index('works');
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ScopedReader watch) {
+    final isAppBusyStatusNotifier = watch(appBusyStatusProvider.notifier);
+
     return GestureDetector(
       onTap: () {
         print(publishedDraft.imageUrl);
@@ -39,7 +55,8 @@ class PublishedDraftItem extends StatelessWidget {
             ],
             "index": 0,
           },
-          id: tabItemsToIndex[Provider.of<TabItem>(context, listen: false)],
+          id: tabItemsToIndex[
+              FlutterBase.Provider.of<TabItem>(context, listen: false)],
         );
       },
       child: Container(
@@ -92,8 +109,26 @@ class PublishedDraftItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(publishedDraft.title,
-                      style: TetheredTextStyles.indexItemHeading),
+                  Stack(
+                    children: [
+                      Text(publishedDraft.title,
+                          style: TetheredTextStyles.indexItemHeading),
+                      if (publishedDraft.creatorId ==
+                              FirebaseAuth.instance.currentUser.uid &&
+                          onDelete != null)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: GestureDetector(
+                            onTap: () => _showDeleteDialog(
+                                context, isAppBusyStatusNotifier),
+                            child: Icon(
+                              Icons.more_horiz,
+                              color: TetheredColors.indexItemTextColor,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                   Gap(height: 1.5),
                   Text(
                     'Published: ' +
@@ -135,6 +170,84 @@ class PublishedDraftItem extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Future _deleteDialog(AppBusyStatusNotifier appBusyStatusNotifier) async {
+    await Get.dialog(
+      AlertDialog(
+        title: Text('Are you sure you want to delete this book?'),
+        actions: [
+          TextButton.icon(
+            onPressed: deleting.value
+                ? null
+                : () async {
+                    deleting.value = true;
+                    appBusyStatusNotifier.startWork();
+                    if (!publishedDraft.doc['isTether']) {
+                      final ref = FirebaseStorage.instance
+                          .ref(publishedDraft.doc.reference.path + '.png');
+                      print(publishedDraft.doc.reference.path + '.png');
+                      await ref.delete();
+                    }
+                    final workRef =
+                        (publishedDraft.doc['workRef'] as DocumentReference);
+                    // algoliaUserIndex.object();
+                    await workRef.delete();
+                    await publishedDraft.doc.reference.delete();
+                    onDelete();
+                    deleting.value = false;
+                    Get.back();
+                    appBusyStatusNotifier.endWork();
+                  },
+            icon: Icon(
+              Icons.check_circle,
+              color: TetheredColors.acceptNegativeColor,
+            ),
+            label: Text(
+              'Yes',
+              style: TetheredTextStyles.acceptNegativeText,
+            ),
+          ),
+          TextButton.icon(
+            onPressed: deleting.value ? null : () => Get.back(),
+            icon: Icon(
+              Icons.cancel,
+              color: TetheredColors.rejectNegativeColor,
+            ),
+            label: Text(
+              'No',
+              style: TetheredTextStyles.rejectNegativeText,
+            ),
+          ),
+        ],
+      ),
+    );
+    print('------------------------------');
+    Get.back();
+  }
+
+  void _showDeleteDialog(
+      BuildContext context, AppBusyStatusNotifier isAppBusyStatusNotifier) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => BottomSheet(
+        builder: (BuildContext context) => ListView(
+          shrinkWrap: true,
+          children: [
+            ListTile(
+              title: Text('Delete'),
+              leading: Icon(Icons.delete),
+              onTap: () async {
+                await _deleteDialog(isAppBusyStatusNotifier);
+
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+        onClosing: () {},
       ),
     );
   }

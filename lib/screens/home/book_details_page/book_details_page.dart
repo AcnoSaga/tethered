@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -154,10 +155,14 @@ class BookDetailsPage extends HookWidget {
 
   Widget _bookInfo(BookDetails details, BuildContext context) {
     final BannerAd adBanner = BannerAd(
-      adUnitId: 'ca-app-pub-7031715585886499/6085808574',
+      adUnitId: Platform.isAndroid
+          ? 'ca-app-pub-7031715585886499/2493407299'
+          : 'ca-app-pub-7031715585886499/6085808574',
       size: AdSize.banner,
       request: AdRequest(),
-      listener: BannerAdListener(),
+      listener: BannerAdListener(onAdFailedToLoad: (_, err) {
+        print(err);
+      }),
     );
     final loadBanner = adBanner.load();
     return Column(

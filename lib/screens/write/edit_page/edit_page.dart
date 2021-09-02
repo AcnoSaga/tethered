@@ -7,6 +7,7 @@ import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tethered/injection/injection.dart';
+import 'package:tethered/riverpods/global/app_busy_status_provider.dart';
 import 'package:tethered/services/firestore_service.dart';
 import 'package:tethered/utils/text_styles.dart';
 import '../../../riverpods/write/editor_page_provider.dart';
@@ -73,7 +74,13 @@ class _EditPageState extends State<EditPage> {
         actions: [
           TextButton(
             child: Text('Submit'),
-            onPressed: uploading.value ? null : () => _submitDialog(),
+            onPressed: uploading.value
+                ? null
+                : () async {
+                    final appBusyStatusNotifier =
+                        context.read(appBusyStatusProvider.notifier);
+                    await _submitDialog(appBusyStatusNotifier);
+                  },
           )
         ],
       ),
@@ -159,6 +166,13 @@ class _EditPageState extends State<EditPage> {
   void _saveContent() async {
     final docRef = widget.docSnapshot.reference;
     print(_controller.document.toDelta().toJson());
+    final textLength = _controller.plainTextEditingValue.text.length;
+    if (textLength > 10000 || textLength < 100) {
+      Get.snackbar('Save Unsuccessful',
+          'The document should have at least 100 and at most 10,000 characters.',
+          backgroundColor: Colors.white);
+      return;
+    }
     if (widget.docSnapshot.exists)
       await docRef.update({
         "content": jsonEncode(_controller.document.toDelta().toJson()),
@@ -166,7 +180,7 @@ class _EditPageState extends State<EditPage> {
       });
   }
 
-  Future _submitDialog() async {
+  Future _submitDialog(AppBusyStatusNotifier appBusyStatusNotifier) async {
     await _saveContent();
     print(_controller.plainTextEditingValue.text);
     final textLength = _controller.plainTextEditingValue.text.length;
@@ -185,6 +199,7 @@ class _EditPageState extends State<EditPage> {
             onPressed: uploading.value
                 ? null
                 : () async {
+                    appBusyStatusNotifier.startWork();
                     uploading.value = true;
                     try {
                       if (widget.docSnapshot['isTether'] == true) {
@@ -217,11 +232,12 @@ class _EditPageState extends State<EditPage> {
                       Get.back();
                       Get.snackbar(
                         'Error',
-                        'Draft could not be created.',
+                        'Draft could not be submitted.',
                         backgroundColor: Colors.white,
                       );
                     }
                     uploading.value = false;
+                    appBusyStatusNotifier.startWork();
                   },
             icon: Icon(
               Icons.check_circle,

@@ -30,10 +30,18 @@
             {
               "client_id": "529582488956-sqih347kglrvcr4s1el7gqi1pq8u77h3.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "529582488956-dq076r9ommftmj1k1r5rfhrmi4ahdatj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gekko.tethered"
+              }
             }
           ]
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-7031715585886499~6259292293"
     }
   ],
   "configuration_version": "1"

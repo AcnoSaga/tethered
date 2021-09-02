@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:tethered/riverpods/global/app_busy_status_provider.dart';
 import '../../../../injection/injection.dart';
 import '../../../../models/comment.dart';
 import '../../../../riverpods/global/user_provider.dart';
@@ -67,10 +68,13 @@ class _CommentsListState extends State<CommentsList> {
                 Text(comment.content, style: TextStyle(color: Colors.black)),
             trailing: () {
               final user = context.read(userProvider);
+              final appBusyStateNotifier =
+                  context.read(appBusyStatusProvider.notifier);
               return comment.userRef.id == user.uid
                   ? IconButton(
                       icon: Icon(Icons.delete),
-                      onPressed: () => _deleteDialog(comment),
+                      onPressed: () =>
+                          _deleteDialog(comment, appBusyStateNotifier),
                     )
                   : null;
             }(),
@@ -109,16 +113,19 @@ class _CommentsListState extends State<CommentsList> {
     }
   }
 
-  Future _deleteDialog(Comment comment) async {
+  Future _deleteDialog(
+      Comment comment, AppBusyStatusNotifier appBusyStatusNotifier) async {
     await Get.dialog(
       AlertDialog(
         title: Text('Are you sure you want to delete this comment?'),
         actions: [
           TextButton.icon(
             onPressed: () async {
+              appBusyStatusNotifier.startWork();
               await widget.collectionRef.doc(comment.doc.id).delete();
               widget.pagingController.refresh();
               Get.back();
+              appBusyStatusNotifier.endWork();
             },
             icon: Icon(
               Icons.check_circle,

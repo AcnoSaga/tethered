@@ -55,6 +55,9 @@ class _PublishedListState extends State<PublishedList> {
             ),
             child: PublishedDraftItem(
               publishedDraft: publishedDraft,
+              onDelete: () {
+                _pagingController.refresh();
+              },
             ),
           ),
         ),

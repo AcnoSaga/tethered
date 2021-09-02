@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tethered/injection/injection.dart';
 import 'package:tethered/models/tethered_user.dart';
+import 'package:tethered/riverpods/global/app_busy_status_provider.dart';
 import 'package:tethered/riverpods/global/user_provider.dart';
 import 'package:tethered/screens/components/input_form_field.dart';
 import 'package:tethered/screens/components/validators/text_validators.dart';
@@ -22,6 +23,7 @@ class SettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final user = watch(userProvider);
+    final isAppBusyStatusNotifier = watch(appBusyStatusProvider.notifier);
     return Scaffold(
       backgroundColor: TetheredColors.primaryDark,
       appBar: AppBar(
@@ -65,7 +67,7 @@ class SettingsPage extends ConsumerWidget {
                     color: TetheredColors.primaryBlue,
                   ),
                   onPressed: (context) async {
-                    _deleteDialog(user);
+                    _deleteDialog(user, isAppBusyStatusNotifier);
                   },
                 ),
               ],
@@ -96,7 +98,8 @@ class SettingsPage extends ConsumerWidget {
     );
   }
 
-  Future _deleteDialog(TetheredUser user) async {
+  Future _deleteDialog(
+      TetheredUser user, AppBusyStatusNotifier appBusyStatusNotifier) async {
     await Get.dialog(
       Form(
         key: _formKey,
@@ -115,6 +118,7 @@ class SettingsPage extends ConsumerWidget {
                 if (!_formKey.currentState.validate()) {
                   return;
                 }
+                appBusyStatusNotifier.startWork();
                 try {
                   await FirebaseAuth.instance.currentUser
                       .reauthenticateWithCredential(
@@ -136,6 +140,7 @@ class SettingsPage extends ConsumerWidget {
                 Get.offAndToNamed('/login');
                 await locator<AuthenticationService>().deleteCurrentUserAccount(
                     !(user == null || user.imageUrl.isEmpty));
+                appBusyStatusNotifier.endWork();
               },
               icon: Icon(
                 Icons.check_circle,

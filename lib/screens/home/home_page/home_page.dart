@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -8,7 +10,6 @@ import '../../../models/genre.dart';
 import '../../../riverpods/home/home_page_provider.dart';
 import 'components/book_row.dart';
 import '../../components/gap.dart';
-import 'components/home_carousel.dart';
 import '../../../services/authetication_service.dart';
 import '../../../theme/size_config.dart';
 import '../../../utils/colors.dart';
@@ -68,18 +69,22 @@ class HomePage extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Gap(height: 5),
-            HomeCarousel(),
-            Gap(height: 3),
+            // HomeCarousel(),
+            // Gap(height: 3),
             ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemCount: genres.length,
               itemBuilder: (context, index) {
                 final BannerAd adBanner = BannerAd(
-                  adUnitId: 'ca-app-pub-7031715585886499/8543331392',
+                  adUnitId: Platform.isAndroid
+                      ? 'ca-app-pub-7031715585886499/7263993023'
+                      : 'ca-app-pub-7031715585886499/8543331392',
                   size: AdSize.banner,
                   request: AdRequest(),
-                  listener: BannerAdListener(),
+                  listener: BannerAdListener(onAdFailedToLoad: (_, err) {
+                    print(err);
+                  }),
                 );
                 final loadBanner = adBanner.load();
                 return Padding(

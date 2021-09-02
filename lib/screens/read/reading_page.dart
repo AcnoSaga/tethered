@@ -226,8 +226,8 @@ class _ReadingPageState extends State<ReadingPage> {
                               if (Random().nextInt(5) == 0)
                                 InterstitialAd.load(
                                     adUnitId: Platform.isAndroid
-                                        ? 'ca-app-pub-3940256099942544/5135589807'
-                                        : 'ca-app-pub-7031715585886499/4071935041',
+                                        ? 'ca-app-pub-7031715585886499/4071935041'
+                                        : 'ca-app-pub-7031715585886499/3031435675',
                                     request: AdRequest(),
                                     adLoadCallback: InterstitialAdLoadCallback(
                                       onAdLoaded: (InterstitialAd ad) {
@@ -297,8 +297,8 @@ class _ReadingPageState extends State<ReadingPage> {
                 if (Random().nextInt(5) == 0)
                   InterstitialAd.load(
                       adUnitId: Platform.isAndroid
-                          ? 'ca-app-pub-3940256099942544/8691691433'
-                          : 'ca-app-pub-7031715585886499/4071935041',
+                          ? 'ca-app-pub-7031715585886499/4071935041'
+                          : 'ca-app-pub-7031715585886499/3031435675',
                       request: AdRequest(),
                       adLoadCallback: InterstitialAdLoadCallback(
                         onAdLoaded: (InterstitialAd ad) {

@@ -237,7 +237,7 @@ class _EditPageState extends State<EditPage> {
                       );
                     }
                     uploading.value = false;
-                    appBusyStatusNotifier.startWork();
+                    appBusyStatusNotifier.endWork();
                   },
             icon: Icon(
               Icons.check_circle,

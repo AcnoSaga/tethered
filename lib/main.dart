@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/route_manager.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:tethered/riverpods/global/app_busy_status_provider.dart';
 import 'package:tethered/utils/colors.dart';
 import 'injection/injection.dart';
@@ -21,6 +22,15 @@ void main() async {
   await Firebase.initializeApp();
   configureInit();
   HttpOverrides.global = new MyHttpOverrides();
+  if (Platform.isAndroid) {
+    try {
+      final AppUpdateInfo appUpdateInfo = await InAppUpdate.checkForUpdate();
+      if (appUpdateInfo.immediateUpdateAllowed) {
+        await InAppUpdate.performImmediateUpdate();
+      }
+      ;
+    } catch (e) {}
+  }
   runApp(ProviderScope(child: TetheredApp()));
 }
 

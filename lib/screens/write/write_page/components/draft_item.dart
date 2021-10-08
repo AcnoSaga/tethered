@@ -25,7 +25,13 @@ class DraftItem extends ConsumerWidget {
   Widget build(BuildContext context, ScopedReader watch) {
     final isAppBusyStatusNotifier = watch(appBusyStatusProvider.notifier);
     return GestureDetector(
-      onTap: () => Get.toNamed('/edit', arguments: draft.doc),
+      onTap: () async {
+        await Get.toNamed('/edit', arguments: {
+          "doc": draft.doc,
+          "onDelete": onDelete,
+        });
+        onDelete();
+      },
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: sy * 2,

@@ -76,7 +76,8 @@ class TetheredApp extends ConsumerWidget {
                 SystemChannels.textInput.invokeMethod('TextInput.hide');
               },
               child: GlobalLoaderOverlay(
-                overlayOpacity: 0.5,
+                overlayOpacity: 0.7,
+                overlayColor: Colors.black,
                 child: AbsorbPointer(
                   absorbing: isAppBusy,
                   child: AppWidget(
@@ -108,6 +109,7 @@ class _AppWidgetState extends State<AppWidget> {
   @override
   void initState() {
     super.initState();
+
     widget.isAppBusyNotifier.addListener((isAppBusy) {
       if (isAppBusy) {
         context.loaderOverlay.show();

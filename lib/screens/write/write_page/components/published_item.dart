@@ -33,7 +33,7 @@ class PublishedDraftItem extends ConsumerWidget {
   }) : super(key: key);
 
   final ValueNotifier<bool> deleting = ValueNotifier<bool>(false);
-  AlgoliaIndexReference algoliaUserIndex =
+  final AlgoliaIndexReference algoliaUserIndex =
       AlgoliaApplication.writeAlgolia.index('works');
 
   @override
@@ -113,7 +113,8 @@ class PublishedDraftItem extends ConsumerWidget {
                     children: [
                       Text(publishedDraft.title,
                           style: TetheredTextStyles.indexItemHeading),
-                      if (publishedDraft.creatorId ==
+                      if (!publishedDraft.isTether &&
+                          publishedDraft.creatorId ==
                               FirebaseAuth.instance.currentUser.uid &&
                           onDelete != null)
                         Align(
@@ -186,14 +187,18 @@ class PublishedDraftItem extends ConsumerWidget {
                     deleting.value = true;
                     appBusyStatusNotifier.startWork();
                     if (!publishedDraft.doc['isTether']) {
-                      final ref = FirebaseStorage.instance
-                          .ref(publishedDraft.doc.reference.path + '.png');
-                      print(publishedDraft.doc.reference.path + '.png');
+                      print(
+                          'works/' + publishedDraft.doc.reference.id + '.png');
+                      final ref = FirebaseStorage.instance.ref("works/" +
+                          (publishedDraft.doc['workRef'] as DocumentReference)
+                              .id +
+                          '.png');
+                      print(ref.fullPath);
                       await ref.delete();
                     }
                     final workRef =
                         (publishedDraft.doc['workRef'] as DocumentReference);
-                    // algoliaUserIndex.object();
+                    await algoliaUserIndex.object(workRef.id).deleteObject();
                     await workRef.delete();
                     await publishedDraft.doc.reference.delete();
                     onDelete();

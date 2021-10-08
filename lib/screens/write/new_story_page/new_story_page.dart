@@ -239,11 +239,12 @@ class NewStoryPage extends HookWidget {
                     "lastUpdated": Timestamp.now(),
                     "title": titleController.text,
                   });
-                  Get.snackbar(
-                    'Success 🥳',
-                    'Draft has been created. Get Tethering!',
-                    duration: Duration(seconds: 5),
-                    backgroundColor: Colors.white,
+                  await Get.dialog(
+                    AlertDialog(
+                      title: Text('Success 🥳'),
+                      content: Text(
+                          'Draft has been created.\n\nYou can find it in the Write tab\nGet Tethering!'),
+                    ),
                   );
                 } catch (e) {
                   // TODO: Manage error
@@ -251,10 +252,11 @@ class NewStoryPage extends HookWidget {
                       id: tabItemsToIndex[FlutterBase.Provider.of<TabItem>(
                           context,
                           listen: false)]);
-                  Get.snackbar(
-                    'Error',
-                    'Draft could not be created.',
-                    backgroundColor: Colors.white,
+                  await Get.dialog(
+                    AlertDialog(
+                      title: Text('Error ❌'),
+                      content: Text('Draft could not be created.'),
+                    ),
                   );
                   print(e);
                 }

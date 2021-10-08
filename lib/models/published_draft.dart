@@ -42,7 +42,7 @@ class PublishedDraft {
       genre: doc["genre"],
       hashtags: <String>[...(doc["hashtags"])].toList(),
       published: (doc["published"] as Timestamp).toDate(),
-      isTether: isBook ? null : doc["isTether"],
+      isTether: isBook ? false : doc["isTether"],
       creatorId: doc["creatorId"],
       workRef: hasWorkRef ? doc["workRef"] : doc.reference,
       doc: doc,

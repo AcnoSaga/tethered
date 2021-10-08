@@ -107,20 +107,23 @@ class _NewTetherPageState extends State<NewTetherPage> {
                                 });
                               } catch (e) {
                                 Get.back();
-                                Get.snackbar(
-                                  'Error',
-                                  'Draft could not be created.',
-                                  backgroundColor: Colors.white,
+                                await Get.dialog(
+                                  AlertDialog(
+                                    title: Text('Error ❌'),
+                                    content:
+                                        Text('Draft could not be created.'),
+                                  ),
                                 );
                                 print(e);
                               }
                               uploading.value = false;
                               Get.back();
-                              Get.snackbar(
-                                'Success 🥳',
-                                'Draft has been created. Get Tethering!',
-                                duration: Duration(seconds: 5),
-                                backgroundColor: Colors.white,
+                              await Get.dialog(
+                                AlertDialog(
+                                  title: Text('Success 🥳'),
+                                  content: Text(
+                                      'Draft has been created.\n\nYou can find it in the Write tab\nGet Tethering!'),
+                                ),
                               );
                             },
                           ),

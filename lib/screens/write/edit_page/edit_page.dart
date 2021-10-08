@@ -13,12 +13,11 @@ import 'package:tethered/utils/text_styles.dart';
 import '../../../riverpods/write/editor_page_provider.dart';
 import '../../../theme/size_config.dart';
 import '../../../utils/colors.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
 
 class EditPage extends StatefulWidget {
   EditPage({Key key}) : super(key: key);
-  final docSnapshot = Get.arguments as DocumentSnapshot;
+  final docSnapshot = Get.arguments["doc"] as DocumentSnapshot;
+  final onDelete = Get.arguments["onDelete"] as Function;
 
   @override
   _EditPageState createState() => _EditPageState();
@@ -38,29 +37,20 @@ class _EditPageState extends State<EditPage> {
   @override
   void initState() {
     super.initState();
-    _controller.changes.listen((event) {
-      print(_controller.plainTextEditingValue);
-    });
-  }
+    print(busySaving);
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!dataLoaded) {
-      dataLoaded = true;
-      _controller.addListener(() {
-        print(busySaving);
-        if (!busySaving) {
-          busySaving = true;
-          Future.delayed(Duration(seconds: 3)).then((_) async {
-            print('Sahi hai');
-            print(widget.docSnapshot.id);
-            await _saveContent();
-            busySaving = false;
-          });
-        }
-      });
-    }
+    _controller.changes.listen((event) {
+      print(busySaving);
+      if (!busySaving) {
+        busySaving = true;
+        Future.delayed(Duration(seconds: 10)).then((_) async {
+          print('Sahi hai');
+          print(widget.docSnapshot.id);
+          await _saveContent(isLengthEnforced: false);
+          busySaving = false;
+        });
+      }
+    });
   }
 
   @override
@@ -89,7 +79,8 @@ class _EditPageState extends State<EditPage> {
           if (uploading.value) {
             return false;
           }
-          await _saveContent();
+          await _saveContent(isLengthEnforced: false);
+          widget.onDelete();
           return true;
         },
         child: SafeArea(
@@ -101,11 +92,11 @@ class _EditPageState extends State<EditPage> {
             } else if (state is EditPageLoading) {
               return Center(child: CircularProgressIndicator());
             } else if (state is EditPageLoaded) {
-              _controller.dispose();
-              _controller = QuillController(
-                document: Document.fromDelta(state.content),
-                selection: const TextSelection.collapsed(offset: 0),
-              );
+              if (!dataLoaded) {
+                dataLoaded = true;
+                _controller.document
+                    .compose(state.content, ChangeSource.REMOTE);
+              }
               return _editor(context);
             } else {
               return Center(child: Text('An unexpected error occured.'));
@@ -145,12 +136,13 @@ class _EditPageState extends State<EditPage> {
         QuillToolbar.basic(
           controller: _controller,
           showListCheck: false,
-          onImagePickCallback: (file) async {
-            final appDocDir = await getApplicationDocumentsDirectory();
-            final copiedFile =
-                await file.copy('${appDocDir.path}/${basename(file.path)}');
-            return copiedFile.path.toString();
-          },
+          showCamera: false,
+          // onImagePickCallback: (file) async {
+          //   final appDocDir = await getApplicationDocumentsDirectory();
+          //   final copiedFile =
+          //       await file.copy('${appDocDir.path}/${basename(file.path)}');
+          //   return copiedFile.path.toString();
+          // },
         ),
       ],
     );
@@ -163,17 +155,18 @@ class _EditPageState extends State<EditPage> {
     super.dispose();
   }
 
-  void _saveContent() async {
+  void _saveContent({bool isLengthEnforced = false}) async {
     final docRef = widget.docSnapshot.reference;
-    print(_controller.document.toDelta().toJson());
-    final textLength = _controller.plainTextEditingValue.text.length;
-    if (textLength > 10000 || textLength < 100) {
-      Get.snackbar('Save Unsuccessful',
-          'The document should have at least 100 and at most 10,000 characters.',
-          backgroundColor: Colors.white);
-      return;
+    if (isLengthEnforced) {
+      final textLength = _controller.plainTextEditingValue.text.length;
+      if (textLength > 10000 || textLength < 100) {
+        Get.snackbar('Save Unsuccessful',
+            'The document should have at least 100 and at most 10,000 characters.',
+            backgroundColor: Colors.white);
+        return;
+      }
     }
-    if (widget.docSnapshot.exists)
+    if ((await docRef.get()).exists)
       await docRef.update({
         "content": jsonEncode(_controller.document.toDelta().toJson()),
         "lastUpdated": Timestamp.now(),
@@ -221,22 +214,26 @@ class _EditPageState extends State<EditPage> {
                           FirebaseAuth.instance.currentUser.uid,
                         );
                       }
+                      uploading.value = false;
+
                       Get.back();
-                      Get.snackbar(
-                        'Success 🥳',
-                        'Draft has been submitted.',
-                        duration: Duration(seconds: 5),
-                        backgroundColor: Colors.white,
+                      Get.back();
+                      await Get.dialog(
+                        AlertDialog(
+                          title: Text('Success 🥳'),
+                          content: Text('Draft has been submitted.'),
+                        ),
                       );
                     } catch (e) {
                       Get.back();
-                      Get.snackbar(
-                        'Error',
-                        'Draft could not be submitted.',
-                        backgroundColor: Colors.white,
+                      await Get.dialog(
+                        AlertDialog(
+                          title: Text('Error ❌'),
+                          content: Text('Draft could not be submitted.'),
+                        ),
                       );
                     }
-                    uploading.value = false;
+
                     appBusyStatusNotifier.endWork();
                   },
             icon: Icon(

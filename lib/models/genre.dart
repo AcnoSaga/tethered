@@ -19,8 +19,7 @@ class Genre extends Category {
     return Genre(
       description: doc["description"],
       hashtags: [...doc["hashtags"]],
-      home:
-          [...doc["home"]].map((data) => BookCover.fromMap(data)).toList(),
+      home: [...doc["home"]].map((data) => BookCover.fromMap(data)).toList(),
       name: doc["name"],
     );
   }

@@ -26,6 +26,9 @@ class PublishedDraft {
   });
 
   static PublishedDraft fromDocument(DocumentSnapshot doc) {
+    if (doc.data() == null) {
+      return null;
+    }
     final isBook =
         (doc.data() as Map).containsKey('isTether') && doc["isTether"] == true
             ? false

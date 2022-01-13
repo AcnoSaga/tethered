@@ -167,6 +167,9 @@ class _SearchPageState extends State<SearchPage> {
             shrinkWrap: true,
             onItemFound: (item, index) {
               print('Success');
+              if (item == null) {
+                return Container();
+              }
               switch (searchType.value) {
                 case SearchType.works:
                   return PublishedDraftItem(

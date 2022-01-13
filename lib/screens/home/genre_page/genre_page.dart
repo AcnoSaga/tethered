@@ -57,7 +57,7 @@ class GenrePage extends ConsumerWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: sy * 5),
               child: Text(
-                genreDescription,
+                genre.description ?? genreDescription,
                 style: TetheredTextStyles.displayText,
                 textAlign: TextAlign.center,
               ),

@@ -247,7 +247,6 @@ class NewStoryPage extends HookWidget {
                     ),
                   );
                 } catch (e) {
-                  // TODO: Manage error
                   Get.back(
                       id: tabItemsToIndex[FlutterBase.Provider.of<TabItem>(
                           context,

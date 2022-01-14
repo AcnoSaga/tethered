@@ -120,15 +120,10 @@ class _EditPageState extends State<EditPage> {
                 scrollable: true,
                 focusNode: _editorFocusNode,
                 autoFocus: true,
+                enableInteractiveSelection: true,
                 readOnly: false,
                 expands: false,
                 padding: EdgeInsets.zero,
-                onTapUp: (tapUpDetails, _) {
-                  // Show keyboard again after selecting image
-                  FocusScope.of(context).requestFocus(FocusNode());
-                  FocusScope.of(context).requestFocus();
-                  return true;
-                },
               ),
             ),
           ),

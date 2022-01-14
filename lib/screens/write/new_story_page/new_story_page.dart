@@ -266,6 +266,16 @@ class NewStoryPage extends HookWidget {
                 );
               },
             ),
+            Gap(height: 4),
+            Align(
+              child: Text(
+                '''https://creativecommons.org/licenses/by-nc-sa/4.0/
+*By uploading your work, you are licensing it under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
+*This may be subject to change over future updates
+*You are permitting Tethered Inc. to use your work for creating promotional material to be distributed on online platforms''',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
           ],
         ),
       ),
